@@ -1,0 +1,1066 @@
+<HTML>
+<HEAD>
+<META name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+</HEAD>
+<style type="text/css">
+
+  table { 
+  	width: 304px;
+  	height: 304px;
+  	border-width: 0px;
+	border-spacing: 0px;
+	border-style: outset;
+	border-color: gray;
+	border-collapse: black;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+
+   }
+   
+  td {
+  	text-align:center;
+  	border-width: 0px;
+	padding: 0px;
+	border-style: inset;
+	border-color: gray;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	-moz-border-radius: ;
+  }
+  .sansbordure { font-family: Verdana, Arial, Helvetica, sans-serif; font-size:
+14 px; color: #003068; text-decoration: none; background-color: #FFFFFF;
+border-color: #88A0C8 #88A0C8 #88A0C8; border-style: solid;
+border-top-width: 0 px; border-right-width: 0 px; border-bottom-width: 0
+px; border-left-width: 0 px}
+
+</style>
+<SCRIPT language="javascript">
+var numpage=0;
+var numpage_total=10;
+var duree_partie=0;
+var temps_partie=0
+var cpt_tps_partie=0
+var num_img_tps_pratie=8
+var secs;
+var timerID = null;
+var timerIDPause = null;
+var timerFlash = null;
+var timerRunning = false;
+var timerRunningPause = false;
+var delay = 1000;
+var joueur_encours=0;
+var nbjoueur = 4;
+var tps_cycle=0;
+var fruit_encours=1;
+var temps_restant=0;
+var mode_ecran=0;
+var flash=0;
+var num_modejeu=1;
+var tableau_bonus = new Array(16);
+var tableau_record = new Array(5);
+var tableau_score = new Array(5);
+var tableau_scoreTri = new Array(5);
+var base_temps = 40
+var num_img_tps_partie=8;
+var secs_pause=0;
+var cpt_flash_pause=0;
+var bonusActive_tmp=0;
+var malus=0;
+var strMessage = '';
+var j_suivant = 0;
+var bonus2fruits_tmp = 0;
+var sens_jeu=1;
+var posX = 0;
+var posY = 0;
+var position_encours = 1;
+var tableau_PosJoueur = new Array(5);
+var temps_initial = 720;
+var record_encours = 0;
+var cpt_joueur=0;
+var Cycle_Initial = 30;
+var Cycle_Tour = 30;
+var dizaine=0;
+var unite=0;
+var active_fois2=0;
+var score_du_tour=0;
+var nomid;
+var position_un;
+var active_change=0;
+var fin_temps=0;
+var gagnant=0;
+var bonus_joueur_encours=0;
+
+function StartTheTimer()
+{
+    //alert("secs="+secs)
+    if (secs<=0)
+    {
+        StopTheClock()
+        document.getElementById('img_cadre').src = 'img/times_up.png';
+	document.getElementById('img_infofruitencours').style.display = 'none';
+	document.getElementById('img_pause').style.display = 'none';
+	document.getElementById('img_changer').style.display = 'none';
+	document.getElementById('nb_bonus1').style.display = 'none';
+	document.getElementById('nb_bonus2').style.display = 'none';
+        fin_temps=1;
+        
+    }
+    else
+    {
+        if ((secs==Math.floor(tps_cycle/2))&&(cpt_joueur==1))
+        {
+        	timerFlash = self.setTimeout("lightning()",1);
+        }
+        //self.status = secs
+        secs = secs - 1
+	//cpt_tps_partie = cpt_tps_partie + 1
+	//temps_partie = temps_partie + 1
+	timerRunning = true
+        timerID = self.setTimeout("StartTheTimer()", delay)
+    }
+}
+
+// une fonction qui compare des chaines contenant des entiers
+function compare_entiers_func(a, b) {
+  // Elle doit retourner :
+  // -1 si a < b
+  //  0 si a = b
+  //  1 si a > b
+  return parseInt(b) - parseInt(a)
+}
+
+
+function classement()
+{
+	var stringValue = '';
+	for (var i=1;i<nbjoueur+1;i++) 
+	{
+		tableau_scoreTri[i-1] = (tableau_record[i] * 1000)+i;
+	}
+
+	tableau_scoreTri.sort(compare_entiers_func)
+	active_fois2 = 0;
+	position_un = 0;
+	position_deux = 0;
+	tableau_PosJoueur = new Array(5);
+	for (var i=0;i<nbjoueur;i++) 
+		{
+			
+			tableau_PosJoueur[i] = String(tableau_scoreTri[i]).substr(String(tableau_scoreTri[i]).length-1,1);
+			if (i==0) {position_un = tableau_PosJoueur[i]}
+			if (i==1) {position_deux = tableau_PosJoueur[i]}
+		}
+
+	
+	score_du_tour = parseInt(tableau_record[position_un])-parseInt(tableau_record[position_deux])
+	
+	if (score_du_tour==0)
+		{
+			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant sur ce tour : égalité entre les joueurs ' + position_un + ' et ' + position_deux + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+			document.getElementById('info_bonusfois2').innerHTML = "";
+			document.getElementById('img_fois2').style.display = 'none';
+		}
+		else
+		{
+			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' point(s)' + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
+			nomid= 'score_joueur' + position_un;
+			document.getElementById(nomid).innerHTML = tableau_score[position_un];
+			if (num_modejeu == 2)
+			{
+				document.getElementById('info_bonusfois2').innerHTML = tableau_bonus[2 + ((position_un-1)*5)];
+				document.getElementById('img_fois2').style.display = 'block';
+			}
+			
+			if (tableau_score[position_un]>=duree_partie)
+			{
+				document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' point(s)' + '<BR>>> Il gagne la partie !!! <<<BR>Go! pour une nouvelle partie.';
+				gagnant=1;
+			}
+		}
+	for (var i=1;i<nbjoueur+1;i++) 
+		{
+			tableau_record[i]=0;
+		}
+}
+
+function fois2()
+{
+	if (tableau_bonus[2 + ((position_un-1)*5)]>0)
+	{
+		if (active_fois2==0)
+		{
+			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
+			document.getElementById(nomid).innerHTML = tableau_score[position_un];
+			active_fois2 =1;
+			tableau_bonus[2 + ((position_un-1)*5)]= tableau_bonus[2 + ((position_un-1)*5)] -1;
+		
+		}else
+		{
+			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' ne peut jouer qu\'un bonus X2 par tour<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+		}
+		document.getElementById('info_bonusfois2').innerHTML = tableau_bonus[2 + ((position_un-1)*5)];
+		if (tableau_score[position_un]>=duree_partie)
+			{
+				document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR>>> Il gagne la partie !!! <<<BR>Go! pour une nouvelle partie.';
+				gagnant=1;
+			}
+	}
+}
+function StopTheClock()
+{
+    if(timerRunning)
+        clearTimeout(timerID)
+    timerRunning = false
+    // si clignote
+    if (flash!=0) { clearTimeout(timerFlash) }
+}
+
+function StartTheTimerPause()
+{
+    if (secs_pause<=0)
+    {
+        clearTimeout(timerIDPause)
+        document.getElementById('chronogif').style.display = 'block';
+        document.getElementById('table_jeu').bgColor='white';
+        timerRunningPause = false;
+        StartTheTimer();
+    }
+    else
+    {
+        cpt_flash_pause=cpt_flash_pause+1
+        if (cpt_flash_pause==1)
+        {
+        	document.getElementById('table_jeu').bgColor='green';
+        }else{
+        	document.getElementById('table_jeu').bgColor='yellow';
+        	cpt_flash_pause=0
+        }
+        //self.status = self.status + ' pause=' + secs_pause;
+        secs_pause = secs_pause - 1
+	timerRunningPause = true
+	timerIDPause = self.setTimeout("StartTheTimerPause()", delay)
+    }
+}
+function StopTheClockPause()
+{
+    if(timerRunningPause)
+        clearTimeout(timerIDPause)
+    timerRunningPause = false
+    document.getElementById('chronogif').style.display = 'block';
+    document.getElementById('table_jeu').bgColor='white';
+}
+
+
+function initCycle()
+{
+	secs = tps_cycle;
+	flash=0;
+}
+function changeFruit()
+{
+	sortie=0
+	while (sortie==0)
+	{
+		nouveau_fruit = Math.floor(Math.random()*6)+1;
+		if (nouveau_fruit != fruit_encours)
+		{
+			fruit_encours = nouveau_fruit;
+			sortie=1;
+		}
+	}
+}
+function AfficheFruit()
+{
+	document.getElementById('img_fruitencours').src = 'img/fruit' + fruit_encours + '.png';
+	document.getElementById('bonus_encours').src = 'img/effet' + fruit_encours + '.jpg';
+	document.getElementById('img_cadre').src = 'img/cadre_large.png';
+}
+function choix_nbjoueur(nb) 
+{
+	nbjoueur = nb;
+	for (var j=1;j<nbjoueur+1;j++) 
+	{
+		// init tableau_score
+		tableau_score[j]=0;
+		tableau_record[j]=0;
+	}
+	allerpage(3);
+}
+function choix_duree(duree) 
+{
+	duree_partie = duree;
+	allerpage(2);
+}
+function moins(digit)
+{
+	if (digit=='dizaine')
+	{
+		dizaine--;
+		if (dizaine<0){dizaine=9}
+		document.getElementById(digit).src = 'img/'+ dizaine +'.png';
+	}else{
+		unite--;
+		if (unite<0){unite=9}
+		document.getElementById(digit).src = 'img/'+ unite +'.png';
+	}
+}
+function plus(digit)
+{
+	if (digit=='dizaine')
+	{
+		dizaine++;
+		if (dizaine>9){dizaine=0}
+		document.getElementById(digit).src = 'img/'+ dizaine +'.png';
+	}else{
+		unite++;
+		if (unite>9){unite=0}
+		document.getElementById(digit).src = 'img/'+ unite +'.png';
+	}
+}
+function lightning()
+{
+flash=flash+1;
+if(flash==1){document.getElementById('table_jeu').bgColor='red'; setTimeout("lightning()",100);}
+if(flash==2){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==3){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==4){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==5){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==6){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==7){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==8){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==9){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==10){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==11){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==12){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==13){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==14){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==15){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==16){document.getElementById('table_jeu').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+if(flash==17){document.getElementById('table_jeu').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+if(flash==18){document.getElementById('table_jeu').bgColor='white';flash=0;}
+}
+function choix_modejeu(modejeu)
+{
+	num_modejeu=modejeu;
+	allerpage(4);
+}
+function pause()
+{
+if (tableau_bonus[1 + ((joueur_encours-1)*5)]>0)
+	{
+		if (secs_pause<=0)
+	    	{
+			StopTheClock();
+			tableau_bonus[1 + ((joueur_encours-1)*5)]=tableau_bonus[1 + ((joueur_encours-1)*5)]-1;
+			document.getElementById('nb_bonus1').innerHTML = tableau_bonus[1 + ((joueur_encours-1)*5)];
+			document.getElementById('info_1').innerHTML = tableau_bonus[1 + ((joueur_encours-1)*5)];
+			secs_pause = 10;
+			cpt_flash_pause = 0;
+			document.getElementById('chronogif').style.display = 'none';
+			StartTheTimerPause();
+		}
+	}
+}
+function plus2()
+{
+	if (tableau_bonus[5 + ((joueur_encours-1)*5)]>0)
+	{
+		tableau_bonus[5 + ((joueur_encours-1)*5)]=tableau_bonus[5 + ((joueur_encours-1)*5)]-1;
+		document.getElementById('info_bonusplus2').innerHTML = tableau_bonus[5 + ((joueur_encours-1)*5)];
+		unite++;
+		if (unite>9){unite=0;dizaine++;}
+		unite++;
+		if (unite>9){unite=0;dizaine++;}
+		document.getElementById('unite').src = 'img/'+ unite +'.png';
+		document.getElementById('dizaine').src = 'img/'+ dizaine +'.png';
+	}
+}
+
+function plus1jet()
+{
+	if (tableau_bonus[3 + ((joueur_encours-1)*5)]>0)
+	{
+		tableau_bonus[3 + ((joueur_encours-1)*5)]=tableau_bonus[3 + ((joueur_encours-1)*5)]-1;
+		document.getElementById('info_bonus1jet').innerHTML = tableau_bonus[3 + ((joueur_encours-1)*5)];
+	}
+}
+
+function allerpage(npage) 
+{
+	numpage=npage;
+	var variable_travail = 0;	
+	for (var i=0;i<numpage_total;i++) 
+	{
+		document.getElementById(i).style.display = 'none';
+	}
+	document.getElementById(numpage).style.display = 'block';
+
+
+        switch (numpage) 
+	{ 
+	case 1: 
+		break;
+	case 2: 
+		break; 
+	case 3:
+		// chargement des bonus à 0
+		for (var i=1;i<5;i++) 
+			{
+				for (var j=1;j<6;j++) 
+				{
+					tableau_bonus[j+((i-1)*5)]=1;
+				}
+			}
+		changeFruit();
+		AfficheFruit();
+		break;
+	case 4: 
+		// Affiche bonus +1 (nb fruits>11)
+		if (bonus_joueur_encours == 1)
+		{
+			document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits récoltés > 11<BR> +1 point Joueur ' + joueur_encours;
+			bonus_joueur_encours=0;
+		}
+		// Efface les non-joueurs
+		for (var i=nbjoueur +1;i<5;i++) 
+		{
+			nomid= 'score_joueur' + i;
+			document.getElementById(nomid).innerHTML = 'XX';
+			nomid= 'record_joueur' + i;
+			document.getElementById(nomid).innerHTML = 'XX';
+			tableau_record[i]=0;
+		}
+		cpt_joueur = cpt_joueur +1;
+		joueur_encours = joueur_encours+1;
+		
+		if (joueur_encours>nbjoueur){joueur_encours=1}
+		
+		// Affiche les bonus ou pas
+		document.getElementById('img_fois2').style.display = 'none';
+		document.getElementById('info_bonusfois2').innerHTML = "";
+		
+		// fin d'un tour complet
+		if (cpt_joueur>nbjoueur)
+		{
+			sens_jeu = sens_jeu +1;
+			if (sens_jeu>nbjoueur){sens_jeu=1}
+			joueur_encours=sens_jeu;
+			record_encours = 0;
+			cpt_joueur = 1;
+			classement();
+			changeFruit();
+			AfficheFruit();
+		}else{
+			document.getElementById('info_joueur').innerHTML = 'C\'est au tour du Joueur ' + joueur_encours;
+		}
+		
+		// Affiche les bonus ou pas
+		if (num_modejeu==2)
+		{
+			document.getElementById('img_infofruitencours').style.display = 'block';
+			// 1 - Pause
+			document.getElementById('img_pause').style.display = 'block';
+			document.getElementById('nb_bonus1').style.display = 'block';
+			
+			document.getElementById('nb_bonus1').innerHTML = tableau_bonus[1 + ((joueur_encours-1)*5)];
+			document.getElementById('info_1').innerHTML = tableau_bonus[1 + ((joueur_encours-1)*5)];
+			// 4 - Changer
+			document.getElementById('img_changer').style.display = 'block';
+			document.getElementById('nb_bonus2').innerHTML = tableau_bonus[4 + ((joueur_encours-1)*5)];
+			document.getElementById('info_4').innerHTML = tableau_bonus[4 + ((joueur_encours-1)*5)];
+			// 5 - Plus 2
+			document.getElementById('img_plus2').style.display = 'block';
+			document.getElementById('info_bonusplus2').innerHTML = tableau_bonus[5 + ((joueur_encours-1)*5)];
+			document.getElementById('info_5').innerHTML = tableau_bonus[5 + ((joueur_encours-1)*5)];
+			// 4 - Plus 1 jet
+			document.getElementById('img_1jet').style.display = 'block';
+			document.getElementById('info_bonus1jet').innerHTML = tableau_bonus[3 + ((joueur_encours-1)*5)];
+			document.getElementById('info_3').innerHTML = tableau_bonus[3 + ((joueur_encours-1)*5)];
+			// 5 - Fois 2
+			//document.getElementById('info_bonusfois2').innerHTML = tableau_bonus[2 + ((joueur_encours-1)*5)];
+			document.getElementById('info_2').innerHTML = tableau_bonus[2 + ((joueur_encours-1)*5)];
+			
+			//tableau_bonus[fruit_encours + ((joueur_encours-1)*5)]
+		}else
+		{
+			document.getElementById('img_infofruitencours').style.display = 'none';
+			
+			document.getElementById('img_pause').style.display = 'none';
+			document.getElementById('nb_bonus1').style.display = 'none';
+			
+			document.getElementById('img_changer').style.display = 'none';
+			document.getElementById('nb_bonus2').style.display = 'none';
+			
+			document.getElementById('img_fois2').style.display = 'none';
+			document.getElementById('img_plus2').style.display = 'none';
+			document.getElementById('img_1jet').style.display = 'none';
+			
+			
+			// les tableaus nb bonus
+		}
+		
+		fin_temps=0;
+		if (cpt_joueur==1)
+		{
+			//alert("ici")
+			tps_cycle = Cycle_Initial;
+		}else
+		{
+			tps_cycle = Cycle_Tour;
+		}
+		initCycle();
+		
+		break; 
+	case 5: 
+		document.getElementById('info_bonus_joueur').innerHTML = '';
+		if (gagnant==1)
+		{
+			window.location.reload();
+		}
+		document.getElementById('info_choisifruit').style.display = 'none';
+		active_change = 0;
+		if (cpt_joueur==1)
+		{
+			InitRecord();
+			if (num_modejeu==2)
+			{
+			document.getElementById('info_bonusfois2').innerHTML = "";
+			document.getElementById('img_fois2').style.display = 'none';
+			document.getElementById('img_changer').style.display = 'block';
+			document.getElementById('nb_bonus2').style.display = 'block';
+			}
+		}
+		else
+		{
+			if (num_modejeu==2)
+			{
+			document.getElementById('img_changer').style.display = 'none';
+			document.getElementById('nb_bonus2').style.display = 'none';
+			}
+		}
+		document.getElementById('info_joueur_encours').innerHTML = 'Tour: Joueur ' + joueur_encours;
+		document.getElementById('info_record_encours').innerHTML = 'Record=' +record_encours;
+		if ((!timerRunningPause)&&(secs_pause<=0))
+		{
+			StartTheTimer();
+		}else{
+			StartTheTimerPause();
+		}
+		break;
+	case 6: 
+		StopTheClock();
+		StopTheClockPause();
+		if (cpt_joueur==1)
+		{
+			Cycle_Tour = Cycle_Initial - secs;
+		}
+		if (fin_temps==1)
+		{
+			document.getElementById('info_timesup').innerHTML = 'Le joueur ' + joueur_encours + ' ne marque rien !';
+			document.getElementById('img_score_btn').style.display = 'none';
+			document.getElementById('img_suite_btn').style.display = 'block';
+			AfficheFruit();
+		}
+		else
+		{
+			document.getElementById('info_timesup').innerHTML = '';
+			document.getElementById('img_score_btn').style.display = 'block';
+			document.getElementById('img_suite_btn').style.display = 'none';
+		}
+		//initCycle();
+		break;
+	case 7: 
+		secs_pause=0;
+		dizaine=0;
+		unite=0;
+		document.getElementById('dizaine').src = 'img/'+ dizaine +'.png';
+		document.getElementById('unite').src = 'img/'+ unite +'.png';
+		break;  
+	default: 
+		break; 
+	}
+
+}
+function InitRecord()
+{
+	for (var i=1;i<nbjoueur+1;i++) 
+	{
+		nomid= 'record_joueur' + i;
+		document.getElementById(nomid).innerHTML = '00';
+	}
+}
+function joueursuivant()
+{
+nomid= 'record_joueur' + joueur_encours;
+var record_tmp = (dizaine*10)+unite;
+tableau_record[joueur_encours] = record_tmp;
+document.getElementById(nomid).innerHTML = record_tmp;
+if (record_tmp>record_encours)
+{
+	record_encours = record_tmp;
+	document.getElementById('info_record_encours').innerHTML = 'Record=' +record_encours;
+}
+if (num_modejeu == 2)
+{
+	if (tableau_record[joueur_encours]>11)
+	{
+		tableau_score[joueur_encours]=tableau_score[joueur_encours]+1;
+		bonus_joueur_encours=1;
+		nomid= 'score_joueur' + joueur_encours;
+		document.getElementById(nomid).innerHTML = tableau_score[joueur_encours];
+	}
+	if ((tableau_record[joueur_encours]>6)&&(fruit_encours!=6))
+	{
+		tableau_bonus[fruit_encours + ((joueur_encours-1)*5)]=tableau_bonus[fruit_encours + ((joueur_encours-1)*5)]+1;
+		allerpage(8);
+	}else{
+		allerpage(4);
+	}
+}else{
+	allerpage(4);
+}
+}
+function choisifruit(num_fruit)
+{
+	if ((active_change==1)&&(tableau_bonus[4 + ((joueur_encours-1)*5)]>0))
+	{
+		fruit_encours=num_fruit;
+		AfficheFruit();
+		tableau_bonus[4 + ((joueur_encours-1)*5)]=tableau_bonus[4 + ((joueur_encours-1)*5)]-1;
+		document.getElementById('info_4').innerHTML = tableau_bonus[4 + ((joueur_encours-1)*5)];
+		document.getElementById('nb_bonus2').innerHTML = tableau_bonus[4 + ((joueur_encours-1)*5)];
+		allerpage(5);
+	}
+}
+</SCRIPT>
+<BODY onload="javascript:allerpage(0);"  bottommargin="0" topmargin="0" leftmargin="0" rightmargin="0" marginheight="0" marginwidth="0">
+<FORM method="post" id="principale">
+<div id="0">
+<table>
+	<tr>
+		<td >
+		<A href="javascript:allerpage(1);"><img src="img/accueil.jpg" border="0"></A>
+		</td>
+	</tr>
+</table>
+</div>
+
+<div id="1">
+<table>
+	<tr>
+		<td>
+		<B><span>Choisissez la durée de la partie</span></B>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<A href="javascript:choix_duree(7);"><img src="img/time1.jpg" border="0"><B><span id="mode_points1">7 pts</span></B></A>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<A href="javascript:choix_duree(10);"><img src="img/time2.jpg" border="0"><B><span id="mode_points2">10 pts</span></B></A>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<A href="javascript:choix_duree(15);"><img src="img/time3.jpg" border="0"><B><span id="mode_points3">15 pts</span></B></A>
+		</td>
+	</tr>
+</table>
+</div>
+<div id="2">
+<table>
+	<tr>
+		<td colspan="2">
+		<B><span>Choisissez le nombre de joueurs</span></B>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+		<A href="javascript:choix_nbjoueur(2);"><img src="img/2p.jpg" border="0"></A>
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<a href="javascript:choix_nbjoueur(3);"><img src="img/3p.jpg" border="0"></a>
+		</td>
+		<td >
+		<a href="javascript:choix_nbjoueur(4);"><img src="img/4p.jpg" border="0"></a>
+		</td>
+	</tr>
+</table>
+</div>
+<div id="3">
+<table>
+	<tr>
+		<td >
+		&nbsp;
+		</td>
+	</tr>	
+	<tr>
+		<td >
+		<a href="javascript:allerpage(1);"><img src="img/retour.png" border="0"></a>&nbsp;<a href="javascript:choix_modejeu('2');"><img src="img/go.png" border="0"></a>
+		</td>
+	</tr>
+	<tr>
+		<td style="color:orange">
+		<HR><B><U>Règles du jeu</U></B>
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/regle1.jpg" border="0">
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/regle2.jpg" border="0">
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/regle4.jpg" border="0">
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/regle3.jpg" border="0">
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/regle5.jpg" border="0">
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/regle6.jpg" border="0">
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/regle7.jpg" border="0">
+		</td>
+	</tr>
+
+	<tr>
+		<td >
+		<img src="img/regle8.jpg" border="0">
+		</td>
+	</tr>
+	
+</table>
+</div>
+<div id="4">
+<table border="1">
+	<tr>
+		<td colspan="4">
+		&nbsp;
+		</td>
+	</tr>	
+	<tr height="20px">
+		<td colspan="4" align=center style="font-size: 18px;">
+		<U><I>Scores</I></U>
+		</td>
+	</tr>
+	<tr height="20px">
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_score_joueur1">J1</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_score_joueur2">J2</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_score_joueur3">J3</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_score_joueur4">J4</span>
+		</td>
+	</tr>
+	<tr height="20px">
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="score_joueur1">00</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="score_joueur2">00</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="score_joueur3">00</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="score_joueur4">00</span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align=center>
+		<span id="info_bonus_joueur" align=center style="color:orange;font-weight:bold;font-size: 16px;"></span>
+ 		</td>
+	</tr>	
+	<tr>
+		<td colspan="4">
+		&nbsp;
+		</td>
+	</tr>
+	<tr height="20px">
+		<td colspan="4" align=center style="font-size: 18px;">
+		<U><I>Records du tour</I></U>
+		</td>
+	</tr>
+	<tr height="20px">
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur1">J1</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur2">J2</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur3">J3</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur4">J4</span>
+		</td>
+	</tr>
+	<tr height="20px">
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="record_joueur1">00</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="record_joueur2">00</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="record_joueur3">00</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="record_joueur4">00</span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align=center>
+		<span id="info_joueur" align=center style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+ 		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align=center>
+		<a href="javascript:fois2();"><img src="img/fois2.jpg" border="0" id="img_fois2"></a>
+		</td>
+		<td colspan="2" align=center>
+		<a href="javascript:allerpage(5);"><img src="img/go.png" border="0"></a>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align=center>
+		<span id="info_bonusfois2" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+		<td colspan="2" align=center>
+		&nbsp;
+		</td>
+	</tr>
+</table>
+</div>
+<div id="5">
+<table border="1" id='table_jeu' >
+	<tr>
+		<td colspan="3">
+		&nbsp;
+		</td>
+	</tr>	
+	<tr height="16px" style="font-size:14px">
+		<td >
+		<span id="info_record_encours"></span>
+		</td>
+		<td align=center>
+		<span id="info_joueur_encours"></span>
+		</td>
+		<td align=right>
+		<img src="img/chrono.gif" id="chronogif" border="0">
+		</td>
+	</tr>
+	<tr height="145px">
+		<td colspan="3" align=center>
+		<img src="img/fruit1.png" id="img_fruitencours" border="0">
+		<div style="position: absolute; top: 35px; left: 2px;" id="cadre">
+		<a href="javascript:allerpage(6)"><img src="img/cadre_large.png" id="img_cadre" border="0"></A>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<a href="javascript:pause();"><img src="img/pause_10.jpg" id="img_pause" border="0"></A>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<a href="javascript:if(tableau_bonus[4 + ((joueur_encours-1)*5)]>0){StopTheClock();StopTheClockPause();active_change=1;document.getElementById('info_choisifruit').style.display = 'block';allerpage(9);}"><img src="img/change.jpg" id="img_changer" border="0"></A>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<a href="javascript:StopTheClock();StopTheClockPause();allerpage(9);"><img src="img/info.jpg" id="img_infofruitencours" border="0"></A>
+		</td>
+	</tr>
+	<tr>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="nb_bonus1"></span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="nb_bonus2"></span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span>&nbsp;</span>
+		</td>
+	</tr>
+</table>
+</div>
+<div id="6">
+<table>
+	<tr>
+		<td >
+		<center><A href="javascript:allerpage(7);"><img src="img/score_btn.png" border="0" id="img_score_btn"></A></center>
+		<span id="info_timesup"></span>
+		<center><A href="javascript:allerpage(4);"><img src="img/suite.png" border="0" id="img_suite_btn"></A></center>
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<a href="javascript:allerpage(5);"><img src="img/retour.png" border="0"></a>
+ 		</td>
+	</tr>
+</table>
+</div>
+<div id="7">
+<table>
+		<tr>
+		<td colspan="4">
+		&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td >
+			<A href="javascript:plus('dizaine');"><img src="img/plus.jpg" border="0"></A>
+		</td>
+		<td rowspan="2">
+			<img src="img/0.png" border="0" id='dizaine'>
+		</td>
+		<td rowspan="2">
+			<img src="img/0.png" border="0" id='unite'>
+		</td>
+		<td >
+			<A href="javascript:plus('unite');"><img src="img/plus.jpg" border="0"></A>
+		</td>
+	</tr>
+	<tr>
+		<td >
+			<A href="javascript:moins('dizaine');"><img src="img/moins.jpg" border="0"></A>
+		</td>
+		<td >
+			<A href="javascript:moins('unite');"><img src="img/moins.jpg" border="0"></A>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align=center>
+		<a href="javascript:plus2();"><img src="img/2fruits.jpg" border="0" id="img_plus2"></a>
+		</td>
+		<td colspan="2" align=center>
+		<a href="javascript:plus1jet();"><img src="img/1jet.jpg" border="0" id="img_1jet"></a>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align=center>
+		<span id="info_bonusplus2" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+		<td colspan="2" align=center>
+		<span id="info_bonus1jet" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+		<a href="javascript:joueursuivant();"><img src="img/suite.png" border="0"></a>
+ 		</td>
+	</tr>
+	
+	
+</table>
+</div>
+<div id="8">
+<table>
+	<tr>
+		<td style="color:#000000;font-weight:bold;font-size: 16px;">
+		Vous avez fait + de 6 : vous gagnez le bonus ci-dessous !
+		</td>
+	</tr>
+	<tr>
+		<td >
+		<img src="img/retour.png" border="0" id="bonus_encours"></a>
+ 		</td>
+	</tr>
+	<tr>
+		<td>
+		<a href="javascript:allerpage(4);"><img src="img/suite.png" border="0"></a>
+ 		</td>
+	</tr>
+</table>
+</div>
+<div id="9">
+<table>
+	<tr>
+		<td colspan="3">
+		&nbsp;
+		</td>
+	</tr>	
+	<tr>
+		<td colspan="3">
+		<span id="info_choisifruit" style="color:#006600;font-weight:bold;font-size: 16px;">Choisissez votre fruit</span>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<a href="javascript:choisifruit(1);"><img src="img/effet1.jpg" border="0" id="img_plus2"></a>
+		</td>
+		<td>
+		<a href="javascript:choisifruit(2);"><img src="img/effet2.jpg" border="0" id="img_plus2"></a>
+		</td>
+		<td>
+		<a href="javascript:choisifruit(3);"><img src="img/effet3.jpg" border="0" id="img_plus2"></a>
+		</td>
+	</tr>
+	<tr>
+		<td align=center>
+		<span id="info_1" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+		<td align=center>
+		<span id="info_2" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+		<td align=center>
+		<span id="info_3" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<a href="javascript:choisifruit(4);"><img src="img/effet4.jpg" border="0" id="img_plus2"></a>
+		</td>
+		<td>
+		<a href="javascript:choisifruit(5);"><img src="img/effet5.jpg" border="0" id="img_plus2"></a>
+		</td>
+		<td>
+		<a href="javascript:choisifruit(6);"><img src="img/effet6.jpg" border="0" id="img_plus2"></a>
+		</td>
+	</tr>
+	<tr>
+		<td align=center>
+		<span id="info_4" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+		<td align=center>
+		<span id="info_5" style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+		</td>
+		<td align=center>
+		<span id="info_6" style="color:#006600;font-weight:bold;font-size: 16px;">XX</span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+		<a href="javascript:allerpage(5);"><img src="img/retour.png" border="0"></a>
+ 		</td>
+	</tr>
+</table>
+</div>
+</FORM>
+</BODY>
+</HTML>
+
