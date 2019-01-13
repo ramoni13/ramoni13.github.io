@@ -154,13 +154,13 @@ function classement()
 	
 	if (score_du_tour==0)
 		{
-			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant sur ce tour : égalité entre les joueurs ' + position_un + ' et ' + position_deux + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant sur ce tour : &eacute;galit&eacute; entre les joueurs ' + position_un + ' et ' + position_deux + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
 			document.getElementById('info_bonusfois2').innerHTML = "";
 			document.getElementById('img_fois2').style.display = 'none';
 		}
 		else
 		{
-			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' point(s)' + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' point(s)' + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
 			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
 			nomid= 'score_joueur' + position_un;
 			document.getElementById(nomid).innerHTML = tableau_score[position_un];
@@ -188,7 +188,7 @@ function fois2()
 	{
 		if (active_fois2==0)
 		{
-			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
 			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
 			document.getElementById(nomid).innerHTML = tableau_score[position_un];
 			active_fois2 =1;
@@ -196,7 +196,7 @@ function fois2()
 		
 		}else
 		{
-			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' ne peut jouer qu\'un bonus X2 par tour<BR>C\'est au tour du joueur ' + joueur_encours +' d\'établir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' ne peut jouer qu\'un bonus X2 par tour<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
 		}
 		document.getElementById('info_bonusfois2').innerHTML = tableau_bonus[2 + ((position_un-1)*5)];
 		if (tableau_score[position_un]>=duree_partie)
@@ -418,7 +418,7 @@ function allerpage(npage)
 		// Affiche bonus +1 (nb fruits>11)
 		if (bonus_joueur_encours == 1)
 		{
-			document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits récoltés > 11<BR> +1 point Joueur ' + joueur_encours;
+			document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > 11<BR> +1 point Joueur ' + joueur_encours;
 			bonus_joueur_encours=0;
 		}
 		// Efface les non-joueurs
@@ -649,7 +649,7 @@ function choisifruit(num_fruit)
 <table>
 	<tr>
 		<td>
-		<B><span>Choisissez la durée de la partie</span></B>
+		<B><span>Choisissez la dur&eacute;e de la partie</span></B>
 		</td>
 	</tr>
 	<tr>
@@ -705,7 +705,7 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td style="color:orange">
-		<HR><B><U>Règles du jeu</U></B>
+		<HR><B><U>R&egrave;gles du jeu</U></B>
 		</td>
 	</tr>
 	<tr>
