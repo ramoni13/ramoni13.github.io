@@ -58,6 +58,7 @@ var tableau_bonus = new Array(16);
 var tableau_record = new Array(5);
 var tableau_score = new Array(5);
 var tableau_scoreTri = new Array(5);
+var tableau_temps = new Array(4);
 var base_temps = 40
 var num_img_tps_partie=8;
 var secs_pause=0;
@@ -428,6 +429,8 @@ function allerpage(npage)
 			document.getElementById(nomid).innerHTML = 'XX';
 			nomid= 'record_joueur' + i;
 			document.getElementById(nomid).innerHTML = 'XX';
+			nomid= 'temps_joueur' + i;
+			document.getElementById(nomid).innerHTML = 'XX';
 			tableau_record[i]=0;
 		}
 		cpt_joueur = cpt_joueur +1;
@@ -450,6 +453,7 @@ function allerpage(npage)
 			classement();
 			changeFruit();
 			AfficheFruit();
+			AfficheTemps();
 		}else{
 			document.getElementById('info_joueur').innerHTML = 'C\'est au tour du Joueur ' + joueur_encours;
 		}
@@ -550,10 +554,16 @@ function allerpage(npage)
 	case 6: 
 		StopTheClock();
 		StopTheClockPause();
+		
+		
 		if (cpt_joueur==1)
 		{
 			Cycle_Tour = Cycle_Initial - secs;
+			tableau_temps[joueur_encours-1]=Cycle_Initial - secs;
+		} else {
+			tableau_temps[joueur_encours-1]=Cycle_Tour - secs;
 		}
+		
 		if (fin_temps==1)
 		{
 			document.getElementById('info_timesup').innerHTML = 'Le joueur ' + joueur_encours + ' ne marque rien !';
@@ -587,8 +597,20 @@ function InitRecord()
 	{
 		nomid= 'record_joueur' + i;
 		document.getElementById(nomid).innerHTML = '00';
+		nomid= 'temps_joueur' + i;
+		document.getElementById(nomid).innerHTML = '??';
 	}
 }
+
+function AfficheTemps()
+{
+	for (var i=0;i<nbjoueur;i++) 
+	{
+		nomid= 'temps_joueur' + (i+1);
+		document.getElementById(nomid).innerHTML = tableau_temps[i];
+	}
+}
+
 function joueursuivant()
 {
 nomid= 'record_joueur' + joueur_encours;
@@ -835,6 +857,34 @@ function choisifruit(num_fruit)
 		<span id="record_joueur4">00</span>
 		</td>
 	</tr>
+	<tr height="20px">
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur1">Tps</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur2">Tps</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur3">Tps</span>
+		</td>
+		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
+		<span id="info_record_joueur4">Tps</span>
+		</td>
+	</tr>
+	<tr height="20px">
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="temps_joueur1">??</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="temps_joueur2">??</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="temps_joueur3">??</span>
+		</td>
+		<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
+		<span id="temps_joueur4">??</span>
+		</td>
+	</tr>
 	<tr>
 		<td colspan="4" align=center>
 		<span id="info_joueur" align=center style="color:#006600;font-weight:bold;font-size: 16px;"></span>
@@ -1063,4 +1113,3 @@ function choisifruit(num_fruit)
 </FORM>
 </BODY>
 </HTML>
-
