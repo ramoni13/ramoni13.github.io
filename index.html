@@ -34,7 +34,7 @@ px; border-left-width: 0 px}
 </style>
 <SCRIPT language="javascript">
 var numpage=0;
-var numpage_total=10;
+var numpage_total=12;
 var duree_partie=0;
 var temps_partie=0
 var cpt_tps_partie=0
@@ -59,6 +59,7 @@ var tableau_record = new Array(5);
 var tableau_score = new Array(5);
 var tableau_scoreTri = new Array(5);
 var tableau_temps = new Array(4);
+var tableau_noms = new Array(5);
 var base_temps = 40
 var num_img_tps_partie=8;
 var secs_pause=0;
@@ -155,13 +156,13 @@ function classement()
 	
 	if (score_du_tour==0)
 		{
-			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant sur ce tour : &eacute;galit&eacute; entre les joueurs ' + position_un + ' et ' + position_deux + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant sur ce tour : &eacute;galit&eacute; entre ' + tableau_noms[position_un] + ' et ' + tableau_noms[position_deux] + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
 			document.getElementById('info_bonusfois2').innerHTML = "";
 			document.getElementById('img_fois2').style.display = 'none';
 		}
 		else
 		{
-			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' point(s)' + '<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
 			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
 			nomid= 'score_joueur' + position_un;
 			document.getElementById(nomid).innerHTML = tableau_score[position_un];
@@ -173,7 +174,7 @@ function classement()
 			
 			if (tableau_score[position_un]>=duree_partie)
 			{
-				document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' point(s)' + '<BR>>> Il gagne la partie !!! <<<BR>Go! pour une nouvelle partie.';
+				document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>>> Il gagne la partie !!! <<<BR><BR>Go! pour une nouvelle partie.';
 				gagnant=1;
 			}
 		}
@@ -189,7 +190,7 @@ function fois2()
 	{
 		if (active_fois2==0)
 		{
-			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
 			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
 			document.getElementById(nomid).innerHTML = tableau_score[position_un];
 			active_fois2 =1;
@@ -197,12 +198,12 @@ function fois2()
 		
 		}else
 		{
-			document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' ne peut jouer qu\'un bonus X2 par tour<BR>C\'est au tour du joueur ' + joueur_encours +' d\'&eacute;tablir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' ne peut jouer qu\'un bonus X2 par tour<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
 		}
 		document.getElementById('info_bonusfois2').innerHTML = tableau_bonus[2 + ((position_un-1)*5)];
 		if (tableau_score[position_un]>=duree_partie)
 			{
-				document.getElementById('info_joueur').innerHTML = 'Le joueur ' + position_un + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR>>> Il gagne la partie !!! <<<BR>Go! pour une nouvelle partie.';
+				document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' marque ' + score_du_tour + ' pt(s) de + grace au bonus X2<BR><BR>>> Il gagne la partie !!! <<<BR><BR>Go! pour une nouvelle partie.';
 				gagnant=1;
 			}
 	}
@@ -285,7 +286,26 @@ function choix_nbjoueur(nb)
 		tableau_score[j]=0;
 		tableau_record[j]=0;
 	}
-	allerpage(3);
+	// Efface les champs de saisie des joueurs
+		for (var i=nbjoueur +1;i<5;i++) 
+		{
+			nomid= 'info_saisie_joueur' + i;
+			document.getElementById(nomid).style.display = 'none';
+			nomid= 'saisieJoueur' + i;
+			document.getElementById(nomid).style.display = 'none';
+		}
+	allerpage(10);
+}
+
+function attributionNoms() {
+	for (var i=1;i<nbjoueur+1;i++) {
+		nomid= 'saisieJoueur' + i;
+		tableau_noms[i] = document.getElementById(nomid).value;
+		nomid= 'info_score_joueur' + i;
+		document.getElementById(nomid).innerHTML = tableau_noms[i];
+		nomid= 'info_record_joueur' + i;
+		document.getElementById(nomid).innerHTML = tableau_noms[i];
+	}
 }
 function choix_duree(duree) 
 {
@@ -404,7 +424,7 @@ function allerpage(npage)
 	case 2: 
 		break; 
 	case 3:
-		// chargement des bonus à 0
+		// chargement des bonus à 1
 		for (var i=1;i<5;i++) 
 			{
 				for (var j=1;j<6;j++) 
@@ -419,18 +439,24 @@ function allerpage(npage)
 		// Affiche bonus +1 (nb fruits>11)
 		if (bonus_joueur_encours == 1)
 		{
-			document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > 11<BR> +1 point Joueur ' + joueur_encours;
+			document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > 11<BR><BR> +1 point pour  ' + tableau_noms[joueur_encours];
 			bonus_joueur_encours=0;
 		}
 		// Efface les non-joueurs
 		for (var i=nbjoueur +1;i<5;i++) 
 		{
+			nomid= 'info_score_joueur' + i;
+			document.getElementById(nomid).style.display = 'none';
 			nomid= 'score_joueur' + i;
-			document.getElementById(nomid).innerHTML = 'XX';
+			document.getElementById(nomid).style.display = 'none';
+			nomid= 'info_record_joueur' + i;
+			document.getElementById(nomid).style.display = 'none';
 			nomid= 'record_joueur' + i;
-			document.getElementById(nomid).innerHTML = 'XX';
+			document.getElementById(nomid).style.display = 'none';
+			nomid= 'info_temps_joueur' + i;
+			document.getElementById(nomid).style.display = 'none';
 			nomid= 'temps_joueur' + i;
-			document.getElementById(nomid).innerHTML = 'XX';
+			document.getElementById(nomid).style.display = 'none';
 			tableau_record[i]=0;
 		}
 		cpt_joueur = cpt_joueur +1;
@@ -455,7 +481,7 @@ function allerpage(npage)
 			AfficheFruit();
 			AfficheTemps();
 		}else{
-			document.getElementById('info_joueur').innerHTML = 'C\'est au tour du Joueur ' + joueur_encours;
+			document.getElementById('info_joueur').innerHTML = 'C\'est au tour de ' + tableau_noms[joueur_encours];
 		}
 		
 		// Affiche les bonus ou pas
@@ -542,7 +568,7 @@ function allerpage(npage)
 			document.getElementById('nb_bonus2').style.display = 'none';
 			}
 		}
-		document.getElementById('info_joueur_encours').innerHTML = 'Tour: Joueur ' + joueur_encours;
+		document.getElementById('info_joueur_encours').innerHTML = 'Tour:  ' + tableau_noms[joueur_encours];
 		document.getElementById('info_record_encours').innerHTML = 'Record=' +record_encours;
 		if ((!timerRunningPause)&&(secs_pause<=0))
 		{
@@ -566,7 +592,7 @@ function allerpage(npage)
 		
 		if (fin_temps==1)
 		{
-			document.getElementById('info_timesup').innerHTML = 'Le joueur ' + joueur_encours + ' ne marque rien !';
+			document.getElementById('info_timesup').innerHTML = ' ' + tableau_noms[joueur_encours] + ' ne marque rien !';
 			document.getElementById('img_score_btn').style.display = 'none';
 			document.getElementById('img_suite_btn').style.display = 'block';
 			AfficheFruit();
@@ -588,8 +614,11 @@ function allerpage(npage)
 		break;  
 	default: 
 		break; 
+	case 11:
+		document.getElementById('img_fruitdejouer').src = 'img/fruit'+ fruit_encours +'.png';
+		document.getElementById('info_joueur_dejouer').innerHTML = tableau_noms[joueur_encours];
+		break;
 	}
-
 }
 function InitRecord()
 {
@@ -786,6 +815,11 @@ function choisifruit(num_fruit)
 		<U><I>Scores</I></U>
 		</td>
 	</tr>
+	<tr>
+		<td colspan="4" align=center>
+		<span id="espace" align=center style="color:#006600;font-weight:bold;font-size: 16px;">&nbsp;</span>
+ 		</td>
+	</tr>
 	<tr height="20px">
 		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
 		<span id="info_score_joueur1">J1</span>
@@ -816,6 +850,11 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td colspan="4" align=center>
+		<span id="espace" align=center style="color:#006600;font-weight:bold;font-size: 16px;">&nbsp;</span>
+ 		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align=center>
 		<span id="info_bonus_joueur" align=center style="color:orange;font-weight:bold;font-size: 16px;"></span>
  		</td>
 	</tr>	
@@ -828,6 +867,11 @@ function choisifruit(num_fruit)
 		<td colspan="4" align=center style="font-size: 18px;">
 		<U><I>Records du tour</I></U>
 		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align=center>
+		<span id="espace" align=center style="color:#006600;font-weight:bold;font-size: 16px;">&nbsp;</span>
+ 		</td>
 	</tr>
 	<tr height="20px">
 		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
@@ -859,16 +903,16 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr height="20px">
 		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
-		<span id="info_record_joueur1">Tps</span>
+		<span id="info_temps_joueur1">Tps</span>
 		</td>
 		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
-		<span id="info_record_joueur2">Tps</span>
+		<span id="info_temps_joueur2">Tps</span>
 		</td>
 		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
-		<span id="info_record_joueur3">Tps</span>
+		<span id="info_temps_joueur3">Tps</span>
 		</td>
 		<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;">
-		<span id="info_record_joueur4">Tps</span>
+		<span id="info_temps_joueur4">Tps</span>
 		</td>
 	</tr>
 	<tr height="20px">
@@ -887,7 +931,17 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td colspan="4" align=center>
+		<span id="espace" align=center style="color:#006600;font-weight:bold;font-size: 16px;">&nbsp;</span>
+ 		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align=center>
 		<span id="info_joueur" align=center style="color:#006600;font-weight:bold;font-size: 16px;"></span>
+ 		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align=center>
+		<span id="espace" align=center style="color:#006600;font-weight:bold;font-size: 16px;">&nbsp;</span>
  		</td>
 	</tr>
 	<tr>
@@ -895,7 +949,7 @@ function choisifruit(num_fruit)
 		<a href="javascript:fois2();"><img src="img/fois2.jpg" border="0" id="img_fois2"></a>
 		</td>
 		<td colspan="2" align=center>
-		<a href="javascript:allerpage(5);"><img src="img/go.png" border="0"></a>
+		<a href="javascript:allerpage(11);"><img src="img/go.png" border="0"></a>
 		</td>
 	</tr>
 	<tr>
@@ -1107,6 +1161,64 @@ function choisifruit(num_fruit)
 		<td colspan="3">
 		<a href="javascript:allerpage(5);"><img src="img/retour.png" border="0"></a>
  		</td>
+	</tr>
+</table>
+</div>
+<div id="10">
+<table>
+	<tr>
+		<td colspan="4">
+			<label >Saisissez vos noms<BR>(3 caractères max.)</label>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			<span id="info_saisie_joueur1">Joueur 1 : <input type="text" id="saisieJoueur1" name="name" maxlength="3"" size="5"></span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			<span id="info_saisie_joueur2">Joueur 2 : <input type="text" id="saisieJoueur2" name="name" maxlength="3"" size="5"></span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			<span id="info_saisie_joueur3">Joueur 3 : <input type="text" id="saisieJoueur3" name="name" maxlength="3"" size="5"></span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			<span id="info_saisie_joueur4">Joueur 4 : <input type="text" id="saisieJoueur4" name="name" maxlength="3"" size="5"></span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			<a href="javascript:attributionNoms();allerpage(3);"><img src="img/suite.png" border="0"></a>
+		</td>
+	</tr>
+</table>
+</div>
+<div id="11">
+<table>
+	<tr>
+		<td colspan="4">
+			<label >C'est à <span id="info_joueur_dejouer"></span> de jouer !</label>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			Fruit demandé<BR><BR><img src="img/0.png" border="0" id='img_fruitdejouer'>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			Prêt ?<BR>Lancez le chrono en appuyant sur "Go!"
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			<a href="javascript:attributionNoms();allerpage(5);"><img src="img/go.png" border="0"></a>
+		</td>
 	</tr>
 </table>
 </div>
