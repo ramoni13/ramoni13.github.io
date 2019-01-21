@@ -36,6 +36,7 @@ px; border-left-width: 0 px}
 var numpage=0;
 var numpage_total=12;
 var duree_partie=0;
+var tour_table=0;
 var temps_partie=0
 var cpt_tps_partie=0
 var num_img_tps_pratie=8
@@ -146,6 +147,7 @@ function compare_entiers_func(a, b) {
 function classement()
 {
 	var stringValue = '';
+	tour_table++;
 	for (var i=1;i<nbjoueur+1;i++) 
 	{
 		tableau_scoreTri[i-1] = (tableau_record[i] * 1000)+i;
@@ -179,18 +181,33 @@ function classement()
 			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
 			nomid= 'score_joueur' + position_un;
 			document.getElementById(nomid).innerHTML = tableau_score[position_un];
-			//if (num_modejeu == 2)
-			//{
-				//document.getElementById('info_bonusfois2').innerHTML = tableau_bonus[2 + ((position_un-1)*5)];
-				//document.getElementById('img_fois2').style.display = 'block';
-			//}
-			
-			if (tableau_score[position_un]>=duree_partie)
+		}
+		if (tour_table==duree_partie)
 			{
-				document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>>> Il gagne la partie !!! <<<BR><BR>Go! pour une nouvelle partie.';
+				tableau_scoreTri = new Array(5);
+				for (var i=1;i<nbjoueur+1;i++) 
+				{
+					tableau_scoreTri[i-1] = (tableau_score[i] * 1000)+i;
+				}
+
+				tableau_scoreTri.sort(compare_entiers_func)
+				position_un = 0;
+				position_deux = 0;
+				tableau_PosJoueur = new Array(5);
+				for (var i=0;i<nbjoueur;i++) 
+					{
+						
+						tableau_PosJoueur[i] = String(tableau_scoreTri[i]).substr(String(tableau_scoreTri[i]).length-1,1);
+						if (i==0) {position_un = tableau_PosJoueur[i]}
+						if (i==1) {position_deux = tableau_PosJoueur[i]}
+					}
+				if (tableau_score[position_un] == tableau_score[position_deux]) {
+					document.getElementById('info_joueur').innerHTML = 'EGALITE !!! Il n\'y a pas de gagnant sur cette partie.<BR><BR>Go! pour une nouvelle partie.';
+				} else {
+					document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' gagne la partie !!! <<<BR><BR>Go! pour une nouvelle partie.';
+				}
 				gagnant=1;
 			}
-		}
 	for (var i=1;i<nbjoueur+1;i++) 
 		{
 			tableau_record[i]=0;
@@ -294,6 +311,7 @@ function AfficheFruit()
 function choix_nbjoueur(nb) 
 {
 	nbjoueur = nb;
+	duree_partie = duree_partie*nbjoueur;
 	for (var j=1;j<nbjoueur+1;j++) 
 	{
 		// init tableau_score
@@ -731,17 +749,17 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td>
-		<A href="javascript:choix_duree(7);"><img src="img/time1.jpg" border="0"><B><span id="mode_points1">7 pts</span></B></A>
+		<A href="javascript:choix_duree(2);"><img src="img/time1.jpg" border="0"><B><span id="mode_points1">2 Tours de table</span></B></A>
 		</td>
 	</tr>
 	<tr>
 		<td>
-		<A href="javascript:choix_duree(10);"><img src="img/time2.jpg" border="0"><B><span id="mode_points2">10 pts</span></B></A>
+		<A href="javascript:choix_duree(3);"><img src="img/time2.jpg" border="0"><B><span id="mode_points2">3 Tours de table</span></B></A>
 		</td>
 	</tr>
 	<tr>
 		<td>
-		<A href="javascript:choix_duree(15);"><img src="img/time3.jpg" border="0"><B><span id="mode_points3">15 pts</span></B></A>
+		<A href="javascript:choix_duree(5);"><img src="img/time3.jpg" border="0"><B><span id="mode_points3">5 Tours de table</span></B></A>
 		</td>
 	</tr>
 </table>
