@@ -136,6 +136,8 @@ function StartTheTimer()
 				StopTheClock()
 				document.getElementById('img_cadre').src = 'img/times_up.png';
 				document.getElementById('img_infofruitencours').style.display = 'none';
+				document.getElementById('pause').style = 'width:75px;filter: grayscale(1);-webkit-filter: grayscale(1);';
+				active_pause=1;
 				fin_temps=1;
 			}
 			else
