@@ -490,6 +490,10 @@ function allerpage(npage)
 		case 4: 
 			// gain bonus score = 12 ou = 20 ou = 30
 			// Affiche bonus score
+			document.getElementById('img_bonus1').style = '';
+			document.getElementById('img_bonus2').style = '';
+			document.getElementById('img_bonus3').style = '';
+			document.getElementById('img_bonus5').style = '';
 			if (bonus_joueur_encours != 0)
 			{
 				if (bonus_joueur_encours !== 3) {
@@ -642,6 +646,12 @@ function allerpage(npage)
 			document.getElementById('img_bonusassocierBis').src = 'img/effet'+ fruit_encours +'.jpg';
 			document.getElementById('info_joueur_dejouer').innerHTML = tableau_noms[joueur_encours];
 			break;
+		case 12:
+			document.getElementById('img_bonus1').style = '';
+			document.getElementById('img_bonus2').style = '';
+			document.getElementById('img_bonus3').style = '';
+			document.getElementById('img_bonus5').style = '';
+			break;
 		default: 
 			break; 
 	}
@@ -671,7 +681,6 @@ function gestionBonus(numpage) {
 			break; 
 		case 3:
 			// regles du jeu
-			// chargement des bonus à 1
 			break;
 		//case 4: 
 			// gain bonus score > 12
@@ -855,6 +864,10 @@ function choisifruit(num_fruit)
 		tableau_bonus[num_fruit + ((joueur_encours-1)*5)]=tableau_bonus[num_fruit + ((joueur_encours-1)*5)]+1;
 		nomid = 'info_' + num_fruit + 'bis';
 		document.getElementById(nomid).innerHTML = tableau_bonus[num_fruit + ((joueur_encours-1)*5)];
+		document.getElementById('img_bonus1').style = 'filter: grayscale(1);-webkit-filter: grayscale(1);';
+		document.getElementById('img_bonus2').style = 'filter: grayscale(1);-webkit-filter: grayscale(1);';
+		document.getElementById('img_bonus3').style = 'filter: grayscale(1);-webkit-filter: grayscale(1);';
+		document.getElementById('img_bonus5').style = 'filter: grayscale(1);-webkit-filter: grayscale(1);';
 		active_change=0;
 		document.getElementById('bouton_bonus_retour').style.display = 'none';
 		document.getElementById('bouton_bonus_suite').style.display = 'block';
@@ -1311,13 +1324,13 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td>
-			<a href="javascript:choisifruit(1);"><img src="img/effet1.jpg" border="0" height="100px" id="img_plus2"></a>
+			<a href="javascript:choisifruit(1);"><img src="img/effet1.jpg" border="0" height="100px" id="img_bonus1"></a>
 		</td>
 		<td>
 			&nbsp;
 		</td>
 		<td>
-			<a href="javascript:choisifruit(2);"><img src="img/effet2.jpg" border="0" height="100px" id="img_plus2"></a>
+			<a href="javascript:choisifruit(2);"><img src="img/effet2.jpg" border="0" height="100px" id="img_bonus2"></a>
 		</td>
 	</tr>
 	<tr>
@@ -1333,13 +1346,13 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td>
-			<a href="javascript:choisifruit(3);"><img src="img/effet3.jpg" border="0" height="100px" id="img_plus2"></a>
+			<a href="javascript:choisifruit(3);"><img src="img/effet3.jpg" border="0" height="100px" id="img_bonus3"></a>
 		</td>
 		<td>
 			&nbsp;
 		</td>
 		<td>
-			<a href="javascript:choisifruit(5);"><img src="img/effet5.jpg" border="0" height="100px" id="img_plus2"></a>
+			<a href="javascript:choisifruit(5);"><img src="img/effet5.jpg" border="0" height="100px" id="img_bonus5"></a>
 		</td>
 	</tr>
 	<tr>
@@ -1477,7 +1490,6 @@ function choisifruit(num_fruit)
 			</td>
 			<td>
 				<a href="javascript:plus1jet();"><img src="img/effet3.jpg" border="0" style="width:75px;filter: grayscale(1);-webkit-filter: grayscale(1)" style=";" id="plus1jet"></a>
-				<!--<a href="javascript:choisifruit(1);"><img src="img/effet1.jpg" border="0" style="filter: grayscale(1);-webkit-filter: grayscale(1);" id="img_plus2"></a>-->
 			</td>
 		</tr>
 		<tr>
