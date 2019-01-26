@@ -3,7 +3,6 @@
 <META name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 </HEAD>
 <style type="text/css">
-
   table { 
   	width: 304px;
   	height: 304px;
@@ -14,7 +13,6 @@
 	border-collapse: black;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
    }
-
    .tableNoms { 
   	width: 304px;
   	height: 50px;
@@ -25,7 +23,6 @@
 	border-collapse: black;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
    }
-
    .tableJoueur { 
   	width: 50px;
   	height: 50px;
@@ -37,7 +34,6 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	margin-left:15px;
    }
-
    td {
   	text-align:center;
   	border-width: 0px;
@@ -52,7 +48,6 @@
 border-color: #88A0C8 #88A0C8 #88A0C8; border-style: solid;
 border-top-width: 0 px; border-right-width: 0 px; border-bottom-width: 0
 px; border-left-width: 0 px}
-
 </style>
 <SCRIPT language="javascript">
 var numpage=0;
@@ -117,7 +112,6 @@ var active_plus1De=0;
 var active_plusDeux=0;
 var active_plus1Jet=0;
 var active_pause=0;
-
 function StartTheTimer()
 {
     //alert("secs="+secs)
@@ -152,7 +146,6 @@ function StartTheTimer()
 			}
 		}
 }
-
 // une fonction qui compare des chaines contenant des entiers
 function compare_entiers_func(a, b) {
   // Elle doit retourner :
@@ -161,8 +154,6 @@ function compare_entiers_func(a, b) {
   //  1 si a > b
   return parseInt(b) - parseInt(a)
 }
-
-
 function classement()
 {
 	var stringValue = '';
@@ -171,7 +162,6 @@ function classement()
 	{
 		tableau_scoreTri[i-1] = (tableau_record[i] * 1000)+i;
 	}
-
 	tableau_scoreTri.sort(compare_entiers_func)
 	active_plus1De = 0;
 	position_un = 0;
@@ -184,7 +174,6 @@ function classement()
 			if (i==0) {position_un = tableau_PosJoueur[i]}
 			if (i==1) {position_deux = tableau_PosJoueur[i]}
 		}
-
 	
 	score_du_tour = parseInt(tableau_record[position_un])-parseInt(tableau_record[position_deux])
 	
@@ -206,7 +195,6 @@ function classement()
 				{
 					tableau_scoreTri[i-1] = (tableau_score[i] * 1000)+i;
 				}
-
 				tableau_scoreTri.sort(compare_entiers_func)
 				position_un = 0;
 				position_deux = 0;
@@ -230,7 +218,6 @@ function classement()
 			tableau_record[i]=0;
 		}
 }
-
 function StopTheClock()
 {
     if(timerRunning)
@@ -239,7 +226,6 @@ function StopTheClock()
     // si clignote
     if (flash!=0) { clearTimeout(timerFlash) }
 }
-
 function StartTheTimerPause()
 {
     if (secs_pause<=0)
@@ -277,8 +263,6 @@ function StopTheClockPause()
     document.getElementById('chronogif').style.display = 'block';
     document.getElementById('table_jeu').bgColor='';
 }
-
-
 function initCycle()
 {
 	secs = tps_cycle;
@@ -322,7 +306,6 @@ function choix_nbjoueur(nb)
 		}
 	allerpage(10);
 }
-
 function attributionNoms() {
 	for (var i=1;i<nbjoueur+1;i++) {
 		nomid= 'saisieJoueur' + i;
@@ -430,7 +413,6 @@ function plus2()
 		document.getElementById('score').innerHTML = unite;
 	}
 }
-
 function plus1jet()
 {
 	if ((tableau_bonus[3 + ((joueur_encours-1)*5)]>0) && (active_plus1Jet == 0))
@@ -442,7 +424,6 @@ function plus1jet()
 			}
 	}
 }
-
 function plus1De()
 {
 	if (tableau_bonus[2 + ((joueur_encours-1)*5)]>0)
@@ -458,7 +439,6 @@ function plus1De()
 		document.getElementById('info_2bis').innerHTML = tableau_bonus[2 + ((joueur_encours-1)*5)];
 	}
 }
-
 function allerpage(npage) 
 {
 	numpage=npage;
@@ -469,7 +449,6 @@ function allerpage(npage)
 	}
 	document.getElementById(numpage).style.display = 'block';
 	document.getElementById('img_cadre').src = 'img/cadre_large.png';
-
     switch (numpage) 
 	{ 
 		case 0:
@@ -673,7 +652,6 @@ function allerpage(npage)
 	}
 	gestionBonus(numpage);
 }
-
 function gestionBonus(numpage) {
 	switch (numpage) 
 	{ 
@@ -789,7 +767,6 @@ function InitRecord()
 		document.getElementById(nomid).innerHTML = '??';
 	}
 }
-
 function AfficheTemps()
 {
 	for (var i=0;i<nbjoueur;i++) 
@@ -798,7 +775,6 @@ function AfficheTemps()
 		document.getElementById(nomid).innerHTML = tableau_temps[i];
 	}
 }
-
 function joueursuivant()
 {
 nomid= 'record_joueur' + joueur_encours;
@@ -1033,15 +1009,15 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td colspan="2">
-			<A href="javascript:choix_duree(2);"><img src="img_smartphone/time1.png" width="100px" border="0"><B><span id="mode_points1"></span></B></A>
+			<A href="javascript:choix_duree(1);"><img src="img_smartphone/time1.png" width="100px" border="0"><B><span id="mode_points1"></span></B></A>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<A href="javascript:choix_duree(3);"><img src="img_smartphone/time2.png" width="100px" border="0"><B><span id="mode_points2"></span></B></A>
+			<A href="javascript:choix_duree(2);"><img src="img_smartphone/time2.png" width="100px" border="0"><B><span id="mode_points2"></span></B></A>
 		</td>
 		<td>
-			<A href="javascript:choix_duree(5);"><img src="img_smartphone/time3.png" width="100px" border="0"><B><span id="mode_points3"></span></B></A>
+			<A href="javascript:choix_duree(3);"><img src="img_smartphone/time3.png" width="100px" border="0"><B><span id="mode_points3"></span></B></A>
 		</td>
 	</tr>
 </table>
