@@ -533,7 +533,7 @@ function allerpage(npage)
 			if (bonus_joueur_encours != 0)
 			{
 				if (bonus_joueur_encours !== 3) {
-					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > ' + (11 + ((bonus_joueur_encours-1)*8)) + '<BR><BR> +' + bonus_joueur_encours + ' pt(s) pour  ' + tableau_noms[joueur_encours];
+					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > ' + (11 + ((bonus_joueur_encours-1)*6)) + '<BR><BR> +' + bonus_joueur_encours + ' pt(s) pour  ' + tableau_noms[joueur_encours];
 					bonus_joueur_encours=0;
 				} else {
 					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 25 !';
@@ -1290,9 +1290,7 @@ function choisifruit(num_fruit)
 	
 	<tr style="font-size:14px;font-weight:bold">
 		<td colspan="4" align=center>
-			<BR>Paliers : <B>7</B> = +1 bonus | <B>12</B> = +1 pt
-			<BR><B>15</B> = +1 bonus au choix | <B>18</B> = +1 pt 
-			<BR><B>25</B> = Gagne la partie !
+			<img style="position: relative; top: 15px;" src="img/chemin_bonus.png" id="img_fruitencours" border="0">
 		</td>
 	</tr>
 	<tr>
