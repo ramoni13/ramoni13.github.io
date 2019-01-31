@@ -175,7 +175,9 @@ function classement()
 			if (i==1) {position_deux = tableau_PosJoueur[i]}
 		}
 	
-	score_du_tour = parseInt(tableau_record[position_un])-parseInt(tableau_record[position_deux])
+	//score_du_tour = parseInt(tableau_record[position_un])-parseInt(tableau_record[position_deux])
+	// Bonus au vainqueur
+	score_du_tour = 3;
 	
 	if (score_du_tour==0)
 		{
@@ -483,6 +485,14 @@ function allerpage(npage)
 			document.getElementById('img_bonus2').style = '';
 			document.getElementById('img_bonus3').style = '';
 			document.getElementById('img_bonus5').style = '';
+			if (joueur_encours != 0) {
+				if (tableau_record[joueur_encours] != 0) {
+					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' marque ' + tableau_record[joueur_encours] + ' pt(s)';
+					tableau_score[joueur_encours] = tableau_score[joueur_encours] + tableau_record[joueur_encours];
+					nomid= 'score_joueur' + joueur_encours;
+					document.getElementById(nomid).innerHTML = tableau_score[joueur_encours];
+				}
+			}
 			if (bonus_joueur_encours != 0)
 			{
 				if (bonus_joueur_encours !== 3) {
@@ -496,6 +506,7 @@ function allerpage(npage)
 					gagnant=1;
 				}
 			}
+			
 			if (gagnant != 1) {
 				if (cpt_joueur>0) {
 					nomid= 'tableJoueur' + joueur_encours;
