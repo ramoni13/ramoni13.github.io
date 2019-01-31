@@ -48,6 +48,42 @@
 border-color: #88A0C8 #88A0C8 #88A0C8; border-style: solid;
 border-top-width: 0 px; border-right-width: 0 px; border-bottom-width: 0
 px; border-left-width: 0 px}
+
+.blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
 </style>
 <SCRIPT language="javascript">
 var numpage=0;
@@ -481,6 +517,7 @@ function allerpage(npage)
 		case 4: 
 			// gain bonus score = 12 ou = 20 ou = 30
 			// Affiche bonus score
+			document.getElementById('info_joueur').innerHTML = "";
 			document.getElementById('img_bonus1').style = '';
 			document.getElementById('img_bonus2').style = '';
 			document.getElementById('img_bonus3').style = '';
@@ -496,10 +533,10 @@ function allerpage(npage)
 			if (bonus_joueur_encours != 0)
 			{
 				if (bonus_joueur_encours !== 3) {
-					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > ' + (11 + ((bonus_joueur_encours-1)*8)) + '<BR><BR> +' + bonus_joueur_encours + ' point pour  ' + tableau_noms[joueur_encours];
+					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > ' + (11 + ((bonus_joueur_encours-1)*8)) + '<BR><BR> +' + bonus_joueur_encours + ' pt(s) pour  ' + tableau_noms[joueur_encours];
 					bonus_joueur_encours=0;
 				} else {
-					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 30 !';
+					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 25 !';
 					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' gagne la partie instantanément !!!<BR><BR>Go! pour une nouvelle partie.';
 					document.getElementById('suite').style.display = 'none';
 					document.getElementById('go').style.display = 'block';
@@ -543,7 +580,7 @@ function allerpage(npage)
 					AfficheTemps();
 				}else{
 					active_plus1De=0;
-					document.getElementById('info_joueur').innerHTML = 'C\'est au tour de ' + tableau_noms[joueur_encours];
+					document.getElementById('info_joueur').innerHTML = document.getElementById('info_joueur').innerHTML + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours];
 				}
 				
 				nomid= 'tableJoueur' + joueur_encours;
@@ -801,9 +838,9 @@ if (num_modejeu == 2)
 {
 	if (tableau_record[joueur_encours]>11)
 	{
-		if (tableau_record[joueur_encours]>29) {
+		if (tableau_record[joueur_encours]>24) {
 			bonus_joueur_encours=3;
-		} else if (tableau_record[joueur_encours]>19) {
+		} else if (tableau_record[joueur_encours]>17) {
 			tableau_score[joueur_encours]=tableau_score[joueur_encours]+2;
 			bonus_joueur_encours=2;
 		} else {
@@ -1128,11 +1165,6 @@ function choisifruit(num_fruit)
 	</tr>	
 	<tr>
 		<td colspan="4" align=center>
-			<span id="info_bonus_joueur" align=center style="color:black;font-weight:bold;font-size: 16px;"></span>
- 		</td>
-	</tr>	
-	<tr>
-		<td colspan="4" align=center>
 			<span id="espace" align=center style="color:#006600;font-weight:bold;font-size: 16px;">&nbsp;</span>
  		</td>
 	</tr>
@@ -1144,6 +1176,11 @@ function choisifruit(num_fruit)
 	<tr>
 		<td colspan="4" align=center>
 			<span id="espace" align=center style="color:#006600;font-weight:bold;font-size: 16px;">&nbsp;</span>
+ 		</td>
+	</tr>
+	<tr>
+		<td colspan="4" align=center>
+			<span id="info_bonus_joueur" class="blink_me" align=center style="color:black;font-weight:bold;font-size: 16px;"></span>
  		</td>
 	</tr>
 	<tr>
@@ -1193,9 +1230,7 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr height="16px" style="font-size:14px;font-weight:bold">
 		<td colspan="3" align=center>
-			<BR>Paliers : <B>7</B> = +1 bonus | <B>12</B> = +1 pt
-			<BR><B>15</B> = +1 bonus au choix | <B>20</B> = +1 pt 
-			<BR><B>30</B> = Gagne la partie !
+			<img style="position: relative; top: 15px;" src="img/chemin_bonus.png" id="img_fruitencours" border="0">
 		</td>
 	</tr>
 	<tr>
@@ -1256,8 +1291,8 @@ function choisifruit(num_fruit)
 	<tr style="font-size:14px;font-weight:bold">
 		<td colspan="4" align=center>
 			<BR>Paliers : <B>7</B> = +1 bonus | <B>12</B> = +1 pt
-			<BR><B>15</B> = +1 bonus au choix | <B>20</B> = +1 pt 
-			<BR><B>30</B> = Gagne la partie !
+			<BR><B>15</B> = +1 bonus au choix | <B>18</B> = +1 pt 
+			<BR><B>25</B> = Gagne la partie !
 		</td>
 	</tr>
 	<tr>
