@@ -533,10 +533,10 @@ function allerpage(npage)
 			if (bonus_joueur_encours != 0)
 			{
 				if (bonus_joueur_encours !== 3) {
-					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s > ' + (11 + ((bonus_joueur_encours-1)*6)) + '<BR><BR> +' + bonus_joueur_encours + ' pt(s) pour  ' + tableau_noms[joueur_encours];
+					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= ' + (12 + ((bonus_joueur_encours-1)*6)) + '<BR><BR> +' + bonus_joueur_encours + ' pt(s) pour  ' + tableau_noms[joueur_encours];
 					bonus_joueur_encours=0;
 				} else {
-					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 25 !';
+					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 30 !';
 					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' gagne la partie instantanément !!!<BR><BR>Go! pour une nouvelle partie.';
 					document.getElementById('suite').style.display = 'none';
 					document.getElementById('go').style.display = 'block';
@@ -1307,7 +1307,7 @@ function choisifruit(num_fruit)
 <table>
 	<tr>
 		<td style="color:#000000;font-weight:bold;font-size: 16px;">
-			Vous avez fait + de 6 : vous gagnez le bonus ci-dessous !
+			Vous avez fait 7 ou + : vous gagnez le bonus ci-dessous !
 		</td>
 	</tr>
 	<tr>
@@ -1474,7 +1474,7 @@ function choisifruit(num_fruit)
 <table>
 	<tr>
 		<td style="color:#000000;font-weight:bold;font-size: 16px;">
-			Vous avez fait + de 14 !!! <BR>Vous gagnez le bonus de votre choix !
+			Vous avez fait 15 ou + !!! <BR>Vous gagnez le bonus de votre choix !
 		</td>
 	</tr>
 	<tr>
