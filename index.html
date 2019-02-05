@@ -272,9 +272,9 @@ function classement()
 		else
 		{
 			document.getElementById('info_joueur').innerHTML = 'Fin du tour !<BR>' + tableau_noms[position_un] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
-			//tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
-			//nomid= 'score_joueur' + position_un;
-			//document.getElementById(nomid).innerHTML = tableau_score[position_un];
+			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
+			nomid= 'score_joueur' + position_un;
+			document.getElementById(nomid).innerHTML = tableau_score[position_un];
 		}
 		if (tour_table==duree_partie)
 			{
