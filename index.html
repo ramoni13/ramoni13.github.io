@@ -111,9 +111,9 @@ var mode_ecran=0;
 var flash=0;
 var num_modejeu=1;
 var tableau_bonus = new Array(16);
-var tableau_record = new Array(5);
-var tableau_score = new Array(5);
-var tableau_scoreTri = new Array(5);
+var tableau_record = new Array(4);
+var tableau_score = new Array(4);
+var tableau_scoreTri = new Array(4);
 var tableau_temps = new Array(4);
 var tableau_tempsTri = new Array(4);
 var tableau_PosTempsTri = new Array(4);
@@ -150,6 +150,7 @@ var active_plus1De=0;
 var active_plusDeux=0;
 var active_plus1Jet=0;
 var active_pause=0;
+var nb_pause_use=0;
 var indicateurBonusChoisi=0;
 var pause_Fin = 0;
 function StartTheTimer()
@@ -198,95 +199,59 @@ function compare_entiers_func(a, b) {
 }
 function classement()
 {
-	var stringValue = '';
+	
 	tour_table++;
-	for (var i=1;i<nbjoueur+1;i++) 
-	{
-		if (tableau_record[i] !== 0) {
-			tableau_scoreTri[i-1] = (tableau_record[i] * 1000)+i;
-		}
-	}
-	tableau_scoreTri.sort(compare_entiers_func);
-	active_plus1De = 0;
-	position_un = 0;
-	position_deux = 0;
-	position_trois = 0;
-	position_quatre = 0;
-	tableau_PosJoueur = new Array(5);
-	for (var i=0;i<tableau_scoreTri.length-1;i++) 
-		{
-			tableau_PosJoueur[i] = String(tableau_scoreTri[i]).substr(String(tableau_scoreTri[i]).length-1,1);
-			if (i==0) {position_un = tableau_PosJoueur[i]}
-			if (i==1) {position_deux = tableau_PosJoueur[i]}
-			if (i==2) {position_trois = tableau_PosJoueur[i]}
-			if (i==3) {position_quatre = tableau_PosJoueur[i]}
-		}
-	if (tableau_record[position_un] == tableau_record[position_deux]) {
-		var indicateurNbEgalite = 0;
-		for (var i=0;i<tableau_PosJoueur.length-1;i++) 
-			{	
-				if (i+1 < nbjoueur) { 
-					if (tableau_record[tableau_PosJoueur[i]] == tableau_record[tableau_PosJoueur[i+1]]) {
-						indicateurNbEgalite++;
-					} else {
-						break;
-					}
-				}
-			}
-		if (indicateurNbEgalite>0) {
-			for (var i=0;i<indicateurNbEgalite+1;i++) 
-			{
-				tableau_tempsTri[i] = parseInt((tableau_temps[tableau_PosJoueur[i]-1] * 1000)+tableau_PosJoueur[i]);
-			}
-			tableau_tempsTri.sort();
-			for (var i=0;i<indicateurNbEgalite+1;i++) 
-			{
-				tableau_PosTempsTri[i] = String(tableau_tempsTri[i]).substr(String(tableau_tempsTri[i]).length-1,1);
-				if (i==0) {position_un = tableau_PosTempsTri[i]}
-				if (i==1) {position_deux = tableau_PosTempsTri[i]}
-				if (i==2) {position_trois = tableau_PosTempsTri[i]}
-				if (i==3) {position_deux = tableau_PosTempsTri[i]}
-			}
-			for (var i=0;i<indicateurNbEgalite+1; i++) {
-				if (tableau_temps[tableau_PosTempsTri[i]-1] == tableau_temps[tableau_PosTempsTri[i+1]-1]) {
-					score_du_tour=0;
-					break;
-				} else {
-					score_du_tour = 3;
-					break;
-				}
-			}		
-		}
-	} else {
-		score_du_tour = 3;
-	}
-	//if (tableau_PosJoueur[0] == tableau_PosJoueur[1])
-	//score_du_tour = parseInt(tableau_record[position_un])-parseInt(tableau_record[position_deux])
-	// Bonus au vainqueur
-	//score_du_tour = 3;
+	
+	var object = [];
+     tableau_record.map(function(valeur, index) {
+		// si correction des index tab record attention enlever le -1
+          object[index] = {joueur: index, score: valeur, temps: tableau_temps[index]};
+     });
+     
+     object.sort(function(a, b) {
+          if(a.score > b.score) {
+                return -1;
+          } else if(a.score < b.score) {
+                return 1;
+          } else {
+                if(a.temps < b.temps) {
+                     return -1;
+                } else if(a.temps > b.temps) {
+                     return 1;
+                } else {
+                     return 0;
+                }
+          }
+     });
+     
+     if(nbjoueur > 1 && (object[0].score !== object[1].score || object[0].temps !== object[1].temps)) {
+          score_du_tour = 3;
+     } else {
+		score_du_tour = 0;
+	 }
 	
 	if (score_du_tour==0)
 		{
-			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant &eacute;galit&eacute; entre ' + tableau_noms[position_un] + ' et ' + tableau_noms[position_deux] + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant &eacute;galit&eacute; parfaite entre les joueurs<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
 		}
 		else
 		{
-			document.getElementById('info_joueur').innerHTML = 'Fin du tour !<BR>' + tableau_noms[position_un] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
-			tableau_score[position_un] = tableau_score[position_un] + score_du_tour;
-			nomid= 'score_joueur' + position_un;
-			document.getElementById(nomid).innerHTML = tableau_score[position_un];
+			document.getElementById('info_joueur').innerHTML = 'Fin du tour !<BR>' + tableau_noms[(object[0].joueur+1)] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
+			tableau_score[object[0].joueur] = tableau_score[object[0].joueur] + score_du_tour;
+			nomid= 'score_joueur' + (object[0].joueur+1);
+			document.getElementById(nomid).innerHTML = tableau_score[object[0].joueur];
 		}
 		if (tour_table==duree_partie)
 			{
-				tableau_scoreTri = new Array(5);
-				for (var i=1;i<nbjoueur+1;i++) 
+				tableau_scoreTri = new Array(4);
+				for (var i=0;i<nbjoueur;i++) 
 				{
-					tableau_scoreTri[i-1] = (tableau_score[i] * 1000)+i;
+					tableau_scoreTri[i] = (tableau_score[i] * 1000)+i;
 				}
 				tableau_scoreTri.sort(compare_entiers_func)
 				position_un = 0;
 				position_deux = 0;
-				tableau_PosJoueur = new Array(5);
+				tableau_PosJoueur = new Array(4);
 				for (var i=0;i<nbjoueur;i++) 
 					{
 						
@@ -297,11 +262,11 @@ function classement()
 				if (tableau_score[position_un] == tableau_score[position_deux]) {
 					document.getElementById('info_joueur').innerHTML = 'EGALITE !!! Il n\'y a pas de gagnant sur cette partie.<BR><BR>Go! pour une nouvelle partie.';
 				} else {
-					document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' gagne la partie !!! <<<BR><BR>Go! pour une nouvelle partie.';
+					document.getElementById('info_joueur').innerHTML = tableau_noms[position_un+1] + ' gagne la partie !!! <BR><BR>Go! pour une nouvelle partie.';
 				}
 				gagnant=1;
 			}
-	for (var i=1;i<nbjoueur+1;i++) 
+	for (var i=0;i<nbjoueur;i++) 
 		{
 			tableau_record[i]=0;
 		}
@@ -378,7 +343,7 @@ function choix_nbjoueur(nb)
 {
 	nbjoueur = nb;
 	duree_partie = duree_partie*nbjoueur;
-	for (var j=1;j<nbjoueur+1;j++) 
+	for (var j=0;j<nbjoueur;j++) 
 	{
 		// init tableau_score
 		tableau_score[j]=0;
@@ -590,33 +555,12 @@ function allerpage(npage)
 			// gain bonus score = 12 ou = 20 ou = 30
 			// Affiche bonus score
 			document.getElementById('info_joueur').innerHTML = "";
-			//document.getElementById('img_bonus1').style = '';
-			//document.getElementById('img_bonus2').style = '';
-			//document.getElementById('img_bonus3').style = '';
-			//document.getElementById('img_bonus5').style = '';
+			
 			if (joueur_encours != 0) {
-				if (tableau_record[joueur_encours] != 0) {
-					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' marque ' + tableau_record[joueur_encours] + ' pt(s)';
-					//tableau_score[joueur_encours] = tableau_score[joueur_encours] + tableau_record[joueur_encours];
-					//nomid= 'score_joueur' + joueur_encours;
-					//document.getElementById(nomid).innerHTML = tableau_score[joueur_encours];
+				if (tableau_record[joueur_encours-1] != 0) {
+					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' marque ' + tableau_record[joueur_encours-1] + ' pt(s)';
 				}
 			}
-			/*
-			if (bonus_joueur_encours != 0)
-			{
-				if (bonus_joueur_encours !== 3) {
-					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= ' + (12 + ((bonus_joueur_encours-1)*6)) + '<BR><BR> +' + bonus_joueur_encours + ' pt(s) pour  ' + tableau_noms[joueur_encours];
-					bonus_joueur_encours=0;
-				} else {
-					document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 30 !';
-					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' gagne la partie instantanément !!!<BR><BR>Go! pour une nouvelle partie.';
-					document.getElementById('suite').style.display = 'none';
-					document.getElementById('go').style.display = 'block';
-					gagnant=1;
-				}
-			}
-			*/
 			if (bonus_joueur_encours == 3) {
 				document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 30 !';
 				document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' gagne la partie instantanément !!!<BR><BR>Go! pour une nouvelle partie.';
@@ -631,16 +575,12 @@ function allerpage(npage)
 					document.getElementById(nomid).bgColor = '';
 					nomid= 'info_score_joueur' + joueur_encours;
 					document.getElementById(nomid).style.color = "black";
-					//nomid= 'tableJoueurBis' + joueur_encours;
-					//document.getElementById(nomid).bgColor = '#FFFFFF';
 				} else {
 					// 1er joueur 1er tour
 					nomid= 'tableJoueur1';
 					document.getElementById(nomid).bgColor = '#31849B';
 					nomid= 'info_score_joueur1';
 					document.getElementById(nomid).style.color = "white";
-					//nomid= 'tableJoueurBis1';
-					//document.getElementById(nomid).bgColor = '#BCF5A9';
 				}
 				cpt_joueur = cpt_joueur +1;
 				joueur_encours = joueur_encours+1;
@@ -920,7 +860,7 @@ function InitRecord()
 	for (var i=1;i<nbjoueur+1;i++) 
 	{
 		nomid= 'record_joueur' + i;
-		document.getElementById(nomid).innerHTML = '00';
+		document.getElementById(nomid).innerHTML = '--';
 		nomid= 'temps_joueur' + i;
 		document.getElementById(nomid).innerHTML = '??';
 	}
@@ -942,11 +882,11 @@ function joueursuivant()
 				document.getElementById('boutonPlus').style.display = 'block';
 	nomid= 'record_joueur' + joueur_encours;
 	var record_tmp = unite;
-	tableau_record[joueur_encours] = record_tmp;
+	tableau_record[joueur_encours-1] = record_tmp;
 	document.getElementById(nomid).innerHTML = record_tmp;
 	nomid= 'score_joueur' + joueur_encours;
-	tableau_score[joueur_encours] = tableau_score[joueur_encours] + record_tmp;
-	document.getElementById(nomid).innerHTML = tableau_score[joueur_encours];
+	tableau_score[joueur_encours-1] = tableau_score[joueur_encours-1] + record_tmp;
+	document.getElementById(nomid).innerHTML = tableau_score[joueur_encours-1];
 
 	if (record_tmp>record_encours)
 	{
@@ -956,22 +896,14 @@ function joueursuivant()
 
 	if (num_modejeu == 2)
 	{
-		if (tableau_record[joueur_encours]>29) {
+		if (tableau_record[joueur_encours-1]>29) {
 			bonus_joueur_encours=3;
 		} 
-		/*
-		else if (tableau_record[joueur_encours]>17) {
-			tableau_score[joueur_encours]=tableau_score[joueur_encours]+2;
-			bonus_joueur_encours=2;
-		} else {
-			tableau_score[joueur_encours]=tableau_score[joueur_encours]+1;
-			bonus_joueur_encours=1;
-		}
-		*/
-		nomid= 'score_joueur' + joueur_encours;
-		document.getElementById(nomid).innerHTML = tableau_score[joueur_encours];
 		
-		if (tableau_record[joueur_encours]>6)
+		nomid= 'score_joueur' + joueur_encours;
+		document.getElementById(nomid).innerHTML = tableau_score[joueur_encours-1];
+		
+		if (tableau_record[joueur_encours-1]>6)
 		{
 			indicateurBonusChoisi++;
 			active_change=1;
@@ -980,13 +912,13 @@ function joueursuivant()
 			document.getElementById('bouton_bonus_retour').style.display = 'none';
 			document.getElementById('bouton_bonus_suite').style.display = 'none';
 			
-			if (tableau_record[joueur_encours]>11) {
+			if (tableau_record[joueur_encours-1]>11) {
 					indicateurBonusChoisi++;
 				}
-			if (tableau_record[joueur_encours]>14) {
+			if (tableau_record[joueur_encours-1]>14) {
 					indicateurBonusChoisi++;
 				}
-			if (tableau_record[joueur_encours]>17) {
+			if (tableau_record[joueur_encours-1]>17) {
 					indicateurBonusChoisi++;
 				}
 			document.getElementById('info_choisifruit').innerHTML = 'Nb Bonus à choisir = '+ indicateurBonusChoisi;
@@ -1005,12 +937,12 @@ function choisifruit(num_fruit)
 		indicateurBonusChoisi--;
 		document.getElementById('info_choisifruit').innerHTML = 'Nb Bonus à choisir = '+ indicateurBonusChoisi;
 		if (num_fruit == 6) {
-			tableau_score[joueur_encours] = tableau_score[joueur_encours] + 1;
+			tableau_score[joueur_encours-1] = tableau_score[joueur_encours-1] + 1;
 			nomid= 'score_joueur' + joueur_encours;
-			document.getElementById(nomid).innerHTML = tableau_score[joueur_encours];
+			document.getElementById(nomid).innerHTML = tableau_score[joueur_encours-1];
 			nomid= 'record_joueur' + joueur_encours;
-			tableau_record[joueur_encours] = tableau_record[joueur_encours] + 1;
-			document.getElementById(nomid).innerHTML = tableau_record[joueur_encours];
+			tableau_record[joueur_encours-1] = tableau_record[joueur_encours-1] + 1;
+			document.getElementById(nomid).innerHTML = tableau_record[joueur_encours-1];
 		} else {
 			tableau_bonus[num_fruit + ((joueur_encours-1)*5)]=tableau_bonus[num_fruit + ((joueur_encours-1)*5)]+1;
 			nomid = 'info_' + num_fruit + 'bis';
@@ -1330,7 +1262,7 @@ function choisifruit(num_fruit)
 			<span id="info_record_encours" style="font-weight:bold"></span>
 		</td>
 		<td align=center>
-			<img src="img/loader.gif" width="50px" id="chronogif" border="0">
+			<img src="img/loader_old.gif" width="50px" id="chronogif" border="0">
 		</td>
 		<td align=right>
 			<a href="javascript:StopTheClock();StopTheClockPause();document.getElementById('bouton_bonus_retour').style.display = 'block';document.getElementById('bouton_bonus_suite').style.display = 'none';allerpage(9);"><img src="img/info.png" width="50px" id="img_infofruitencours" border="0"></A>
@@ -1340,7 +1272,7 @@ function choisifruit(num_fruit)
 		<td colspan="3" align=center>
 			<img src="img/fruit1.png" id="img_fruitencours" border="0">
 			<div style="position: absolute; top: 185px; left: 25px;" id="cadre">
-				<a href="javascript:document.getElementById('img_retour').style.display = 'none';if (pause_Fin !==1) {allerpage(7)}"><img src="img/cadre_large.png" id="img_cadre" border="0"></A>
+				<a href="javascript:" onmousedown="document.getElementById('img_retour').style.display = 'none';if (pause_Fin !==1) {allerpage(7)}"><img src="img/cadre_large.png" id="img_cadre" border="0"></A>
 			</div>
 		</td>
 	</tr>
@@ -1433,7 +1365,7 @@ function choisifruit(num_fruit)
 	</tr>
 	<tr>
 		<td>
-			<a href="javascript:if ((tableau_record[joueur_encours]>14) && (indicateurBonusChoisi>0)) {document.getElementById('bouton_bonus_retour').style.display = 'none';
+			<a href="javascript:if ((tableau_record[joueur_encours-1]>14) && (indicateurBonusChoisi>0)) {document.getElementById('bouton_bonus_retour').style.display = 'none';
 			document.getElementById('bouton_bonus_suite').style.display = 'none';allerpage(12);} else {allerpage(4);}"><img src="img/suite.png" border="0"></a>
  		</td>
 	</tr>
@@ -1502,7 +1434,7 @@ function choisifruit(num_fruit)
 				<a href="javascript:allerpage(5);"><img src="img/retour.png" border="0" id="bouton_bonus"></a>
 			</span>
 			<span id="bouton_bonus_suite" style="color:#006600;font-weight:bold;font-size: 16px;">
-				<a href="javascript:if ((tableau_record[joueur_encours]>14) && (indicateurBonusChoisi>0)) {document.getElementById('bouton_bonus_retour').style.display = 'none';
+				<a href="javascript:if ((tableau_record[joueur_encours-1]>14) && (indicateurBonusChoisi>0)) {document.getElementById('bouton_bonus_retour').style.display = 'none';
 			document.getElementById('bouton_bonus_suite').style.display = 'none';allerpage(12);} else {allerpage(4);}"><img src="img/suite.png" border="0" id="bouton_bonus"></a>
 			</span>
  		</td>
