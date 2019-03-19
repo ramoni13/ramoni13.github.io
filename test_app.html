@@ -1,0 +1,16 @@
+<HTML>
+<SCRIPT language="javascript">
+function ready() {
+  const { type } = screen.orientation;
+  console.log(`Fullscreen and locked to ${type}. Ready!`);
+}
+async function start() {
+  await document.body.requestFullscreen();
+  await screen.orientation.lock("landscape");
+  ready();
+}
+</script>
+<button onclick="start()">
+  Start
+</button>
+</HTML>
