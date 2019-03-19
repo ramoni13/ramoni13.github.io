@@ -10,7 +10,30 @@ async function start() {
   ready();
 }
 </script>
-<button onclick="start()">
-  Start
-</button>
+
+<body>
+<div id="portrait" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:100px;vertical-align:middle;display:none">
+    MODE PORTRAIT
+  </div>
+  <div id="paysage" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:100px;vertical-align:middle;display:none">
+    MODE PAYSAGE
+	<BR><button onclick="start()" style="font-size: 80px !important;">
+		Start
+	</button>
+  </div>
+</body>
+
+<script>
+ window.onorientationchange = function() {
+   var portraitOrientation = window.matchMedia("(orientation:portrait)");
+   if ( portraitOrientation.matches ) {
+     document.getElementById("paysage").style.display = "block";
+     document.getElementById("portrait").style.display = "none";
+   } else {
+	 document.getElementById("portrait").style.display = "block";
+     document.getElementById("paysage").style.display = "none";
+     
+   }
+ }
+ </script>
 </HTML>
