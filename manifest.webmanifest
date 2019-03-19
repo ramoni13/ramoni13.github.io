@@ -1,0 +1,27 @@
+{
+  "short_name": "RF",
+  "name": "Racing Fruits Manifest",
+  "theme_color": "#eb5252",
+  "background_color": "#000000",
+  "display": "fullscreen",
+  "Scope": "/",
+  "orientation": "paysage",
+  "icons": [
+    {
+      "src": "racing fruits/logo.jpg",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "racing fruits/logo.jpg",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "racing fruits/logo.jpg",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "index_Racing.html"
+}
