@@ -155,10 +155,25 @@ var nb_pause_use=0;
 var indicateurBonusChoisi=0;
 var pause_Fin = 0;
 
-async function start() {
-  await document.body.requestFullscreen();
-  await screen.orientation.lock("landscape");
+
+function demarre() {
+	document.getElementById('demarrage').style.display = 'none';
 }
+
+function start() {
+  document.body.requestFullscreen().then( e => {
+		screen.orientation.lock("landscape").then( el => {
+			demarre();
+		}).catch( err => {
+			console.log(err);
+		}).finally( el => {
+			demarre();
+		});
+	}).catch( err => {
+		console.log("2",err);
+	});
+}
+
 function StartTheTimer()
 {
     //alert("secs="+secs)
@@ -977,10 +992,12 @@ function choisifruit(num_fruit)
 	<img src="racing fruits/pivoter.jpg" />
   </div>
   <div id="paysage" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:30px;vertical-align:middle;display:none;background-color:white">
-    MODE PAYSAGE
-	<BR><button onclick="start()" style="font-size: 40px !important;">
+    <div id="demarrage">
+	MODE PAYSAGE
+	<BR><button onclick="start();" style="font-size: 40px !important;">
 		Start
 	</button>
+	</div>
 		<div  id="divScores" style="margin-top: 20;">
 		<table class="tableNoms">
 			<tr height="20px">
