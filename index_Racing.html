@@ -158,6 +158,7 @@ var pause_Fin = 0;
 
 function demarre() {
 	document.getElementById('demarrage').style.display = 'none';
+	document.getElementById('divScores').style.display = 'block';
 }
 
 function start() {
@@ -983,7 +984,7 @@ function choisifruit(num_fruit)
 	}
 }
 </SCRIPT>
-<BODY onload="javascript:allerpage(0);" style="background-color:white" style="height: 360px;background-image:url('racing fruits/circuit1.jpg')" >
+<BODY onload="javascript:allerpage(0);" style="background-color:white" style="height: 360px;" >
 <!--<FORM method="post" id="principale">-->
 <!-- ************************************** HAUT ECRAN SCORES  -->
 <div id="portrait" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:30px;vertical-align:middle;display:block">
@@ -998,139 +999,103 @@ function choisifruit(num_fruit)
 		Start
 	</button>
 	</div>
-		<div  id="divScores" style="margin-top: 20;">
-		<table class="tableNoms">
-			<tr height="20px">
+		
+		
+		<div  id="divScores" style="margin-top: 20;display:none">
+		<table class="">
+			<tr>
 				<td>
-					<table class="tableJoueur">
-						<tr>
-							<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;" id="tableJoueur1">
-							<span id="info_score_joueur1">J1</span>
-							</td>
-						</tr>
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="score_joueur1">00</span>
-							</td>
-						</tr>
-					</table>
+					<img src="racing fruits/circuit1.jpg">
 				</td>
-				<td>
-					<table class="tableJoueur">
+				<td height="315px">
+					<table height="315px">
 						<tr>
-							<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;" id="tableJoueur2">
-							<span id="info_score_joueur2">J2</span>
+							<td align=center style="color:#666666;font-weight:bold;font-size: 16px;" id="tableJoueur1">
+								Joueur
+							</td>
+						</tr>
+						<tr>
+							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;" id="tableJoueur1">
+								<span id="info_score_joueur1">J1</span>
+							</td>
+						</tr>
+						<tr>
+							<td align=center style="color:#666666;font-weight:bold;font-size: 16px;" id="tableJoueur1">
+								Nb Tours
 							</td>
 						</tr>
 						<tr>
 							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="score_joueur2">00</span>
+								<span id="score_joueur1">0/2</span>
 							</td>
 						</tr>
+						<tr>
+							<td align=center>
+								<a href="javascript:plus1De();"><img src="img_smartphone/effet2.png" style="width:75px;" border="0" id="plus1De"></a>
+							</td>
+						<tr>
+							<td align=center>
+								<span id="info_2bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
+							</td>
+						</tr>
+						<tr>
+							<td align=center>
+								<a href="javascript:pause();"><img src="img_smartphone/effet1.png" style="width:75px;" border="0" id="plus1De"></a>
+							</td>
+						<tr>
+							<td align=center>
+								<span id="info_1bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
+							</td>
+						</tr>
+							<!-- ************************************** BAS ECRAN BOUTONS BONUS -->
+								<!--<div id="divBoutons" style="margin-top:12px">
+									<table class="tableNoms">
+										<tr>
+											<td>
+												<a href="javascript:plus1De();"><img src="img_smartphone/effet2.png" style="width:75px;" border="0" id="plus1De"></a>
+											</td>
+											<td>
+												<a href="javascript:pause();"><img src="img_smartphone/effet1.png" border="0" style="width:75px;" style="filter: grayscale(1);-webkit-filter: grayscale(1);" id="pause"></a>
+											</td>
+											<td>
+												<a href="javascript:plus2();"><img src="img_smartphone/effet5.png" border="0" style="width:75px;" style="filter: grayscale(1);-webkit-filter: grayscale(1);" id="plus2"></a>
+											</td>
+											<td>
+												<a href="javascript:plus1jet();"><img src="img_smartphone/effet3.png" border="0" style="width:75px;filter: grayscale(1);-webkit-filter: grayscale(1)" style=";" id="plus1jet"></a>
+											</td>
+										</tr>
+										<tr>
+											<td align=center>
+												<span id="info_2bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
+											</td>
+											<td align=center>
+												<span id="info_1bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
+											</td>
+											<td align=center>
+												<span id="info_5bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
+											</td>
+											<td align=center>
+												<span id="info_3bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
+											</td>
+									</tr>
+									</table>
+								</div>-->
 					</table>
-				</td>
-				<td>
-					<table class="tableJoueur">
-						<tr>
-							<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;" id="tableJoueur3">
-							<span id="info_score_joueur3">J3</span>
-							</td>
-						</tr>
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="score_joueur3">00</span>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-					<table class="tableJoueur">
-						<tr>
-							<td align=center width=25% style="color:#666666;font-weight:bold;font-size: 16px;" id="tableJoueur4">
-							<span id="info_score_joueur4">J4</span>
-							</td>
-						</tr>
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="score_joueur4">00</span>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<tr height="20px">
-				<td>
-					<table class="tableJoueur" id="tableJoueurBis1">
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="record_joueur1">--</span>
-							</td>
-						</tr>
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="temps_joueur1">??</span>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-					<table class="tableJoueur" id="tableJoueurBis2">
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="record_joueur2">--</span>
-							</td>
-						</tr>
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="temps_joueur2">??</span>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-					<table class="tableJoueur" id="tableJoueurBis3">
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="record_joueur3">--</span>
-							</td>
-						</tr>
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="temps_joueur3">??</span>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-					<table class="tableJoueur" id="tableJoueurBis4" >
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="record_joueur4">--</span>
-							</td>
-						</tr>
-						<tr>
-							<td align=center style="color:#000000;font-weight:bold;font-size: 16px;">
-								<span id="temps_joueur4">??</span>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
 		</table>
 	</div>
 	<!-- PAGE 0 LOGO  -->
 	<div id="0">
-	<table>
+	<table width="100%">
 		<tr>
-			<td >
-			<A href="javascript:allerpage(1);"><img src="racing fruits/logo2.png" width="400px" style="margin-top:75px; margin-left:50px" border="0"></A>
+			<td text-align="center" >
+			<A href="javascript:allerpage(1);"><img src="racing fruits/logo2.png" width="400px" style="margin-top:75px;" border="0"></A>
 			</td>
 		</tr>
 	</table>
 	</div>
 	<!-- ************************************** PAGE 1 CHOIX DUREE PARTIE  -->
 	<div id="1" style="margin-top:80px; margin-left:90px" >
-	<table >
+	<table width="400px;">
 		<tr height="50px;">
 			<td colspan="3" >
 				<B><span>Choisissez la dur&eacute;e de la partie</span></B>
@@ -1151,7 +1116,7 @@ function choisifruit(num_fruit)
 	</div>
 	<!-- ************************************** PAGE 2 CHOIX NB JOUEURS  -->
 	<div id="2" style="margin-top:80px; margin-left:90px" >
-	<table>
+	<table width="400px;">
 		<tr height="50px;">
 			<td colspan="3" >
 			<B><span>Choisissez le nombre de joueurs</span></B>
@@ -1476,8 +1441,8 @@ function choisifruit(num_fruit)
 	</table>
 	</div>
 	<!-- ************************************** PAGE 10 SAISIE DES NOMS -->
-	<div id="10" style="margin-top:95px; margin-left:90px" >
-	<table>
+	<div id="10" style="margin-left:90px" >
+	<table height="300px">
 		<tr>
 			<td colspan="4">
 				<label >Saisissez vos noms (3 caract&egrave;res max.)</label>
@@ -1565,39 +1530,6 @@ function choisifruit(num_fruit)
 			</td>
 		</tr>
 	</table>
-	</div>
-	<!-- ************************************** BAS ECRAN BOUTONS BONUS -->
-	<div id="divBoutons" style="margin-top:12px">
-		<table class="tableNoms">
-			<tr>
-				<td>
-					<a href="javascript:plus1De();"><img src="img_smartphone/effet2.png" style="width:75px;" border="0" id="plus1De"></a>
-				</td>
-				<td>
-					<a href="javascript:pause();"><img src="img_smartphone/effet1.png" border="0" style="width:75px;" style="filter: grayscale(1);-webkit-filter: grayscale(1);" id="pause"></a>
-				</td>
-				<td>
-					<a href="javascript:plus2();"><img src="img_smartphone/effet5.png" border="0" style="width:75px;" style="filter: grayscale(1);-webkit-filter: grayscale(1);" id="plus2"></a>
-				</td>
-				<td>
-					<a href="javascript:plus1jet();"><img src="img_smartphone/effet3.png" border="0" style="width:75px;filter: grayscale(1);-webkit-filter: grayscale(1)" style=";" id="plus1jet"></a>
-				</td>
-			</tr>
-			<tr>
-				<td align=center>
-					<span id="info_2bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
-				</td>
-				<td align=center>
-					<span id="info_1bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
-				</td>
-				<td align=center>
-					<span id="info_5bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
-				</td>
-				<td align=center>
-					<span id="info_3bis" style="color:#006600;font-weight:bold;font-size: 16px;">1</span>
-				</td>
-		</tr>
-		</table>
 	</div>
   </div>
 <!--</FORM>-->
