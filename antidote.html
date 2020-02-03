@@ -1,0 +1,1252 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href=' https://fonts.googleapis.com/css?family=Luckiest+Guy' rel='stylesheet' type='text/css'>
+
+    <style>
+        body, html, table {
+            height: 600px;
+            margin: 40px;
+        }
+
+        tr, td {
+            text-align: center;
+        }
+
+        body {
+            margin: 40px;
+        }
+
+        .box {
+            background-color: lightgrey;
+            color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            font-size: 150%;
+        }
+
+        .wrapper {
+            width: 600px;
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: repeat(5, 100px);
+            grid-template-rows: repeat(5, 100px);
+            grid-auto-flow: column;
+        }
+
+        .saisieClavier {
+            font: normal 170px "Advent Pro", Helvetica, sans-serif;
+            height: 200px;
+            text-shadow: white 0.006em 0.006em 0.007em, #9c9c9c 1px 1px 1px, #9c9c9c 1px 2px 1px, #9c9c9c 1px 3px 1px, #9c9c9c 1px 4px 1px, #9c9c9c 1px 5px 1px, #9c9c9c 1px 6px 1px, #9c9c9c 1px 7px 1px, #9c9c9c 1px 8px 1px, #9c9c9c 1px 9px 1px, #9c9c9c 1px 10px 1px, #9c9c9c 1px 11px 1px, #9c9c9c 1px 12px 1px, rgba(16, 16, 16, 0.4) 1px 18px 6px, rgba(16, 16, 16, 0.2) 1px 22px 10px, rgba(16, 16, 16, 0.2) 1px 26px 35px, rgba(16, 16, 16, 0.4) 1px 30px 65px, white -0.15em -0.1em 100px;
+            color: #fff;
+        }
+
+        .resultat {
+            font: normal 120px "Advent Pro", Helvetica, sans-serif;
+            height: 200px;
+            text-shadow: white 0.006em 0.006em 0.007em, #9c9c9c 1px 1px 1px, #9c9c9c 1px 2px 1px, #9c9c9c 1px 3px 1px, #9c9c9c 1px 4px 1px, #9c9c9c 1px 5px 1px, #9c9c9c 1px 6px 1px, #9c9c9c 1px 7px 1px, #9c9c9c 1px 8px 1px, #9c9c9c 1px 9px 1px, #9c9c9c 1px 10px 1px, #9c9c9c 1px 11px 1px, #9c9c9c 1px 12px 1px, rgba(16, 16, 16, 0.4) 1px 18px 6px, rgba(16, 16, 16, 0.2) 1px 22px 10px, rgba(16, 16, 16, 0.2) 1px 26px 35px, rgba(16, 16, 16, 0.4) 1px 30px 65px, white -0.15em -0.1em 100px;
+            color: #fff;
+        }
+
+        .resultatMinMax {
+            font: normal 60px "Advent Pro", Helvetica, sans-serif;
+            height: 200px;
+            text-shadow: white 0.006em 0.006em 0.007em, #9c9c9c 1px 1px 1px, #9c9c9c 1px 2px 1px, #9c9c9c 1px 3px 1px, #9c9c9c 1px 4px 1px, #9c9c9c 1px 5px 1px, #9c9c9c 1px 6px 1px, #9c9c9c 1px 7px 1px, #9c9c9c 1px 8px 1px, #9c9c9c 1px 9px 1px, #9c9c9c 1px 10px 1px, #9c9c9c 1px 11px 1px, #9c9c9c 1px 12px 1px, rgba(16, 16, 16, 0.4) 1px 18px 6px, rgba(16, 16, 16, 0.2) 1px 22px 10px, rgba(16, 16, 16, 0.2) 1px 26px 35px, rgba(16, 16, 16, 0.4) 1px 30px 65px, white -0.15em -0.1em 100px;
+            color: #fff;
+        }
+
+        .enjoy-css-valide {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            width: 250px;
+            height: 70px;
+            cursor: pointer;
+            margin: 0 auto;
+            border: 2px solid rgb(30,205,151);
+            -webkit-border-radius: 40px;
+            border-radius: 40px;
+            font: normal 37px/70px "Advent Pro", Helvetica, sans-serif;
+            color: rgb(30, 205, 151);
+            text-align: center;
+            -o-text-overflow: clip;
+            text-overflow: clip;
+            letter-spacing: 1px;
+            /*background: rgba(0,0,0,0);*/
+            background: white;
+            -webkit-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            -moz-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            -o-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            outline: none !important;
+        }
+
+            .enjoy-css-valide:hover {
+                color: rgba(255,255,255,1);
+                background: rgb(30, 205, 151);
+            }
+
+            .enjoy-css-valide:active {
+                border: 2px solid rgba(33,224,163,1);
+                background: rgba(33,224,163,1);
+                -webkit-transition: none;
+                -moz-transition: none;
+                -o-transition: none;
+                transition: none;
+            }
+
+        .enjoy-css {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            width: 300px;
+            height: 70px;
+            cursor: pointer;
+            margin: 0 auto;
+            /*border: 2px solid rgba(74,134,232,1);
+            -webkit-border-radius: 40px;*/
+            border: 2px solid white;
+            -webkit-border-radius: 40px;
+            border-radius: 40px;
+            font: normal 37px/70px "Advent Pro", Helvetica, sans-serif;
+            /*color: rgba(74,134,232,1);*/
+            color: white;
+            text-align: center;
+            -o-text-overflow: clip;
+            text-overflow: clip;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0);
+            -webkit-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            -moz-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            -o-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            outline: none !important;
+        }
+
+        .enjoy-css-chrono {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            margin: 0 auto;
+            /*border: 2px solid rgba(74,134,232,1);
+            -webkit-border-radius: 40px;*/
+            border: 2px solid white;
+            -webkit-border-radius: 40px;
+            border-radius: 40px;
+            font: normal 37px/70px "Advent Pro", Helvetica, sans-serif;
+            /*color: rgba(74,134,232,1);*/
+            color: white;
+            text-align: center;
+            -o-text-overflow: clip;
+            text-overflow: clip;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0);
+            -webkit-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            -moz-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            -o-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            outline: none !important;
+        }
+
+            .enjoy-css:hover, .enjoy-css-chrono:hover {
+                color: rgba(255,255,255,1);
+                background: rgba(74,134,232,1);
+            }
+
+            .enjoy-css:active, .enjoy-css-chrono:active {
+                border: 2px solid rgba(111,168,220,1);
+                background: rgba(111,168,220,1);
+                -webkit-transition: none;
+                -moz-transition: none;
+                -o-transition: none;
+                transition: none;
+            }
+
+        /*@import url("https://fonts.googleapis.com/css?family=Luckiest+Guy");
+        @font-face {
+            font-family: "My Custom Font";
+            src: url(https://fonts.googleapis.com/css?family=Luckiest+Guy) format("truetype");
+        }*/
+        /* BODY */
+        body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-color: skyblue;
+            background-image: -webkit-linear-gradient(90deg, skyblue 0%, steelblue 100%);
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            overflow: hidden;
+            font-family: "Luckiest Guy", cursive;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: transparent;
+        }
+        /* CLOUDS */
+        body:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            margin: auto;
+            border-radius: 100%;
+            background: transparent;
+            display: block;
+            box-shadow: 0 0 150px 100px rgba(255, 255, 255, 0.6), 200px 0 200px 150px rgba(255, 255, 255, 0.6), -250px 0 300px 150px rgba(255, 255, 255, 0.6), 550px 0 300px 200px rgba(255, 255, 255, 0.6), -550px 0 300px 200px rgba(255, 255, 255, 0.6);
+        }
+        /* JUMP */
+        h1 {
+            cursor: default;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            margin: auto;
+            display: block;
+            text-align: center;
+        }
+
+            h1 span {
+                position: relative;
+                top: 20px;
+                display: inline-block;
+                -webkit-animation: bounce 0.3s ease infinite alternate;
+                font-size: 80px;
+                color: #fff;
+                text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc, 0 3px 0 #ccc, 0 4px 0 #ccc, 0 5px 0 #ccc, 0 6px 0 transparent, 0 7px 0 transparent, 0 8px 0 transparent, 0 9px 0 transparent, 0 10px 10px rgba(0, 0, 0, 0.4);
+            }
+
+                h1 span:nth-child(2) {
+                    -webkit-animation-delay: 0.1s;
+                }
+
+                h1 span:nth-child(3) {
+                    -webkit-animation-delay: 0.2s;
+                }
+
+                h1 span:nth-child(4) {
+                    -webkit-animation-delay: 0.3s;
+                }
+
+                h1 span:nth-child(5) {
+                    -webkit-animation-delay: 0.4s;
+                }
+
+                h1 span:nth-child(6) {
+                    -webkit-animation-delay: 0.5s;
+                }
+
+                h1 span:nth-child(7) {
+                    -webkit-animation-delay: 0.6s;
+                }
+
+                h1 span:nth-child(8) {
+                    -webkit-animation-delay: 0.2s;
+                }
+
+                h1 span:nth-child(9) {
+                    -webkit-animation-delay: 0.3s;
+                }
+
+                h1 span:nth-child(10) {
+                    -webkit-animation-delay: 0.4s;
+                }
+
+                h1 span:nth-child(11) {
+                    -webkit-animation-delay: 0.5s;
+                }
+
+                h1 span:nth-child(12) {
+                    -webkit-animation-delay: 0.6s;
+                }
+
+                h1 span:nth-child(13) {
+                    -webkit-animation-delay: 0.7s;
+                }
+
+                h1 span:nth-child(14) {
+                    -webkit-animation-delay: 0.8s;
+                }
+
+        /* ANIMATION */
+        @-webkit-keyframes bounce {
+            100% {
+                top: -20px;
+                text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc, 0 3px 0 #ccc, 0 4px 0 #ccc, 0 5px 0 #ccc, 0 6px 0 #ccc, 0 7px 0 #ccc, 0 8px 0 #ccc, 0 9px 0 #ccc, 0 50px 25px rgba(0, 0, 0, 0.2);
+            }
+        }
+    </style>
+    <meta charset="utf-8" />
+    <title>Antidote</title>
+    <script type="text/javascript">
+        var deckEchantillons = [
+            { carte: '15,21,3,4,12' },
+            { carte: '5,22,4,13,11' },
+            { carte: '14,5,23,12,1' },
+            { carte: '2,1,15,24,13' },
+            { carte: '11,2,25,3,14' },
+            { carte: '7,13,25,1,19' },
+            { carte: '8,20,2,21,14' },
+            { carte: '22,3,9,16,15' },
+            { carte: '10,4,11,23,17' },
+            { carte: '12,24,18,6,5' },
+            { carte: '10,11,2,25,18' },
+            { carte: '1,24,15,9,17' },
+            { carte: '8,5,14,16,23' },
+            { carte: '4,7,13,20,22' },
+            { carte: '21,19,12,6,3' },
+            { carte: '23,8,6,16,15' },
+            { carte: '24,17,1,9,11' },
+            { carte: '12,18,10,2,25' },
+            { carte: '3,6,22,13,19' },
+            { carte: '14,4,20,21,7' },
+            { carte: '1,9,8,20,17' },
+            { carte: '2,9,18,16,10' },
+            { carte: '17,10,19,6,3' },
+            { carte: '7,20,18,4,6' },
+            { carte: '8,16,19,5,7' },
+            { carte: '22,6,13,25,14' },
+            { carte: '14,23,7,15,21' },
+            { carte: '15,11,8,24,22' },
+            { carte: '9,25,23,11,12' },
+            { carte: '21,10,13,24,12' },
+            { carte: '2,18,19,5,11' },
+            { carte: '19,20,12,1,3' },
+            { carte: '20,16,2,4,13' },
+            { carte: '17,14,5,3,16' },
+            { carte: '4,18,17,15,1' },
+            { carte: '16,7,24,23,10' },
+            { carte: '6,17,25,24,8' },
+            { carte: '21,25,9,18,7' },
+            { carte: '10,19,22,8,21' },
+            { carte: '20,6,22,23,9' }
+        ];
+        console.log("deckEchantillons =" + JSON.stringify(deckEchantillons));
+
+        var tabVirus = [];
+        var nomEcranEnCours = "";
+        var valeurSaisie = 0;
+        var scannerHG = 0;
+        var scannerBD = 0;
+        var tabCentrifugeuse = [];
+        var antidote1 = 0;
+        var antidote2 = 0;
+        var antidote3 = 0;
+
+        function init() {
+            efface();
+            document.getElementById("accueil").style.display = 'block';
+        }
+
+        function efface() {
+            document.getElementById("accueil").style.display = 'none';
+            document.getElementById("menu").style.display = 'none';
+            document.getElementById("clavier").style.display = 'none';
+            document.getElementById("vert").style.display = 'none';
+            document.getElementById("rouge").style.display = 'none';
+            document.getElementById("resultatAnalyse").style.display = 'none';
+            document.getElementById("minMax").style.display = 'none';
+            document.getElementById("grille").style.display = 'none';
+            document.getElementById("btnValide").style.display = "none";
+            document.getElementById("rejouer").style.display = "none";
+            document.getElementById("chrono").style.display = "none";
+            document.getElementById("colorimetre").style.display = "none";
+            document.getElementById("fusion").style.display = "none";
+            document.getElementById("spectrographe").style.display = "none";
+            document.getElementById("idee").style.display = "none";
+
+        }
+
+        function affiche(nomEcran) {
+            document.getElementById(nomEcran).style.display = 'block';
+
+        }
+        function outil(nomEcran) {
+            valeurSaisie = 0;
+            nomEcranEnCours = nomEcran;
+            efface();
+            affiche(nomEcran);
+        }
+
+        function clavier(nomEcran) {
+            valeurSaisie = 0;
+            document.getElementById("saisieClavier").innerHTML = valeurSaisie;
+            nomEcranEnCours = nomEcran;
+            efface();
+            affiche("clavier");
+        }
+
+
+        function grilleOutil(nomEcran) {
+            nomEcranEnCours = nomEcran;
+            efface();
+            affiche("grille");
+            effacer();
+            document.getElementById("grille").style.display = 'grid';
+            document.getElementById("btnScanEffacer").style.display = "grid";
+            document.getElementById("btnCroix").style.display = "none";
+            document.getElementById("btnDiago").style.display = "none";
+            document.getElementById("btnValide").style.display = "none";
+            if (nomEcranEnCours == "centrifugeuse") {
+                document.getElementById("texteInfoGrille").innerHTML = "Sélectionnez le virus sur lequel vous posez votre centrifugeuse";
+            } else if (nomEcranEnCours == "scanner") {
+                document.getElementById("texteInfoGrille").innerHTML = "Sélectionnnez le coin haut gauche du scanner";
+            } else {
+                document.getElementById("texteInfoGrille").innerHTML = "Sélectionnnez les 3 virus de votre antidote";
+            }
+        }
+        function start() {
+            for (i = 0; i < 3; i++) {
+                var sortie = false;
+                do {
+                    var virusEnCours = getRandomInt(25) + 1;
+                    if (i > 0) {
+                        var result = tabVirus.findIndex(element => element == virusEnCours);
+                        if (result == -1) {
+                            tabVirus.push(virusEnCours);
+                            sortie = true;
+                        } else {
+                            sortie = false;
+                        }
+                    } else {
+                        tabVirus.push(virusEnCours);
+                        sortie = true;
+                    }
+                } while (!sortie);
+            }
+            tabVirus.sort(sortNumber);
+            console.log("tabVirus =" + JSON.stringify(tabVirus));
+            efface();
+            affiche("menu");
+        }
+        function minMax() {
+            efface();
+            affiche("minMax");
+        }
+
+        function mini() {
+            var numeroLigne = 0;
+            if (tabVirus[0] > 20) {
+                numeroLigne = 5;
+            } else if ((tabVirus[0] > 15) && (tabVirus[0] < 21)) {
+                numeroLigne = 4;
+            } else if ((tabVirus[0] > 10) && (tabVirus[0] < 16)) {
+                numeroLigne = 3;
+            } else if ((tabVirus[0] > 5) && (tabVirus[0] < 11)) {
+                numeroLigne = 2;
+            } else {
+                numeroLigne = 1;
+            }
+            document.getElementById("resultatMinMax").innerHTML = "Le + petit des virus<BR /> se trouve sur la ligne N°" + numeroLigne;
+        }
+        function maxi() {
+            var numeroLigne = 0;
+            if (tabVirus[2] > 20) {
+                numeroLigne = 5;
+            } else if ((tabVirus[2] > 15) && (tabVirus[2] < 21)) {
+                numeroLigne = 4;
+            } else if ((tabVirus[2] > 10) && (tabVirus[2] < 16)) {
+                numeroLigne = 3;
+            } else if ((tabVirus[2] > 5) && (tabVirus[2] < 11)) {
+                numeroLigne = 2;
+            } else {
+                numeroLigne = 1;
+            }
+            document.getElementById("resultatMinMax").innerHTML = "Le + grand des virus<BR /> se trouve sur la ligne N°" + numeroLigne;
+        }
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+        function sortNumber(a, b) {
+            return a - b;
+        }
+
+        function saisie(nombre) {
+
+            if (nombre == -1) {
+                valeurSaisie = 0;
+            } else if (valeurSaisie == 0) {
+                valeurSaisie = nombre;
+            } else if (valeurSaisie < 10) {
+                valeurSaisie = (valeurSaisie * 10) + nombre;
+            } else {
+                // rien
+            }
+            document.getElementById("saisieClavier").innerHTML = valeurSaisie;
+        }
+
+        function valideSaisie() {
+            switch (nomEcranEnCours) {
+                case "echantillon":
+                case "microscope":
+                    if ((valeurSaisie > 40) || (valeurSaisie == 0)) {
+                        // rien
+                    } else {
+                        document.getElementById("clavier").style.display = 'none';
+                        var virusCarteEncours = deckEchantillons[(valeurSaisie - 1)].carte.split(",");
+                        var result = 0;
+                        for (i = 0; i < virusCarteEncours.length; i++) {
+                            result = tabVirus.findIndex(element => element == virusCarteEncours[i]);
+                            if (result !== -1) { break; }
+                        }
+                        if (result == -1) {
+                            document.getElementById("rouge").style.display = 'block';
+                        } else {
+                            document.getElementById("vert").style.display = 'block';
+                        }
+                    }
+                    break;
+                case "analyse":
+                    if ((valeurSaisie > 40) || (valeurSaisie == 0)) {
+                        // rien
+                    } else {
+                        document.getElementById("clavier").style.display = 'none';
+                        var virusCarteEncours = deckEchantillons[(valeurSaisie - 1)].carte.split(",");
+                        var result = 0;
+                        var compteur = 0;
+                        for (i = 0; i < virusCarteEncours.length; i++) {
+                            result = tabVirus.findIndex(element => element == virusCarteEncours[i]);
+                            if (result !== -1) { compteur++; }
+                        }
+                        document.getElementById("resultatAnalyse").style.display = 'block';
+                        document.getElementById("nbVirusCarte").innerHTML = compteur + " virus <BR />sur la carte";
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        function grille(num) {
+            var nomDiv = "box" + num;
+            if (nomEcranEnCours == "scanner") {
+                // scanner
+                if (scannerHG == 0) {
+                    if ((num < 19) && (num != 15) && (num != 10) && (num != 5)) {
+                        scannerHG = num;
+                        if ((num != 5) && (num != 10) && (num < 15)) {
+                            nomDiv = "box" + (num + 11);
+                            document.getElementById(nomDiv).style.color = "green";
+                        }
+                        if ((num == 1) || (num == 2) || (num == 3)
+                            || (num == 6) || (num == 7) || (num == 8)
+                            || (num == 11) || (num == 12) || (num == 13)
+                            || (num == 16) || (num == 17) || (num == 18)) {
+                            nomDiv = "box" + (num + 7);
+                            document.getElementById(nomDiv).style.color = "green";
+                        }
+                        nomDiv = "box" + num;
+                        document.getElementById(nomDiv).style.backgroundColor = "green";
+                        document.getElementById("texteInfoGrille").innerHTML = "Sélectionnnez le coin bas droit du scanner (en vert)";
+                    } else {
+                        document.getElementById("texteInfoGrille").innerHTML =
+                            document.getElementById("texteInfoGrille").innerHTML
+                            + "<BR /><span style='color:red'>Choix impossible !</span>"
+                            + "<BR />Vous sortez de la grille";
+                    }
+                } else {
+                    if (document.getElementById(nomDiv).style.color == "green") {
+                        scannerBD = num;
+                        nomDiv = "box" + num;
+                        document.getElementById(nomDiv).style.backgroundColor = "green";
+                        document.getElementById(nomDiv).style.color = "white";
+                    }
+                }
+                if ((scannerHG != 0) && (scannerBD != 0)) {
+                    // calcul zone
+                    var vertical = 0;
+                    var horizontal = 0;
+                    if ((scannerBD - scannerHG) == 7) {
+                        // horizontal
+                        vertical = 2;
+                        horizontal = 3;
+                    } else {
+                        // vertical
+                        vertical = 3;
+                        horizontal = 2;
+                    }
+                    for (i = 1; i < 26; i++) {
+                        var nomDiv = "box" + i;
+                        document.getElementById(nomDiv).style.color = "white";
+                    }
+                    var tabScanner = [];
+                    for (v = 0; v < vertical; v++) {
+                        for (h = 0; h < horizontal; h++) {
+                            nomDiv = "box" + ((scannerHG + h) + (5 * v));
+                            tabScanner.push(((scannerHG + h) + (5 * v)));
+                            document.getElementById(nomDiv).style.backgroundColor = "green";
+                        }
+                    }
+                    console.log("tabScanner = " + JSON.stringify(tabScanner));
+                    var result = 0;
+                    var compteur = 0;
+                    for (i = 0; i < tabScanner.length; i++) {
+                        result = tabVirus.findIndex(element => element == tabScanner[i]);
+                        if (result !== -1) { compteur++; }
+                    }
+                    document.getElementById("texteInfoGrille").innerHTML = "Il y a " + compteur + " virus dans la zone du scanner";
+                    document.getElementById("btnScanEffacer").style.display = "none";
+                }
+            } else if (nomEcranEnCours == "scanner") {
+                // centrifugeuse
+                if (scannerHG == 0) {
+                    document.getElementById(nomDiv).style.backgroundColor = "green";
+                    document.getElementById("btnCroix").style.display = "grid";
+                    document.getElementById("btnDiago").style.display = "grid";
+                    document.getElementById("texteInfoGrille").innerHTML = "Et le sens :";
+                    scannerHG = num;
+                }
+            } else {
+                if (antidote1 == 0) {
+                    document.getElementById(nomDiv).style.backgroundColor = "green";
+                    antidote1 = num;
+                } else if (antidote2 == 0) {
+                    document.getElementById(nomDiv).style.backgroundColor = "green";
+                    antidote2 = num;
+                } else if (antidote3 == 0) {
+                    document.getElementById(nomDiv).style.backgroundColor = "green";
+                    antidote3 = num;
+                    document.getElementById("btnValide").style.display = "grid";
+                }
+            }
+        }
+
+        function effacer() {
+            for (i = 1; i < 26; i++) {
+                var nomDiv = "box" + i;
+                document.getElementById(nomDiv).style.color = "white";
+                document.getElementById(nomDiv).style.backgroundColor = "lightgrey";
+            }
+            scannerHG = 0;
+            scannerBD = 0;
+            if (nomEcranEnCours == "centrifugeuse") {
+                document.getElementById("texteInfoGrille").innerHTML = "Sélectionnez le virus sur lequel vous posez votre centrifugeuse";
+                document.getElementById("btnCroix").style.display = "none";
+                document.getElementById("btnDiago").style.display = "none";
+                document.getElementById("btnValide").style.display = "none";
+            } else if (nomEcranEnCours == "scanner") {
+                document.getElementById("texteInfoGrille").innerHTML = "Sélectionnnez le coin haut gauche du scanner";
+            } else {
+                document.getElementById("btnValide").style.display = "none";
+                antidote1 = 0;
+                antidote2 = 0;
+                antidote3 = 0;
+            }
+        }
+
+        function croix() {
+            var case1 = scannerHG - 1;
+            var case2 = scannerHG + 1;
+            var case3 = scannerHG - 5;
+            var case4 = scannerHG + 5;
+            var nomDiv = "";
+            tabCentrifugeuse = [];
+            if ((case1 != 0) && (case1 != 5) && (case1 != 10) && (case1 != 15) && (case1 != 20)) {
+                tabCentrifugeuse.push(case1);
+                nomDiv = "box" + case1;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            if ((case2 != 26) && (case2 != 6) && (case2 != 11) && (case2 != 16) && (case2 != 21)) {
+                tabCentrifugeuse.push(case2);
+                nomDiv = "box" + case2;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            if (case3 > 0) {
+                tabCentrifugeuse.push(case3);
+                nomDiv = "box" + case3;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            if (case4 < 26) {
+                tabCentrifugeuse.push(case4);
+                nomDiv = "box" + case4;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            document.getElementById("btnCroix").style.display = "none";
+            document.getElementById("btnDiago").style.display = "none";
+            document.getElementById("btnValide").style.display = "grid";
+            document.getElementById("texteInfoGrille").innerHTML = "Validez ou Effacez en cas d'erreur";
+        }
+
+        function diago() {
+            var case1 = scannerHG - 6;
+            var case2 = scannerHG - 4;
+            var case3 = scannerHG + 4;
+            var case4 = scannerHG + 6;
+            var nomDiv = "";
+            tabCentrifugeuse = [];
+            if ((case1 > 0) && (case1 != 5) && (case1 != 10) && (case1 != 15)) {
+                tabCentrifugeuse.push(case1);
+                nomDiv = "box" + case1;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            if ((case2 > 1) && (case2 != 6) && (case2 != 11) && (case2 != 16) && (case2 != 21)) {
+                tabCentrifugeuse.push(case2);
+                nomDiv = "box" + case2;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            if ((case3 < 25) && (case3 != 5) && (case3 != 10) && (case3 != 15) && (case3 != 20)) {
+                tabCentrifugeuse.push(case3);
+                nomDiv = "box" + case3;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            if ((case4 < 26) && (case4 != 21) && (case4 != 16) && (case4 != 11)) {
+                tabCentrifugeuse.push(case4);
+                nomDiv = "box" + case4;
+                document.getElementById(nomDiv).style.color = "green";
+            }
+            document.getElementById("btnCroix").style.display = "none";
+            document.getElementById("btnDiago").style.display = "none";
+            document.getElementById("btnValide").style.display = "grid";
+            document.getElementById("texteInfoGrille").innerHTML = "Validez ou Effacez en cas d'erreur";
+        }
+
+        function valideGrille() {
+            if (nomEcranEnCours == "centrifugeuse") {
+                var result = 0;
+                var compteur = 0;
+                for (i = 0; i < tabCentrifugeuse.length; i++) {
+                    result = tabVirus.findIndex(element => element == tabCentrifugeuse[i]);
+                    if (result !== -1) { compteur++; }
+                }
+                if (compteur > 0) {
+                    document.getElementById("texteInfoGrille").innerHTML = "Il y a au moins 1 virus sur les cases pointées par la centrifugeuse !";
+                } else {
+                    document.getElementById("texteInfoGrille").innerHTML = "Il n'y a pas de virus sur les cases pointées par la centrifugeuse !";
+                }
+            } else {
+                var result = 0;
+                var compteur = 0;
+                result = tabVirus.findIndex(element => element == antidote1);
+                if (result !== -1) { compteur++; }
+                result = tabVirus.findIndex(element => element == antidote2);
+                if (result !== -1) { compteur++; }
+                result = tabVirus.findIndex(element => element == antidote3);
+                if (result !== -1) { compteur++; }
+                if (compteur < 3) {
+                    document.getElementById("texteInfoGrille").innerHTML = "Il y a " + compteur + "/3 virus corrects !";
+                } else {
+                    document.getElementById("texteInfoGrille").innerHTML = "BRAVO !!!!!! <br> Vous avez GAGNE !!!";
+                }
+            }
+            document.getElementById("btnValide").style.display = "none";
+            document.getElementById("btnScanEffacer").style.display = "none";
+        }
+        function rejouer() {
+            efface();
+            affiche("rejouer");
+        }
+        var chronometre;
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            chronometre = setInterval(function () {
+                //minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                //minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                //display.textContent = minutes + ":" + seconds;
+                display.textContent = "Fin dans " + seconds + " secondes";
+
+                if (--timer < 0) {
+                    display.textContent = "FINI !";
+                    clearInterval(chronometre)
+                }
+            }, 1000);
+        }
+
+        function startChrono() {
+            efface();
+            affiche("chrono");
+            var trente = 29,
+                display = document.querySelector('#time');
+            startTimer(trente, display);
+        };
+
+    </script>
+</head>
+<body onload="javascript:init()">
+    <center>
+        <!--bandeau haut-->
+        <div id="accueil">
+            <table>
+                <tr>
+                    <td>
+                        <h1>
+                            <span>A</span>
+                            <span>N</span>
+                            <span>T</span>
+                            <span>I</span>
+                            <span>D</span>
+                            <span>O</span>
+                            <span>T</span>
+                            <span>E</span>
+                        </h1>
+                        <input type="button" class="enjoy-css" value="START" onclick="javascript:start()" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!--bandeau haut-->
+        <div id="menu">
+            <table>
+                <tr>
+                    <td width="50%">
+                        <input type="button" class="enjoy-css" value="Echantillon" onclick="clavier('echantillon')" />
+                    </td>
+                    <td width="50%">
+                        <input type="button" class="enjoy-css" value="Analyse" onclick="clavier('analyse')" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Microscope" onclick="clavier('microscope')" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Intervalle" onclick="minMax()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Scanner" onclick="grilleOutil('scanner')" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Centrifugeuse" onclick="grilleOutil('centrifugeuse')" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Antidote" onclick="grilleOutil('antidote')" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Rejouer" onclick="rejouer()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" class="enjoy-css-chrono" value="CHRONO" onclick="startChrono()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <hr />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Colorimètre" onclick="outil('colorimetre')"/>
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Fusion" onclick="outil('fusion')"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Spectrographe" onclick="outil('spectrographe')"/>
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Idées" onclick="outil('idee')"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Intervalle -->
+        <div id="minMax">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div class="resultat" style="color:lawngreen">Intervalle</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Min" onclick="mini()" />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Max" onclick="maxi()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div id="resultatMinMax" class="resultatMinMax" style="color:darkblue">Choisissez Min ou Max</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Resultat Vert Echantillon/Microscope -->
+        <div id="vert">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div class="resultat" style="color:lawngreen">Au moins 1 virus<br />sur la carte</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Retour" onclick="clavier('echantillon')" />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Resultat Rouge Echantillon/Microscope -->
+        <div id="rouge">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div class="resultat" style="color:red">Aucun virus<br />sur la carte</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Retour" onclick="clavier('echantillon')" />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Resultat Ananlyse -->
+        <div id="resultatAnalyse">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div id="nbVirusCarte" class="resultat" style="color:darkblue">0</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Retour" onclick="clavier('analyse')" />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Clavier de saisie -->
+        <div id="clavier">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div id="saisieClavier" class="saisieClavier">00</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="7" onclick="saisie(7)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="8" onclick="saisie(8)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="9" onclick="saisie(9)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="4" onclick="saisie(4)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="5" onclick="saisie(5)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="6" onclick="saisie(6)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="1" onclick="saisie(1)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="2" onclick="saisie(2)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="3" onclick="saisie(3)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="0" onclick="saisie(0)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="DEL" onclick="saisie(-1)" />
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css-valide" value="VALIDE" onclick="valideSaisie()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Grille -->
+        <div id="grille" class="wrapper">
+
+            <div class="box" id="box1" onclick="grille(1)">
+                1
+            </div>
+            <div class="box" id="box6" onclick="grille(6)">
+                6
+            </div>
+            <div class="box" id="box11" onclick="grille(11)">
+                11
+            </div>
+            <div class="box" id="box16" onclick="grille(16)">
+                16
+            </div>
+            <div class="box" id="box21" onclick="grille(21)">
+                21
+            </div>
+            <div class="box" id="box2" onclick="grille(2)">
+                2
+            </div>
+            <div class="box" id="box7" onclick="grille(7)">
+                7
+            </div>
+            <div class="box" id="box12" onclick="grille(12)">
+                12
+            </div>
+            <div class="box" id="box17" onclick="grille(17)">
+                17
+            </div>
+            <div class="box" id="box22" onclick="grille(22)">
+                22
+            </div>
+            <div class="box" id="box3" onclick="grille(3)">
+                3
+            </div>
+            <div class="box" id="box8" onclick="grille(8)">
+                8
+            </div>
+            <div class="box" id="box13" onclick="grille(13)">
+                13
+            </div>
+            <div class="box" id="box18" onclick="grille(18)">
+                18
+            </div>
+            <div class="box" id="box23" onclick="grille(23)">
+                23
+            </div>
+            <div class="box" id="box4" onclick="grille(4)">
+                4
+            </div>
+            <div class="box" id="box9" onclick="grille(9)">
+                9
+            </div>
+            <div class="box" id="box14" onclick="grille(14)">
+                14
+            </div>
+            <div class="box" id="box19" onclick="grille(19)">
+                19
+            </div>
+            <div class="box" id="box24" onclick="grille(24)">
+                24
+            </div>
+            <div class="box" id="box5" onclick="grille(5)">
+                5
+            </div>
+            <div class="box" id="box10" onclick="grille(10)">
+                10
+            </div>
+            <div class="box" id="box15" onclick="grille(15)">
+                15
+            </div>
+            <div class="box" id="box20" onclick="grille(20)">
+                20
+            </div>
+            <div class="box" id="box25" onclick="grille(25)">
+                25
+            </div>
+            <div><input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" /></div>
+            <div><input type="button" id="btnScanEffacer" class="enjoy-css" value="Effacer" onclick="effacer()" /></div>
+            <div id="texteInfoGrille" style="font-size: xx-large;">Sélectionnnez le coin haut gauche du scanner</div>
+            <div><input type="button" id="btnCroix" class="enjoy-css" style="font-size:100px" value="+" onclick="croix()" /></div>
+            <div><input type="button" id="btnDiago" class="enjoy-css" style="font-size:60px" value="X" onclick="diago()" /></div>
+
+        </div>
+        <div><br /><input type="button" id="btnValide" class="enjoy-css-valide" style="font-size:60px" value="Valide" onclick="valideGrille()" /></div>
+
+        <!-- Rejouer -->
+        <div id="rejouer">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div id="texteInfoGrille" style="font-size:xx-large;">Voulez-vous vraiment relancer une partie ?</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Rejouer" onclick="javascript:document.location.reload(true);" />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Colorimètre -->
+        <div id="colorimetre">
+            <table>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">WIP - Colorimètre</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">
+                            Répartition de 5 couleurs en colonnes
+                            <br />L'idée étant d'obtenir une info sur la couleur du virus du milieu
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- fusion -->
+        <div id="fusion">
+            <table>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">WIP - Fusion</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">
+                            La fusion permet de connaitre la somme des 'charges atomiques' des virus
+                            <br />Sachant que l'on peut avoir minimum 6 (virus 1 + 2 + 3)
+                            <br />et maximum 72 (virus 23 + 24 + 25) cela fait un intervalle de 72 - 6 = 66
+                            <br />Le résultat serait donné sur un segment de cet intervalle
+                            <br />Soit 6 segments de 11 (de 6 à 16 ou de 17 à 27 etc.)
+                            <br />Soit 3 segments de 22 ... A tester
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- spectrographe -->
+        <div id="spectrographe">
+            <table>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">WIP - Spectrographe</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">
+                            Le spectrographe donne une information sur la forme d'un ou des virus
+                            <br />A creuser...
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- idees -->
+        <div id="idee">
+            <table>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">WIP - Idées</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="texteInfoGrille" style="font-size:xx-large;">
+                            * Tester avec 4 virus au lieu de 3. Ou 2 ou 1...
+                            <br />* Mutation génétique : 1 seul ou tous les virus mutent de +1/-1
+                            <br />* Mini extension 'Interruptions' à tester
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" class="enjoy-css" value="Menu" onclick="outil('menu')" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Chrono -->
+        <div id="chrono" style="font-size:xx-large;">
+            <span id="time" style="font-size:xx-large;">Fin dans 30 secondes</span>
+            <br /><input type="button" class="enjoy-css-chrono" value="STOP" onclick="javascript:clearInterval(chronometre);outil('menu')" />
+        </div>
+    </center>
+</body>
+</html>
