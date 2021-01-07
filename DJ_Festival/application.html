@@ -42,26 +42,19 @@
 		}
 	};
 	function validerPlaylist() {
-		for (j = 0; j < playlist.length; j++) {
-               console.log(playlist[j]);
-            }
+		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists/A_'" + Date.now() + "'";
+			fetch(url)
+			.then(response => response.json())
+			.then(data => {
+			   console.log(data);
+			   //for (j = 0; j < playlist.length; j++) {
+			});
+			
 			// user id = 7048859
 			/*
 			user/{user_id}/playlists	Create a playlist	
 			playlist/{playlist_id}/tracks Add a track to the playlist
 			
-			let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=track:'" + track + "'";
-			if (artiste != "") {
-				url= url + " artist:'" + artiste + "'";
-			}
-			fetch(url)
-			.then(response => response.json())
-			.then(data => {
-				let retourDeezer = data.data[0];
-				genre = document.getElementById("genreSelect").value;
-				titre = retourDeezer.title_short;
-				idTrack = retourDeezer.id;
-				rank = retourDeezer.rank;
 			*/
 	}
 	function init() {
