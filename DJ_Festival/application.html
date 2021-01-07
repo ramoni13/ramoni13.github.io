@@ -199,8 +199,15 @@
 		}
 		}());
 		*/
-		document.getElementById("deezer-widget-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
-		document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
+		var divdeez1 = document.getElementById("deezer-widget-player");
+		var srcdeez1 = divdeez1.getAttribute("data-src");
+		srcdeez1 = srcdeez1 + "&id=" + idTrack;
+		divdeez1.setAttribute("data-src", srcdeez1);
+		var divdeez2 = document.getElementById("deezer-widget-player");
+		var srcdeez2 = divdeez2.getAttribute("data-src");
+		srcdeez2= srcdeez2 + "&id=" + idTrack;
+		divdeez2.setAttribute("data-src", srcdeez2);
+		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
 </script>
 
