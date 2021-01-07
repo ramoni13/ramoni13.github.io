@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ramoni13.github.io/DJ_Festival/html5-qrcode.min.js"></script>
+</head>
+<script>
+	function begin() {
+		var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }); 
+		html5QrcodeScanner.render(onScanSuccess);
+	}
+	
+	function onScanSuccess(qrCodeMessage) { 
+		console.log(qrCodeMessage) 
+	}; 
+	
+</script>
+
+<body onload="javascript:begin()">
+	<h2>DJ's Party Mix Festival</h2>
+	<div style=width: 500px id=reader></div>
+</body>
+</html> 
