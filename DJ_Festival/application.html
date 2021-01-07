@@ -9,6 +9,8 @@
 	</style>
 </head>
 <script>
+	var modePlaylist = false;
+	var playlist = [];
 	function begin() {
 		var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
 		html5QrcodeScanner.render(onScanSuccess);
@@ -16,17 +18,46 @@
 	
 	function onScanSuccess(qrCodeMessage) { 
 		console.log(qrCodeMessage);
-		document.getElementById("reader").style.display = 'none';
-		document.getElementById("playerDeezer").style.display = 'block';
-		readTrack(qrCodeMessage);
-	}; 
+		if (modePlaylist) {
+			var dejaTrouve = false;
+			for (j = 0; j < playlist.length; j++) {
+                if (playlist[j]) == qrCodeMessage) {
+                    dejaTrouve = true;
+                }
+            }
+			if (!dejaTrouve) {
+				playlist.push(qrCodeMessage);
+				document.getElementById("nbCartesPack").innerHTML = "Nb Tracks=" + playlist.length;
+			}
+		} else {
+			document.getElementById("reader").style.display = 'none';
+			document.getElementById("playerDeezer").style.display = 'block';
+			readTrack(qrCodeMessage);
+		}
+	};
+	function validerPlaylist() {
+		for (j = 0; j < playlist.length; j++) {
+               console.log(playlist[j]));
+            }
+	}
 	function init() {
 		document.getElementById("reader").style.display = 'none';
 		document.getElementById("playerDeezer").style.display = 'none';
 		document.getElementById("menu").style.display = 'block';
+		document.getElementById("playlistDiv").style.display = 'none';
 	}
 	function oneSong() {
+		modePlaylist = false;
 		document.getElementById("reader").style.display = 'block';
+		document.getElementById("playerDeezer").style.display = 'none';
+		document.getElementById("menu").style.display = 'none';
+		begin();
+	}
+	function createPlaylist() {
+		modePlaylist = true;
+		playlist = [];
+		document.getElementById("reader").style.display = 'block';
+		document.getElementById("playlistDiv").style.display = 'block';
 		document.getElementById("playerDeezer").style.display = 'none';
 		document.getElementById("menu").style.display = 'none';
 		begin();
@@ -57,7 +88,7 @@
 	
 	<div width="640px" id="playerDeezer">
 		<div class="deezer-widget-player" 
-		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=true&playlist=false&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" 
+		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" 
 		data-scrolling="no" 
 		data-frameborder="0" 
 		data-allowTransparency="true" 
@@ -66,7 +97,10 @@
 		</div>
 		<button onclick="javascript:init()">Menu</button>
 	</div>
-	
+	<div width="640px" id="playlistDiv">
+		<div id="nbMorceaux">Nb Tracks=0</div>
+		<button onclick="javascript:validerPlaylist()">Créer Playlist</button>
+	</div>
 	<div width="640px" id="menu">
 		<button onclick="javascript:oneSong()">Ecouter 1 chanson</button>
 		<button onclick="javascript:createPlaylist()">Créer 1 playlist</button>
