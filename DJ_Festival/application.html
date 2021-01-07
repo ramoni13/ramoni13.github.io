@@ -36,9 +36,8 @@
 				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length;
 			}
 		} else {
-			document.getElementById("reader").style.display = 'none';
 			document.getElementById("idTrackDiv").style.display = 'block';
-			document.getElementById("nbMorceaux").innerHTML = idTrack;
+			document.getElementById("nbMorceaux").innerHTML = qrCodeMessage;
 			idTrackScan = qrCodeMessage;
 		}
 	};
@@ -90,28 +89,7 @@
 		begin();
 	}
 	function readTrack() {
-		/*
-		(function() {
-		var w = document[typeof document.getElementsByClassName === 'function' ? 'getElementsByClassName' : 'querySelectorAll']('deezer-widget-player');
-		for (var i = 0, l = w.length; i < l; i++) {
-			w[i].innerHTML = '';
-			var el = document.createElement('iframe');
-			el.src = w[i].getAttribute('data-src') + "&id=" + idTrack;
-			el.scrolling = w[i].getAttribute('data-scrolling');
-			el.frameBorder = w[i].getAttribute('data-frameborder');
-			el.setAttribute('frameBorder', w[i].getAttribute('data-frameborder'));
-			el.allowTransparency = w[i].getAttribute('data-allowTransparency');
-			el.width = w[i].getAttribute('data-width');
-			el.height = w[i].getAttribute('data-height');
-			w[i].appendChild(el);
-		}
-		}());
-		
-		var divdeez1 = document.getElementById("deezer-widget-player");
-		var srcdeez1 = divdeez1.getAttribute("data-src");
-		srcdeez1 = srcdeez1 + "&id=" + idTrack;
-		divdeez1.setAttribute("data-src", srcdeez1);
-		*/
+		document.getElementById("reader").style.display = 'none';
 		document.getElementById("idTrackDiv").style.display = 'none';
 		document.getElementById("playerDeezer").style.display = 'block';
 		var divdeez2 = document.getElementById("deezer-player");
@@ -144,26 +122,6 @@
 	<div width="800px" id="reader"></div>
 	
 	<div width="800px" id="playerDeezer">
-		<!--<div class="deezer-widget-player" 
-		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" 
-		data-scrolling="no" 
-		data-frameborder="0" 
-		data-allowTransparency="true" 
-		data-width="700" 
-		data-height="350">
-		</div>
-		<div id="deezer-bar">
-		  <div id="bars">
-			<div class="bar"></div>
-			<div class="bar"></div>
-			<div class="bar"></div>
-			<div class="bar"></div>
-			<div class="bar"></div>
-			<div class="bar"></div>
-			<div class="bar"></div>
-			<i class="fa fa-angle-double-right link-deezer"></i>
-		  </div>
-		</div>-->
 		<div >
 		  <iframe id="deezer-player" scrolling="no" frameborder="0" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe>
 		</div>
