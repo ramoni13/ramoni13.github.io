@@ -42,8 +42,13 @@
 		}
 	};
 	function validerPlaylist() {
-		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists/A_'" + Date.now() + "'";
-			fetch(url)
+		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists/A_B'"; // + Date.now() + "'";
+		//var myHeaders = new Headers();
+		var myInit = { method: 'POST' }; //,
+               //headers: myHeaders,
+               //mode: 'cors',
+               //cache: 'default' };			
+			fetch(url, myInit)
 			.then(response => response.json())
 			.then(data => {
 			   console.log(data);
