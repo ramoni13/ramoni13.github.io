@@ -205,9 +205,9 @@
 		divdeez1.setAttribute("data-src", srcdeez1);
 		*/
 		var divdeez2 = document.getElementById("deezer-player");
-		var srcdeez2 = divdeez2.getAttribute("data-src");
+		var srcdeez2 = divdeez2.getAttribute("src");
 		srcdeez2= srcdeez2 + "&id=" + idTrack;
-		divdeez2.setAttribute("data-src", srcdeez2);
+		divdeez2.setAttribute("src", srcdeez2);
 		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
 </script>
@@ -238,20 +238,20 @@
 		data-height="350">
 		</div>
 		<div id="deezer-bar">
-	  <div id="bars">
-	    <div class="bar"></div>
-	    <div class="bar"></div>
-	    <div class="bar"></div>
-	    <div class="bar"></div>
-	    <div class="bar"></div>
-	    <div class="bar"></div>
-	    <div class="bar"></div>
-	    <i class="fa fa-angle-double-right link-deezer"></i>
-	  </div>
-	</div>
-	<div id="deezer-player">
-	  <iframe scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe><i class="fa fa-angle-double-left link-player"></i>
-	</div>
+		  <div id="bars">
+			<div class="bar"></div>
+			<div class="bar"></div>
+			<div class="bar"></div>
+			<div class="bar"></div>
+			<div class="bar"></div>
+			<div class="bar"></div>
+			<div class="bar"></div>
+			<i class="fa fa-angle-double-right link-deezer"></i>
+		  </div>
+		</div>
+		<div >
+		  <iframe id="deezer-player" scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe><i class="fa fa-angle-double-left link-player"></i>
+		</div>
 		<button onclick="javascript:init()">Menu</button>
 	</div>
 	
