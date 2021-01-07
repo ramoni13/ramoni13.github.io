@@ -15,7 +15,10 @@
 	}
 	
 	function onScanSuccess(qrCodeMessage) { 
-		console.log(qrCodeMessage) 
+		console.log(qrCodeMessage);
+		document.getElementById("reader").style.display = 'none';
+		document.getElementById("playerDeezer").style.display = 'block';
+		readTrack(qrCodeMessage);
 	}; 
 	function init() {
 		document.getElementById("reader").style.display = 'none';
@@ -24,14 +27,16 @@
 	}
 	function oneSong() {
 		document.getElementById("reader").style.display = 'block';
-		document.getElementById("playerDeezer").style.display = 'block';
+		document.getElementById("playerDeezer").style.display = 'none';
 		document.getElementById("menu").style.display = 'none';
+	}
+	function readTrack(idTrack) {
 		(function() {
 		var w = document[typeof document.getElementsByClassName === 'function' ? 'getElementsByClassName' : 'querySelectorAll']('deezer-widget-player');
 		for (var i = 0, l = w.length; i < l; i++) {
 			w[i].innerHTML = '';
 			var el = document.createElement('iframe');
-			el.src = w[i].getAttribute('data-src');
+			el.src = w[i].getAttribute('data-src') + "id=" + idTrack;
 			el.scrolling = w[i].getAttribute('data-scrolling');
 			el.frameBorder = w[i].getAttribute('data-frameborder');
 			el.setAttribute('frameBorder', w[i].getAttribute('data-frameborder'));
@@ -41,6 +46,7 @@
 			w[i].appendChild(el);
 		}
 		}());
+	
 	}
 </script>
 
@@ -50,13 +56,14 @@
 	
 	<div width="640px" id="playerDeezer">
 		<div class="deezer-widget-player" 
-		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&id=3135556&app_id=455462" 
+		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&&app_id=455462" 
 		data-scrolling="no" 
 		data-frameborder="0" 
 		data-allowTransparency="true" 
 		data-width="700" 
 		data-height="350">
 		</div>
+		<button onclick="javascript:init()">Menu</button>
 	</div>
 	
 	<div width="640px" id="menu">
