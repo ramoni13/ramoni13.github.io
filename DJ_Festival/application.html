@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <script src="https://ramoni13.github.io/DJ_Festival/html5-qrcode.min.js"></script>
+
 	<style>
         	body, button {
 			font-size: 72px;
@@ -9,6 +12,17 @@
 	</style>
 </head>
 <script>
+	$(document).ready(function() {
+	  // Deezer playlist
+	  $('#deezer-bar').click(function(){
+	    $('#deezer-player').fadeIn();
+	    $('#deezer-bar').hide();
+	  });
+	  $('#deezer-player').click(function(){
+	    $('#deezer-bar').fadeIn();
+	    $('#deezer-player').hide();
+	  });
+	});
 	var modePlaylist = false;
 	var playlist = [];
 	function begin() {
@@ -127,6 +141,20 @@
 		</div>
 		<button onclick="javascript:init()">Menu</button>
 	</div>
-	<a href="deezer://track/598088272">Deezer</a>
+	<div id="deezer-bar">
+	  <div id="bars">
+	    <div class="bar"></div>
+	    <div class="bar"></div>
+	    <div class="bar"></div>
+	    <div class="bar"></div>
+	    <div class="bar"></div>
+	    <div class="bar"></div>
+	    <div class="bar"></div>
+	    <i class="fa fa-angle-double-right link-deezer"></i>
+	  </div>
+	</div>
+	<div id="deezer-player">
+	  <iframe scrolling="no" frameborder="0" allowTransparency="true" src="http://www.deezer.com/plugins/player?autoplay=true&playlist=true&width=500&height=240&scover=true&type=playlist&id=173303071&title=&app_id=undefined" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe><i class="fa fa-angle-double-left link-player"></i>
+	</div>
 </body>
 </html> 
