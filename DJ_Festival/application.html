@@ -183,6 +183,7 @@
 	}
 	function readTrack(idTrack) {
 		(function() {
+		/*
 		var w = document[typeof document.getElementsByClassName === 'function' ? 'getElementsByClassName' : 'querySelectorAll']('deezer-widget-player');
 		for (var i = 0, l = w.length; i < l; i++) {
 			w[i].innerHTML = '';
@@ -197,7 +198,9 @@
 			w[i].appendChild(el);
 		}
 		}());
-	
+		*/
+		document.getElementById("deezer-widget-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
+		document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
 </script>
 
@@ -226,9 +229,7 @@
 		data-width="700" 
 		data-height="350">
 		</div>
-		<button onclick="javascript:init()">Menu</button>
-	</div>
-	<div id="deezer-bar">
+		<div id="deezer-bar">
 	  <div id="bars">
 	    <div class="bar"></div>
 	    <div class="bar"></div>
@@ -241,7 +242,10 @@
 	  </div>
 	</div>
 	<div id="deezer-player">
-	  <iframe scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?autoplay=true&playlist=true&width=500&height=240&scover=true&type=playlist&id=173303071&title=&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe><i class="fa fa-angle-double-left link-player"></i>
+	  <iframe scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe><i class="fa fa-angle-double-left link-player"></i>
 	</div>
+		<button onclick="javascript:init()">Menu</button>
+	</div>
+	
 </body>
 </html> 
