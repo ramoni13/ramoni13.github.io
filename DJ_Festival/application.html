@@ -17,11 +17,18 @@
 	function onScanSuccess(qrCodeMessage) { 
 		console.log(qrCodeMessage) 
 	}; 
-	
+	function init() {
+		document.getElementById("reader").style.display = 'none';
+		document.getElementById("menu").style.display = 'block';
+	}
 </script>
 
-<body width="640px" onload="javascript:begin()">
+<body width="640px" onload="javascript:init()">
 	<h2>DJ's Party Mix Festival</h2>
 	<div width="640px" id="reader"></div>
+	<div width="640px" id="menu">
+		<button onclick="javascript:oneSong()">Ecouter 1 chanson</button>
+		<button onclick="javascript:createPlaylist()">Créer 1 playlist</button>
+	</div>
 </body>
 </html> 
