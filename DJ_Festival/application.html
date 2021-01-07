@@ -42,7 +42,10 @@
 		}
 	};
 	function validerPlaylist() {
-		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists/A_B'"; // + Date.now() + "'";
+	var myParamTOKEN = location.search.split('code=')[1]
+	// title=titre_Playlist
+	//http://api.deezer.com/playlist/<playlist_id>/tracks?access_token=<access_token>&request_method=post&songs=<track_id>
+		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists?title='A_B'&access_token="+ myParamTOKEN +"&request_method=post";
 		//var myHeaders = new Headers();
 		var myInit = { method: 'POST' }; //,
                //headers: myHeaders,
