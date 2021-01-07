@@ -9,107 +9,11 @@
         	body, button {
 			font-size: 72px;
 		}
-		#deezer-bar{
-		  background: #f8f8f8;
-		  position: fixed;
-		  width: 75px;
-		  height: 40px;
-		  margin-top: 75px;
-		  float:left;
-		  border: 1px solid #ccc;
-		  z-index: 1;
-		  border-radius: 0 10px 10px 0;
-		  cursor: pointer;
-		}
-
-		#deezer-player{
-		  display: none;
-		  background: #f8f8f8;
-		  position: fixed;
-		  width: 550px;
-		  height: 242px;
-		  margin-top: 75px;
-		  float:left;
-		  border: 1px solid #ccc;
-		  z-index: 1;
-		  border-radius: 0 10px 10px 0;
-		  cursor: pointer;
-		}
-
-		#bars {
-		    height: 30px;
-		    vertical-align: middle;
-		    position: relative;
-		    width: 40px;
-		}
-
-		.link-deezer{
-		    position: absolute;
-		    margin-left: 50px;
-		    margin-top: 12px;
-		    cursor: pointer;
-		}
-
-		.link-deezer:hover{
-		  text-decoration: none;
-		}
-
-		.link-player{
-		    position: absolute;
-		    margin-left: 20px;
-		    margin-top: 100px;
-		    cursor: pointer;
-		}
-
-		.link-player:hover{
-		  text-decoration: none;
-		}
-
-		.bar {
-		   background: #666;
-		    bottom: 1px;
-		    height: 3px;
-		    position: absolute;
-		    width: 5px;      
-		    -webkit-animation: sound 0ms -800ms linear infinite alternate;
-		   margin-left:10px;
-		}
-
-		@-webkit-keyframes sound {
-		    0% {
-		       opacity: .35;
-			height: 3px; 
-		    }
-		    100% {
-			opacity: 1;       
-			height: 20px;        
-		    }
-		}
-
-		.bar:nth-child(1)  { left: 1px; -webkit-animation-duration: 474ms; }
-		.bar:nth-child(2)  { left: 5px; -webkit-animation-duration: 433ms; }
-		.bar:nth-child(3)  { left: 9px; -webkit-animation-duration: 407ms; }
-		.bar:nth-child(4)  { left: 13px; -webkit-animation-duration: 458ms; }
-		.bar:nth-child(5)  { left: 17px; -webkit-animation-duration: 400ms; }
-		.bar:nth-child(6)  { left: 21px; -webkit-animation-duration: 427ms; }
-		.bar:nth-child(7)  { left: 25px; -webkit-animation-duration: 441ms; }
-		.bar:nth-child(8)  { left: 29px; -webkit-animation-duration: 419ms; }
-		.bar:nth-child(9)  { left: 33px; -webkit-animation-duration: 487ms; }
-		.bar:nth-child(10) { left: 37px; -webkit-animation-duration: 442ms; }
+		
 	</style>
 </head>
 <script>
-	$(document).ready(function() {
-	  // Deezer playlist
-	  $('#deezer-bar').click(function(){
-	    $('#deezer-player').fadeIn();
-	    $('#deezer-bar').hide();
-	  });
-	  $('#deezer-player').click(function(){
-	    $('#deezer-bar').fadeIn();
-	    $('#deezer-player').hide();
-	  });
-	});
+	
 	var modePlaylist = false;
 	var playlist = [];
 	function begin() {
@@ -229,7 +133,7 @@
 	<div width="800px" id="reader"></div>
 	
 	<div width="800px" id="playerDeezer">
-		<div class="deezer-widget-player" 
+		<!--<div class="deezer-widget-player" 
 		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" 
 		data-scrolling="no" 
 		data-frameborder="0" 
@@ -248,9 +152,9 @@
 			<div class="bar"></div>
 			<i class="fa fa-angle-double-right link-deezer"></i>
 		  </div>
-		</div>
+		</div>-->
 		<div >
-		  <iframe id="deezer-player" scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe><i class="fa fa-angle-double-left link-player"></i>
+		  <iframe id="deezer-player" scrolling="no" frameborder="0" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe>
 		</div>
 		<button onclick="javascript:init()">Menu</button>
 	</div>
