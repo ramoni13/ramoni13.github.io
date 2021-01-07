@@ -37,7 +37,7 @@
 		for (var i = 0, l = w.length; i < l; i++) {
 			w[i].innerHTML = '';
 			var el = document.createElement('iframe');
-			el.src = w[i].getAttribute('data-src') + "id=" + idTrack;
+			el.src = w[i].getAttribute('data-src') + "&id=" + idTrack;
 			el.scrolling = w[i].getAttribute('data-scrolling');
 			el.frameBorder = w[i].getAttribute('data-frameborder');
 			el.setAttribute('frameBorder', w[i].getAttribute('data-frameborder'));
@@ -57,7 +57,7 @@
 	
 	<div width="640px" id="playerDeezer">
 		<div class="deezer-widget-player" 
-		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&&app_id=455462" 
+		data-src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" 
 		data-scrolling="no" 
 		data-frameborder="0" 
 		data-allowTransparency="true" 
