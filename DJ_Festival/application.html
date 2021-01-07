@@ -39,6 +39,24 @@
 		for (j = 0; j < playlist.length; j++) {
                console.log(playlist[j]);
             }
+			// user id = 7048859
+			/*
+			user/{user_id}/playlists	Create a playlist	
+			playlist/{playlist_id}/tracks Add a track to the playlist
+			
+			let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=track:'" + track + "'";
+			if (artiste != "") {
+				url= url + " artist:'" + artiste + "'";
+			}
+			fetch(url)
+			.then(response => response.json())
+			.then(data => {
+				let retourDeezer = data.data[0];
+				genre = document.getElementById("genreSelect").value;
+				titre = retourDeezer.title_short;
+				idTrack = retourDeezer.id;
+				rank = retourDeezer.rank;
+			*/
 	}
 	function init() {
 		document.getElementById("reader").style.display = 'none';
@@ -84,6 +102,18 @@
 
 <body width="640px" onload="javascript:init()">
 	<h2>DJ's Party Mix Festival</h2>
+	
+	<div width="640px" id="playlistDiv">
+		<div id="nbMorceaux">Nb Tracks=0</div>
+		<button onclick="javascript:validerPlaylist()">Créer Playlist</button>
+		<button onclick="javascript:init()">Menu</button>
+	</div>
+	
+	<div width="640px" id="menu">
+		<button onclick="javascript:oneSong()">Ecouter 1 chanson</button>
+		<button onclick="javascript:createPlaylist()">Créer 1 playlist</button>
+	</div>
+	
 	<div width="640px" id="reader"></div>
 	
 	<div width="640px" id="playerDeezer">
@@ -97,14 +127,6 @@
 		</div>
 		<button onclick="javascript:init()">Menu</button>
 	</div>
-	<div width="640px" id="playlistDiv">
-		<div id="nbMorceaux">Nb Tracks=0</div>
-		<button onclick="javascript:validerPlaylist()">Créer Playlist</button>
-		<button onclick="javascript:init()">Menu</button>
-	</div>
-	<div width="640px" id="menu">
-		<button onclick="javascript:oneSong()">Ecouter 1 chanson</button>
-		<button onclick="javascript:createPlaylist()">Créer 1 playlist</button>
-	</div>
+	<a href=""deezer://www.deezer.com/track/598088272">Deezer</a>
 </body>
 </html> 
