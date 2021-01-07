@@ -16,6 +16,7 @@
 	
 	var modePlaylist = false;
 	var playlist = [];
+	var idTrackScan = 0;
 	function begin() {
 		var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
 		html5QrcodeScanner.render(onScanSuccess);
@@ -36,8 +37,9 @@
 			}
 		} else {
 			document.getElementById("reader").style.display = 'none';
-			document.getElementById("playerDeezer").style.display = 'block';
-			readTrack(qrCodeMessage);
+			document.getElementById("idTrackDiv").style.display = 'block';
+			document.getElementById("nbMorceaux").innerHTML = idTrack;
+			idTrackScan = qrCodeMessage;
 		}
 	};
 	function validerPlaylist() {
@@ -68,6 +70,8 @@
 		document.getElementById("playerDeezer").style.display = 'none';
 		document.getElementById("menu").style.display = 'block';
 		document.getElementById("playlistDiv").style.display = 'none';
+		document.getElementById("idTrackDiv").style.display = 'none';
+		document.getElementById("playerDeezer").style.display = 'none';
 	}
 	function oneSong() {
 		modePlaylist = false;
@@ -85,7 +89,7 @@
 		document.getElementById("menu").style.display = 'none';
 		begin();
 	}
-	function readTrack(idTrack) {
+	function readTrack() {
 		/*
 		(function() {
 		var w = document[typeof document.getElementsByClassName === 'function' ? 'getElementsByClassName' : 'querySelectorAll']('deezer-widget-player');
@@ -108,9 +112,11 @@
 		srcdeez1 = srcdeez1 + "&id=" + idTrack;
 		divdeez1.setAttribute("data-src", srcdeez1);
 		*/
+		document.getElementById("idTrackDiv").style.display = 'none';
+		document.getElementById("playerDeezer").style.display = 'block';
 		var divdeez2 = document.getElementById("deezer-player");
 		var srcdeez2 = divdeez2.getAttribute("src");
-		srcdeez2= srcdeez2 + "&id=" + idTrack;
+		srcdeez2= srcdeez2 + "&id=" + idTrackScan;
 		divdeez2.setAttribute("src", srcdeez2);
 		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
@@ -118,7 +124,10 @@
 
 <body width="800px" onload="javascript:init()">
 	<h2>DJ's Party Mix Festival</h2>
-	
+		<div width="800px" id="idTrackDiv">
+			<div id="idTrack"></div>
+			<div id="goListen">Arrêtez le scan puis clickez sur <button onclick="javascript:readTrack()">Ecouter</button>
+		</div
 	<div width="800px" id="playlistDiv">
 		<div id="nbMorceaux">Nb Tracks=0</div>
 		<button onclick="javascript:validerPlaylist()">Créer Playlist</button>
