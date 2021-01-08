@@ -71,7 +71,10 @@ function httpGet(theUrl)
 	xmlHttp.setRequestHeader('Access-Control-Allow-Origin', '*');
     xmlHttp.setRequestHeader('Content-Type', 'application/xml');
 	xmlHttp.send( null );
-    return xmlHttp.responseText;
+    var data = [];
+	data = xmlHttp.responseText.split('acces_token=')
+	location.replace("https://ramoni13.github.io/DJ_Festival/application.html&code="+ data[1]);
+	//return xmlHttp.responseText;
 }
 
 function myBody() {
