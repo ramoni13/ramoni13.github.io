@@ -73,7 +73,7 @@ function httpGet(theUrl)
 	xmlHttp.send( null );
     var data = [];
 	data = xmlHttp.responseText.split('access_token=')
-	location.replace("https://ramoni13.github.io/DJ_Festival/application.html&code="+ data[1]);
+	location.replace("https://ramoni13.github.io/DJ_Festival/application.html?code="+ data[1]);
 	//return xmlHttp.responseText;
 }
 
