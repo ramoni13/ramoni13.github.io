@@ -26,6 +26,7 @@
 	var modePlaylist = false;
 	var playlist = [];
 	var idTrackScan = 0;
+	var idPlaylist = 0;
 	function begin() {
 		var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
 		html5QrcodeScanner.render(onScanSuccess);
@@ -46,7 +47,7 @@
 			}
 		} else {
 			document.getElementById("idTrackDiv").style.display = 'block';
-			document.getElementById("idTrack").innerHTML = qrCodeMessage;
+			document.getElementById("idTrack").innerHTML = "IdTrack=" + qrCodeMessage;
 			idTrackScan = qrCodeMessage;
 		}
 	};
@@ -58,6 +59,7 @@
 			.then(response => response.json())
 			.then(data => {
 			   console.log(data);
+			   idPlaylist = data.id;
 			   var listeTrack = "";
 			   for (j = 0; j < playlist.length; j++) {
 				listeTrack = listeTrack + playlist[j];
@@ -71,6 +73,9 @@
 				.then(response => response.json())
 				.then(data => {
 					console.log(data);
+					if (data == true) {
+						document.getElementById("nbMorceaux").innerHTML = "Playlist créée <button onclick='javascript:readPlaylist()'>Ecouter Playlist</button>";
+					}
 				});
 			});
 			
@@ -111,7 +116,17 @@
 		document.getElementById("playerDeezer").style.display = 'block';
 		var divdeez2 = document.getElementById("deezer-player");
 		var srcdeez2 = divdeez2.getAttribute("src");
-		srcdeez2= srcdeez2 + "&id=" + idTrackScan;
+		srcdeez2= srcdeez2 + "&type=tracks&id=" + idTrackScan;
+		divdeez2.setAttribute("src", srcdeez2);
+		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
+	}
+	function readPlaylist() {
+		document.getElementById("reader").style.display = 'none';
+		document.getElementById("idTrackDiv").style.display = 'none';
+		document.getElementById("playerDeezer").style.display = 'block';
+		var divdeez2 = document.getElementById("deezer-player");
+		var srcdeez2 = divdeez2.getAttribute("src");
+		srcdeez2= srcdeez2 + "&type=playlist&id=" + idPlaylist;
 		divdeez2.setAttribute("src", srcdeez2);
 		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
@@ -121,8 +136,8 @@
 	<h2>DJ's Party Mix Festival</h2>
 		<div width="800px" id="idTrackDiv">
 			<div id="idTrack"></div>
-			<div id="goListen">Arrêtez le scan puis clickez sur 
-				<button onclick="javascript:readTrack()">Ecouter</button>
+			<div id="goListen">
+				<button onclick="javascript:readTrack()">Ecouter le morceau</button>
 			</div>
 		</div>
 	<div width="800px" id="playlistDiv">
@@ -133,6 +148,7 @@
 	
 	<div width="800px" id="menu">
 		<button onclick="javascript:oneSong()">Ecouter 1 chanson</button>
+		<br>
 		<button onclick="javascript:createPlaylist()">Créer 1 playlist</button>
 	</div>
 	
@@ -140,7 +156,7 @@
 	
 	<div width="800px" id="playerDeezer">
 		<div >
-		  <iframe id="deezer-player" scrolling="no" frameborder="0" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&app_id=455462" width="500" height="240" style="border-right: 2px solid #5D5D5D;"></iframe>
+		  <iframe id="deezer-player" scrolling="no" frameborder="0" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&app_id=455462" width="700" height="350" style="border-right: 2px solid #5D5D5D;"></iframe>
 		</div>
 		<button onclick="javascript:init()">Menu</button>
 	</div>
