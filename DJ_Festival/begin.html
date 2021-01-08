@@ -15,8 +15,19 @@
 
 <script>
 function myFunction() {
-var myParamTOKEN = location.search.split('code=')[1];
-  location.replace("https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN + "&redirect_uri=https://ramoni13.github.io/DJ_Festival/application.html");
+var myParamTOKEN = location.search.split('code=')[1]
+	// title=titre_Playlist
+	//http://api.deezer.com/playlist/<playlist_id>/tracks?access_token=<access_token>&request_method=post&songs=<track_id>
+		let url = "https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN ;
+		//var myHeaders = new Headers();
+			fetch(url)
+			.then(response => response.json())
+			.then(data => {
+			   console.log(data);
+			   location.replace("https://ramoni13.github.io/DJ_Festival/application.html&code="+ data[0]);
+			   //for (j = 0; j < playlist.length; j++) {
+			});
+
 }
 
 
