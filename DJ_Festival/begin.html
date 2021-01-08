@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<body>
+<body onload="javascript:cacheIframe()">
 <head>
 	<style>
         	body, button {
@@ -12,14 +12,29 @@
 <h2>DJ's Party Mix Festival</h2>
 
 <button onclick="myFunction()">GO !</button>
-
+<!--<button onclick="myBody()">Récupère body</button>-->
+<iframe id="framedeezer"
+ src=""
+ width="100%" height="500"
+ sandbox>
+</iframe>
 <script>
+function cacheIframe() {
+document.getElementById("framedeezer").style.display = 'none';
+}
+
 function myFunction() {
 var myParamTOKEN = location.search.split('code=')[1]
-location.replace("https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN );
+document.getElementById("framedeezer").style.display = 'block';
+//var divdeez2 = document.getElementById("framedeezer");
+//var srcdeez2 = divdeez2.getAttribute("src");
+//srcdeez2= "https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN;
+//divdeez2.setAttribute("src", srcdeez2);
+//console.log("iframe=", divdeez2);
+//location.replace("https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN );
 	// title=titre_Playlist
 	//http://api.deezer.com/playlist/<playlist_id>/tracks?access_token=<access_token>&request_method=post&songs=<track_id>
-		/*
+		
 		let url = "https://cors-anywhere.herokuapp.com/https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN ;
 			fetch(url)
 			.then(response => response.json())
@@ -28,9 +43,15 @@ location.replace("https://connect.deezer.com/oauth/access_token.php?app_id=45546
 			   location.replace("https://ramoni13.github.io/DJ_Festival/application.html&code="+ data[0]);
 			   //for (j = 0; j < playlist.length; j++) {
 			});
-		*/
+		
 }
 
+function myBody() {
+	
+	var divdeez2 = document.getElementById("framedeezer");
+	var test = divdeez2.getElementsByTagName("body");
+	console.log(test);
+}
 
 </script>
 
