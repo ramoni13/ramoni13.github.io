@@ -68,6 +68,7 @@ function httpGet(theUrl)
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
     xmlHttp.setRequestHeader('X-PINGOTHER', 'pingpong');
+    xmlHttp.setRequestHeader('Access-Control-Allow-Origin: *');
     xmlHttp.setRequestHeader('Content-Type', 'application/xml');
 	xmlHttp.send( null );
     return xmlHttp.responseText;
