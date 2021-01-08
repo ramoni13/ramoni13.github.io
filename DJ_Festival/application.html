@@ -6,10 +6,19 @@
 <script src="https://ramoni13.github.io/DJ_Festival/html5-qrcode.min.js"></script>
 
 	<style>
-        	body, button {
-			font-size: 72px;
+        	body, span, select {
+			font-size: 40px;
 		}
-		
+		button {
+		  background-color: #008CBA;
+		  border: none;
+		  color: white;
+		  padding: 15px 32px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  font-size: 72px;
+		}
 	</style>
 </head>
 <script>
@@ -43,19 +52,27 @@
 	};
 	function validerPlaylist() {
 	var myParamTOKEN = location.search.split('code=')[1]
-	// title=titre_Playlist
-	//http://api.deezer.com/playlist/<playlist_id>/tracks?access_token=<access_token>&request_method=post&songs=<track_id>
 		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists?title='A_B'&access_token="+ myParamTOKEN +"&request_method=post";
-		//var myHeaders = new Headers();
-		var myInit = { method: 'POST' }; //,
-               //headers: myHeaders,
-               //mode: 'cors',
-               //cache: 'default' };			
-			fetch(url, myInit)
+		var myInit = { method: 'POST' };
+    		fetch(url, myInit)
 			.then(response => response.json())
 			.then(data => {
 			   console.log(data);
-			   //for (j = 0; j < playlist.length; j++) {
+			   const obj = JSON.parse(data);
+			   var listeTrack = "";
+			   for (j = 0; j < playlist.length; j++) {
+				listeTrack = listeTrack + playlist[j];
+				if (j+1 !== length) {
+					listeTrack = listeTrack + ",";
+					}
+			   }
+			   url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/playlist/" + obj.id + "/tracks?access_token="+ myParamTOKEN +"&request_method=post&songs=" + listeTrack;
+			   myInit = { method: 'POST' };
+				fetch(url, myInit)
+				.then(response => response.json())
+				.then(data => {
+					console.log(data);
+				});
 			});
 			
 			// user id = 7048859
