@@ -134,13 +134,13 @@
 
 <body width="800px" onload="javascript:init()">
 	<h2>DJ's Party Mix Festival</h2>
-		<div width="800px" id="idTrackDiv">
+		<div width="800px" id="idTrackDiv" hidden="hidden">
 			<div id="idTrack"></div>
 			<div id="goListen">
 				<button onclick="javascript:readTrack()">Ecouter le morceau</button>
 			</div>
 		</div>
-	<div width="800px" id="playlistDiv">
+	<div width="800px" id="playlistDiv" hidden="hidden">
 		<div id="nbMorceaux">Nb Tracks=0</div>
 		<button onclick="javascript:validerPlaylist()">Créer Playlist</button>
 		<button onclick="javascript:init()">Menu</button>
@@ -148,13 +148,13 @@
 	
 	<div width="800px" id="menu">
 		<button onclick="javascript:oneSong()">Ecouter 1 chanson</button>
-		<br>
+		<br><br><br>
 		<button onclick="javascript:createPlaylist()">Créer 1 playlist</button>
 	</div>
 	
 	<div width="800px" id="reader"></div>
 	
-	<div width="800px" id="playerDeezer">
+	<div width="800px" id="playerDeezer" hidden="hidden">
 		<div >
 		  <iframe id="deezer-player" scrolling="no" frameborder="0" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&app_id=455462" width="700" height="350" style="border-right: 2px solid #5D5D5D;"></iframe>
 		</div>
