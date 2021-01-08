@@ -52,39 +52,35 @@
 		}
 	};
 	function validerPlaylist() {
-	var myParamTOKEN = location.search.split('code=')[1]
-		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists?title='A_B'&access_token="+ myParamTOKEN +"&request_method=post";
-		var myInit = { method: 'POST' };
-    		fetch(url, myInit)
-			.then(response => response.json())
-			.then(data => {
-			   console.log(data);
-			   idPlaylist = data.id;
-			   var listeTrack = "";
-			   for (j = 0; j < playlist.length; j++) {
-				listeTrack = listeTrack + playlist[j];
-				if (j+1 !== playlist.length) {
-					listeTrack = listeTrack + ",";
-					}
-			   }
-			   url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/playlist/" + data.id + "/tracks?access_token="+ myParamTOKEN +"&request_method=post&songs=" + listeTrack;
-			   myInit = { method: 'POST' };
+		if (playlist.length > 0) {
+			var myParamTOKEN = location.search.split('code=')[1]
+			let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists?title='A_B'&access_token="+ myParamTOKEN +"&request_method=post";
+			var myInit = { method: 'POST' };
 				fetch(url, myInit)
 				.then(response => response.json())
 				.then(data => {
-					console.log(data);
-					if (data == true) {
-						document.getElementById("nbMorceaux").innerHTML = "Playlist créée <button onclick='javascript:readPlaylist()'>Ecouter Playlist</button>";
-					}
+				   console.log(data);
+				   idPlaylist = data.id;
+				   var listeTrack = "";
+				   for (j = 0; j < playlist.length; j++) {
+					listeTrack = listeTrack + playlist[j];
+					if (j+1 !== playlist.length) {
+						listeTrack = listeTrack + ",";
+						}
+				   }
+				   url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/playlist/" + data.id + "/tracks?access_token="+ myParamTOKEN +"&request_method=post&songs=" + listeTrack;
+				   myInit = { method: 'POST' };
+					fetch(url, myInit)
+					.then(response => response.json())
+					.then(data => {
+						console.log(data);
+						if (data == true) {
+							document.getElementById("nbMorceaux").innerHTML = "Playlist créée <button onclick='javascript:readPlaylist()'>Ecouter Playlist</button>";
+						}
+					});
 				});
-			});
-			
-			// user id = 7048859
-			/*
-			user/{user_id}/playlists	Create a playlist	
-			playlist/{playlist_id}/tracks Add a track to the playlist
-			
-			*/
+				// user id = 7048859
+		}
 	}
 	function init() {
 		document.getElementById("reader").style.display = 'none';
@@ -121,8 +117,10 @@
 		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
 	function readPlaylist() {
+		playlist = [];
 		document.getElementById("reader").style.display = 'none';
 		document.getElementById("idTrackDiv").style.display = 'none';
+		document.getElementById("playlistDiv").style.display = 'none';
 		document.getElementById("playerDeezer").style.display = 'block';
 		var divdeez2 = document.getElementById("deezer-player");
 		var srcdeez2 = divdeez2.getAttribute("src");
