@@ -1,16 +1,22 @@
-
 <!DOCTYPE html>
 <html>
 <body>
+<head>
+	<style>
+        	body, button {
+			font-size: 40px;
+		}
+		
+	</style>
+</head>
+<h2>Redirect to a Webpage</h2>
+<p>The replace() method replaces the current document with a new one:</p>
 
-<h2>Bienvenue !</h2>
-<p>Vous allez étre redirigé vers la page de connexion de Deezer pour vous authentifier</p>
-
-<button onclick="myFunction()">Démarrer</button>
+<button onclick="myFunction()">Replace document</button>
 
 <script>
 function myFunction() {
-  location.replace("https://connect.deezer.com/oauth/auth.php?app_id=455462&redirect_uri=https://ramoni13.github.io/DJ_Festival/application.html&perms=basic_access,email")
+  location.replace("https://connect.deezer.com/oauth/auth.php?app_id=455462&redirect_uri=https://ramoni13.github.io/DJ_Festival/application.html&perms=basic_access,email,offline_access,manage_library,manage_community,delete_library,listening_history")
 }
 </script>
 
