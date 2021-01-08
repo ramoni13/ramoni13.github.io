@@ -1,66 +1,31 @@
 <!DOCTYPE html>
 <html>
-<body onload="javascript:cacheIframe()">
+<body onload="javascript:myFunction()">
 <head>
 	<style>
-        	body, button {
+        	body {
 			font-size: 40px;
 		}
-		
+		button {
+		  background-color: #008CBA;
+		  border: none;
+		  color: white;
+		  padding: 15px 32px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  font-size: 72px;
+		}
 	</style>
 </head>
 <h2>DJ's Party Mix Festival</h2>
 
-<button onclick="myFunction()">GO !</button>
-<!--<button onclick="myBody()">Récupère body</button>-->
-<iframe id="framedeezer"
- src=""
- width="100%" height="500"
- sandbox>
-</iframe>
 <script>
-function cacheIframe() {
-document.getElementById("framedeezer").style.display = 'none';
-}
 
 function myFunction() {
-var myParamTOKEN = location.search.split('code=')[1]
-document.getElementById("framedeezer").style.display = 'block';
-//var divdeez2 = document.getElementById("framedeezer");
-//var srcdeez2 = divdeez2.getAttribute("src");
-//srcdeez2= "https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN;
-//divdeez2.setAttribute("src", srcdeez2);
-//console.log("iframe=", divdeez2);
-//location.replace("https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN );
-	// title=titre_Playlist
-	//http://api.deezer.com/playlist/<playlist_id>/tracks?access_token=<access_token>&request_method=post&songs=<track_id>
-		
-		let url = "https://cors-anywhere.herokuapp.com/https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN ;
-		//let url = "https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN ;
-		
-		httpGet(url);
-		//file_get_contents(url, console.log);	
-		//location.replace(url);
-		
-		
-		
-		/*
-		fetch(url)
-			.then(response => response.json())
-			.then(data => {
-			   console.log(data);
-			   location.replace("https://ramoni13.github.io/DJ_Festival/application.html&code="+ data[0]);
-			   //for (j = 0; j < playlist.length; j++) {
-			});
-		*/
-}
-
-function file_get_contents(uri, callback) {
-    fetch(uri)
-	.then(res => res.text())
-	.then(
-	text => callback(text)
-	);
+	var myParamTOKEN = location.search.split('code=')[1]
+	let url = "https://cors-anywhere.herokuapp.com/https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN ;
+	httpGet(url);
 }
 
 function httpGet(theUrl)
@@ -73,15 +38,7 @@ function httpGet(theUrl)
 	xmlHttp.send( null );
     var data = [];
 	data = xmlHttp.responseText.split('access_token=')
-	location.replace("https://ramoni13.github.io/DJ_Festival/application.html?code="+ data[1]);
-	//return xmlHttp.responseText;
-}
-
-function myBody() {
-	
-	var divdeez2 = document.getElementById("framedeezer");
-	var test = divdeez2.getElementsByTagName("body");
-	console.log(test);
+	location.replace("https://ramoni13.github.io/DJ_Festival/application.html&code="+ data[1]);
 }
 
 </script>
