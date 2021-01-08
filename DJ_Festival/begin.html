@@ -37,7 +37,8 @@ document.getElementById("framedeezer").style.display = 'block';
 		
 		//let url = "https://cors-anywhere.herokuapp.com/https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN ;
 		let url = "https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=" + myParamTOKEN ;
-		file_get_contents(url, console.log);	
+		//file_get_contents(url, console.log);	
+		location.replace(url);
 		/*
 		fetch(url)
 			.then(response => response.json())
