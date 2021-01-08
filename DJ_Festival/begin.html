@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+	<style>
+        	body, button {
+			font-size: 40px;
+		}
+		
+	</style>
+</head>
+<h2>DJ's Party Mix Festival</h2>
+
+<button onclick="myFunction()">GO !</button>
+
+<script>
+function myFunction() {
+var myParamTOKEN = location.search.split('code=')[1];
+  location.replace("https://connect.deezer.com/oauth/access_token.php?app_id=455462&secret=b8c0dea5060c49b52d5df1e0762e8c8d&code=myParamTOKEN&redirect_uri=https://ramoni13.github.io/DJ_Festival/application.html");
+}
+
+
+</script>
+
+</body>
+</html> 
