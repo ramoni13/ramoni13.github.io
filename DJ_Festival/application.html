@@ -53,8 +53,10 @@
 	};
 	function validerPlaylist() {
 		if (playlist.length > 0) {
-			var myParamTOKEN = location.search.split('code=')[1]
-			let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists?title='A_B'&access_token="+ myParamTOKEN +"&request_method=post";
+			var myParamTOKEN = location.search.split('code=')[1];
+			var date = new Date()
+			var nomPlaylist = "_DPMF_" + ('0'+date.getDate()).slice(-2)+"/"+('0'+(date.getMonth()+1)).slice(-2)+"/"+date.getFullYear();
+			let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/user/7048859/playlists?title='" + nomPlaylist + "'&access_token="+ myParamTOKEN +"&request_method=post";
 			var myInit = { method: 'POST' };
 				fetch(url, myInit)
 				.then(response => response.json())
@@ -114,7 +116,6 @@
 		var srcdeez2 = divdeez2.getAttribute("src");
 		srcdeez2= srcdeez2 + "&type=tracks&id=" + idTrackScan;
 		divdeez2.setAttribute("src", srcdeez2);
-		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
 	function readPlaylist() {
 		playlist = [];
@@ -126,7 +127,6 @@
 		var srcdeez2 = divdeez2.getAttribute("src");
 		srcdeez2= srcdeez2 + "&type=playlist&id=" + idPlaylist;
 		divdeez2.setAttribute("src", srcdeez2);
-		//document.getElementById("deezer-player").src = document.getElementById("deezer-widget-player").src  + "&id=" + idTrack;
 	}
 </script>
 
