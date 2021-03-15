@@ -30,7 +30,7 @@
 <div id="controlers">
  <input type="button" onclick="DZ.player.play(); return false;" value="play"/>
 	<input type="button" onclick="DZ.player.pause(); return false;" value="pause"/>
-	<input type="button" onclick="DZ.player.seek(22); return false;" value="play"/>
+	<input type="button" onclick="DZ.player.seek(50); return false;" value="Play 50%"/>
 	<!--<input type="button" onclick="DZ.player.playAlbum(302127); return false;" value="Play Daft Punk - Discovery"/>
 	<input type="button" onclick="DZ.player.playAlbum(301775); return false;" value="Play Daft Punk - Homework"/>
 	<br/>
@@ -62,10 +62,13 @@
 	function event_listener_append() {
 		var pre = document.getElementById('event_listener');
 		var line = [];
-		for (var i = 0; i < arguments.length; i++) {
-			line.push(arguments[i]);
-		}
-		pre.innerHTML += line.join(' ') + "\n";
+		//for (var i = 0; i < arguments.length; i++) {
+		//	line.push(arguments[i]);
+		//}
+		var minutes = Math.floor(time / 60);
+		var seconds = time - minutes * 60;
+		//pre.innerHTML += line.join(' ') + "\n";
+		pre.innerHTML = minutes + ":" + seconds;
 	}
 	function onPlayerLoaded() {
 		$("#controlers input").attr('disabled', false);
@@ -86,7 +89,7 @@
 			cover : true,
 			playlist : true,
 			width : 650,
-			height : 300,
+			height : 100,
 			onload : onPlayerLoaded
 		}
 	});
