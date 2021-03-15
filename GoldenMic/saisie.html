@@ -234,11 +234,12 @@ function cherche()
 				" -- rank=" + rank + 
 				" -- duree en secondes=" + duration +
 				" -- idTrack=" + idTrack;
-				document.getElementById("playerDeezer").style.display = 'block';
-        		var divdeez2 = document.getElementById("deezer-player");
-        		var srcdeez2 = divdeez2.getAttribute("src");
-        		srcdeez2= srcdeez2 + "&type=tracks&id=" + idTrack;
-        		divdeez2.setAttribute("src", srcdeez2);
+			//document.getElementById("playerDeezer").style.display = 'block';
+        		//var divdeez2 = document.getElementById("deezer-player");
+        		//var srcdeez2 = divdeez2.getAttribute("src");
+        		//srcdeez2= srcdeez2 + "&type=tracks&id=" + idTrack;
+        		//divdeez2.setAttribute("src", srcdeez2);
+			DZ.player.playTracks(idTracks);
 			});
 			
 		});
