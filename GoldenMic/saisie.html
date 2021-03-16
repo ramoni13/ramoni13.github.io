@@ -61,10 +61,11 @@
 			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
 		});
 	});
+	var tps;
+	var tpsencours;
 	function rewind() {
 		var pre = document.getElementById('event_listener');
-		var tps = arguments[1];
-		var coef = 100/arguments[2];
+		var coef = 100/tpsencours;
 		var pourcentage = tps * coef;
 		if (pourcentage<0) {pourcentage = 0};
 		DZ.player.seek(pourcentage);
@@ -83,6 +84,8 @@
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
 		});
 		DZ.Event.subscribe('player_position', function(arg){
+			tps= args[1];
+			tpsencours = args[0]; 
 			event_listener_append('position', arg[0], arg[1]);
 			$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
 		});
