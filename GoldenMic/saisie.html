@@ -230,7 +230,7 @@ function cherche()
 				titre = element.title_short;
 				idTrack = element.id;
 				duration = element.duration;
-				album = element.album.title_short !== undefined ? data2.album.title_short : data2.album.title;
+				album = element.album.title_short !== undefined ? element.album.title_short : element.album.title;
 				artiste	= element.artist.name;
 				document.getElementById("deezerResult").innerHTML += 
 				titre + 
