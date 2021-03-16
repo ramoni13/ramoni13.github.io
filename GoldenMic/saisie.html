@@ -125,19 +125,19 @@
 <table border="1px">
       <tr>
           <td>
-              <label>Artist: </label><input class="form-control" name="artist" data-type="text" type="text">
+              <label>Artist: </label><input class="form-control" id="artist" name="artist" data-type="text" type="text">
           </td>
           <td>
-              <label>Titre: </label><input class="form-control" name="titre" data-type="text" type="text">
+              <label>Titre: </label><input class="form-control" id="titre" name="titre" data-type="text" type="text">
           </td>
           <td>
-              <label>Nbmotsstop: </label><input class="form-control" name="nbMotsStop" data-type="text" type="text">
+              <label>Nbmotsstop: </label><input class="form-control" id="nbMotsStop" name="nbMotsStop" data-type="text" type="text">
           </td>
           <td>
-              <label>Theme: </label><input class="form-control" name="theme" data-type="text" type="text">
+              <label>Theme: </label><input class="form-control" id="theme" name="theme" data-type="text" type="text">
           </td>
           <td>
-              <label>Iddeezer: </label><input class="form-control" name="idDeezer" data-type="text" type="text">
+              <label>Iddeezer: </label><input class="form-control" id="idDeezer" name="idDeezer" data-type="text" type="text">
           </td>
           <td>
                 <div id="fg-errors" class="form-group">
@@ -147,24 +147,24 @@
       </tr>
       <tr>
           <td colspan="2">
-              <label>Timestop1: </label><input class="form-control" name="timestop1" data-type="text" type="text">
+              <label>Timestop1: </label><input class="form-control" id="timestop1" name="timestop1" data-type="text" type="text">
           </td>
           <td colspan="2">
-              <label>Timestop2: </label><input class="form-control" name="timestop2" data-type="text" type="text">
+              <label>Timestop2: </label><input class="form-control" id="timestop2" name="timestop2" data-type="text" type="text">
           </td>
           <td colspan="2">
-              <label>Timestop3: </label><input class="form-control" name="timestop3" data-type="text" type="text">
+              <label>Timestop3: </label><input class="form-control" id="timestop3" name="timestop3" data-type="text" type="text">
           </td>
       </tr>
       <tr>
           <td colspan="2">
-              <label>Lyricsstop1: </label><input class="form-control" name="lyricsstop1" data-type="text" type="text">
+              <label>Lyricsstop1: </label><input class="form-control" id="lyricsstop1" name="lyricsstop1" data-type="text" type="text">
           </td>
           <td colspan="2">
-              <label>Lyricsstop2: </label><input class="form-control" name="lyricsstop2" data-type="text" type="text">
+              <label>Lyricsstop2: </label><input class="form-control" id="lyricsstop2" name="lyricsstop2" data-type="text" type="text">
           </td>
           <td colspan="2">
-              <label>Lyricsstop3: </label><input class="form-control" name="lyricsstop3" data-type="text" type="text">
+              <label>Lyricsstop3: </label><input class="form-control" id="lyricsstop3" name="lyricsstop3" data-type="text" type="text">
           </td>
       </tr>
   </table> 
@@ -236,12 +236,16 @@ function cherche()
 				" (" + album + ")" +
 				" -- " + duration + " secs" +
 				" -- idTrack=" + idTrack + 
-				" <input type='button' value='Play' onclick='DZ.player.playTracks([" + idTrack + "])'>" +
+				" <input type='button' value='Play' onclick='chargeValeurs('" + titre + "','" + artiste + "','" + idTrack + "');DZ.player.playTracks([" + idTrack + "])'>" +
 				"<BR>";
 			}
 		});
 	}
-	
+function chargeValeurs(titre,artiste,idTrack) {
+	document.getElementById("artist").innerHTML = artiste;
+	document.getElementById("titre").innerHTML = titre;
+	document.getElementById("idDeezer").innerHTML = idTrack;
+}
 $(function () {
 
   // put your own error messages and/or message translation logic here
