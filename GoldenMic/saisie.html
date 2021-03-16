@@ -215,6 +215,7 @@
 
 function cherche() 
 	{
+		document.getElementById("deezerResult").innerHTML = "";
 		let artiste = document.getElementById("artistIn").value;
 		let track = document.getElementById("trackIn").value;
 		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=track:'" + track + "'";
