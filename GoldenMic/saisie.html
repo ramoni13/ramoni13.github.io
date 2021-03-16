@@ -239,6 +239,9 @@ function cherche()
 				" <input type=\"button\" value=\"Play\" onclick=\"javascript:chargeValeurs('" + titre + "','" + artiste + "','" + idTrack + "');\">" +
 				"<BR>";
 			}
+			if (compteur == 0) {
+				document.getElementById("deezerResult").innerHTML = "Aucun résultat.";
+			}
 		});
 	}
 function chargeValeurs(titre,artiste,idTrack) {
