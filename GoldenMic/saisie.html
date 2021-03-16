@@ -224,33 +224,29 @@ function cherche()
 		fetch(url)
 		.then(response => response.json())
 		.then(data => {
-			let retourDeezer = data.data[0];
+			data.data.forEach(element => afficheDetail(element));
+
+			function afficheDetail(element) {
+				console.log(element);
+			}
+			/*
 			titre = retourDeezer.title_short;
 			idTrack = retourDeezer.id;
 			rank = retourDeezer.rank;
 			duration = retourDeezer.duration;
-			let url2 = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/track/" + idTrack;
-			fetch(url2)
-			.then(response => response.json())
-			.then(data2 => {
-				bpm = data2.bpm;
-				album = data2.album.title_short !== undefined ? data2.album.title_short : data2.album.title;
-				cover = data2.album.cover_small;
-				artiste	= retourDeezer.artist.name;
-				document.getElementById("deezerResult").innerHTML = 
-				"titre=" + titre + 
-				" -- artiste=" + artiste + 
-				" -- rank=" + rank + 
-				" -- duree en secondes=" + duration +
-				" -- idTrack=" + idTrack;
-			//document.getElementById("playerDeezer").style.display = 'block';
-        		//var divdeez2 = document.getElementById("deezer-player");
-        		//var srcdeez2 = divdeez2.getAttribute("src");
-        		//srcdeez2= srcdeez2 + "&type=tracks&id=" + idTrack;
-        		//divdeez2.setAttribute("src", srcdeez2);
-			DZ.player.playTracks([idTrack]);
-			});
+			bpm = data2.bpm;
+			album = data2.album.title_short !== undefined ? data2.album.title_short : data2.album.title;
+			cover = data2.album.cover_small;
+			artiste	= retourDeezer.artist.name;
+			document.getElementById("deezerResult").innerHTML = 
+			"titre=" + titre + 
+			" -- artiste=" + artiste + 
+			" -- rank=" + rank + 
+			" -- duree en secondes=" + duration +
+			" -- idTrack=" + idTrack;
 			
+			DZ.player.playTracks([idTrack]);
+			*/
 		});
 	}
 	
