@@ -122,14 +122,6 @@
 			</td>
 		</tr>
 	</table>
-</center>
-<div id="playerDeezer" hidden="hidden">
-		<div >
-		  <iframe id="deezer-player" scrolling="no" frameborder="0" 
-		  src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&app_id=455462" 
-		  width="700" height="100" style="border-right: 2px solid #5D5D5D;"></iframe>
-		</div>
-	</div>
 <table border="1px">
       <tr>
           <td>
@@ -175,7 +167,8 @@
               <label>Lyricsstop3: </label><input class="form-control" name="lyricsstop3" data-type="text" type="text">
           </td>
       </tr>
-  </table>   
+  </table> 
+</center>
 <!--  
 <div class="form-group">
   <label>Artist: </label><input class="form-control" name="artist" data-type="text" type="text">
@@ -227,16 +220,18 @@ function cherche()
 		fetch(url)
 		.then(response => response.json())
 		.then(data => {
+			var compteur = 0;
 			data.data.forEach(element => afficheDetail(element));
 
 			function afficheDetail(element) {
+				compteur++;
 				titre = element.title;
 				idTrack = element.id;
 				duration = element.duration;
 				album = element.album.title;
 				artiste	= element.artist.name;
 				document.getElementById("deezerResult").innerHTML += 
-				artiste + 
+				compteur + " - " + artiste + 
 				" -- " + titre + 
 				" (" + album + ")" +
 				" -- " + duration + " secs" +
