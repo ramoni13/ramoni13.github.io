@@ -28,9 +28,11 @@
 <div id="player" style="width:100%;" align="center"></div>
 <br/>
 <div id="controlers">
- <input type="button" onclick="DZ.player.play(); return false;" value="play"/>
-	<input type="button" onclick="DZ.player.pause(); return false;" value="pause"/>
-	<input type="button" onclick="DZ.player.seek(50); return false;" value="Play 50%"/>
+	<center>
+ 		<input type="button" onclick="DZ.player.play(); return false;" value="play"/>
+		<input type="button" onclick="DZ.player.pause(); return false;" value="pause"/>
+		<input type="button" onclick="rewind(); return false;" value="-5 secondes"/>
+	</center>
 	<!--<input type="button" onclick="DZ.player.playAlbum(302127); return false;" value="Play Daft Punk - Discovery"/>
 	<input type="button" onclick="DZ.player.playAlbum(301775); return false;" value="Play Daft Punk - Homework"/>
 	<br/>
@@ -59,15 +61,19 @@
 			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
 		});
 	});
+	function rewind() {
+		var pre = document.getElementById('event_listener');
+		var tps = arguments[1];
+		var coef = 100/arguments[2];
+		var pourcentage = tps * coef;
+		if (pourcentage<0) {pourcentage = 0};
+		DZ.player.seek(pourcentage);
+	}
 	function event_listener_append() {
 		var pre = document.getElementById('event_listener');
-		var line = [];
-		//for (var i = 0; i < arguments.length; i++) {
-		//	line.push(arguments[i]);
-		//}
 		var minutes = Math.floor(arguments[1] / 60);
 		var seconds = arguments[1] - minutes * 60;
-		//pre.innerHTML += line.join(' ') + "\n";
+		seconds = Math.round(seconds * 100) / 100
 		pre.innerHTML = minutes + ":" + seconds;
 	}
 	function onPlayerLoaded() {
