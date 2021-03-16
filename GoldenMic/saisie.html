@@ -257,7 +257,10 @@ function chercheParoles() {
 	var artistePlay = document.getElementById("artist").value;
 	var titrePlay = document.getElementById("titre").value;
 	if ((artistePlay) && (titrePlay)) {
-		var urlTab = "https://www.paroles.net/" + artistePlay.replace(/\s+/g,"-") + "/paroles-" + titrePlay.replace(/\s+/g,"-");
+		artistePlay = artistePlay.replace(/\s+/g,"-");
+		titrePlay = titrePlay.replace(/\s+/g,"-");
+		var urlTab = "https://www.paroles.net/" + artistePlay + "/paroles-" + titrePlay;
+		urlTab = urlTab.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 		window.open(urlTab, '_blank');
 	}
 }
