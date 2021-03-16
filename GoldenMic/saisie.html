@@ -277,8 +277,8 @@ function chercheParoles() {
 	var artistePlay = document.getElementById("artist").value;
 	var titrePlay = document.getElementById("titre").value;
 	if ((artistePlay) && (titrePlay)) {
-		artistePlay = artistePlay.replace(/[&\/\\\-#,+()$~%.'":*?<>{}]/g,'');
-		titrePlay = titrePlay.replace(/[&\/\\\-#,+()$~%.'":*?<>{}]/g,'');
+		artistePlay = artistePlay.replace(/[&\/\\\-#,+()$~%.'":*?<>{}]/g,'').trim();
+		titrePlay = titrePlay.replace(/[&\/\\\-#,+()$~%.'":*?<>{}]/g,'').trim();
 		artistePlay = artistePlay.replace(/\s+/g,"-");
 		titrePlay = titrePlay.replace(/\s+/g,"-");
 		var urlTab = "https://www.paroles.net/" + artistePlay + "/paroles-" + titrePlay;
