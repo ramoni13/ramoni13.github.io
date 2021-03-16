@@ -227,14 +227,15 @@ function cherche()
 			data.data.forEach(element => afficheDetail(element));
 
 			function afficheDetail(element) {
-				titre = element.title_short;
+				titre = element.title;
 				idTrack = element.id;
 				duration = element.duration;
-				album = element.album.title_short !== undefined ? element.album.title_short : element.album.title;
+				album = element.album.title;
 				artiste	= element.artist.name;
 				document.getElementById("deezerResult").innerHTML += 
-				titre + 
-				" -- " + artiste + 
+				artiste + 
+				" -- " + titre + 
+				" (" + album + ")" +
 				" -- " + duration + " secs" +
 				" -- idTrack=" + idTrack + 
 				" <input type='button' value='Play' onclick='DZ.player.playTracks([" + idTrack + "])'>" +
