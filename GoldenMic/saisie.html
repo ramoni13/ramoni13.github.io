@@ -258,7 +258,7 @@ function chercheParoles() {
 	var titrePlay = document.getElementById("titre").value;
 	if ((artistePlay) && (titrePlay)) {
 		var urlTab = "https://www.paroles.net/" + artistePlay.replace(/\s+/g,"-") + "/paroles-" + titrePlay.replace(/\s+/g,"-");
-		var win = window.open(urlTab, '_blank');
+		window.open(urlTab, '_blank');
 	}
 }
 	
