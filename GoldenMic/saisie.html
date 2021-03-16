@@ -227,26 +227,19 @@ function cherche()
 			data.data.forEach(element => afficheDetail(element));
 
 			function afficheDetail(element) {
-				console.log(element);
+				titre = element.title_short;
+				idTrack = element.id;
+				duration = element.duration;
+				album = element.album.title_short !== undefined ? data2.album.title_short : data2.album.title;
+				artiste	= element.artist.name;
+				document.getElementById("deezerResult").innerHTML += 
+				titre + 
+				" -- " + artiste + 
+				" -- " + duration + "secs" +
+				" -- idTrack=" + idTrack + 
+				" <input type='button' value='Play' onclick='DZ.player.playTracks([" + idTrack + "])'>" +
+				"\n";
 			}
-			/*
-			titre = retourDeezer.title_short;
-			idTrack = retourDeezer.id;
-			rank = retourDeezer.rank;
-			duration = retourDeezer.duration;
-			bpm = data2.bpm;
-			album = data2.album.title_short !== undefined ? data2.album.title_short : data2.album.title;
-			cover = data2.album.cover_small;
-			artiste	= retourDeezer.artist.name;
-			document.getElementById("deezerResult").innerHTML = 
-			"titre=" + titre + 
-			" -- artiste=" + artiste + 
-			" -- rank=" + rank + 
-			" -- duree en secondes=" + duration +
-			" -- idTrack=" + idTrack;
-			
-			DZ.player.playTracks([idTrack]);
-			*/
 		});
 	}
 	
