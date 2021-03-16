@@ -65,8 +65,8 @@
 	var tpsencours;
 	function rewind() {
 		var pre = document.getElementById('event_listener');
-		var coef = 100/tpsencours;
-		var pourcentage = tps * coef;
+		var coef = 100/tps;
+		var pourcentage = tpsencours * coef;
 		if (pourcentage<0) {pourcentage = 0};
 		DZ.player.seek(pourcentage);
 	}
