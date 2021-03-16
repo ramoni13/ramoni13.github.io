@@ -236,7 +236,7 @@ function cherche()
 				" (" + album + ")" +
 				" -- " + duration + " secs" +
 				" -- idTrack=" + idTrack + 
-				" <input type='button' value='Play' onclick='chargeValeurs(" + titre + "," + artiste + "," + idTrack + ");DZ.player.playTracks([" + idTrack + "])'>" +
+				" <input type='button' value='Play' onclick='javascript:chargeValeurs(" + titre + "," + artiste + "," + idTrack + ");'>" +
 				"<BR>";
 			}
 		});
@@ -245,6 +245,8 @@ function chargeValeurs(titre,artiste,idTrack) {
 	document.getElementById("artist").value = artiste;
 	document.getElementById("titre").value = titre;
 	document.getElementById("idDeezer").value = idTrack;
+	var tableauD = [idTrack];
+	DZ.player.playTracks(tableauD);
 }
 $(function () {
 
