@@ -115,11 +115,14 @@
 			</td>
 			<td >
 				<input type="button" value="Cherche sur Deezer" onclick="cherche()">
+				-------- La recherche n'aboutit pas ? 
+				<input type="button" value="Débloquer"
+				onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">
 			</td>
 	    </tr>
 	    <tr>
 			<td text-align="left" colspan="3">
-				<div id="restDbResult" style="color:red"></div>
+				<div id="restDbResult"></div>
 				<div id="deezerResult"></div>
 			</td>
 		</tr>
