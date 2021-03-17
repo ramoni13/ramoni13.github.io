@@ -255,12 +255,11 @@ function chargeValeurs(titre,artiste,idTrack) {
 		document.getElementById("restDbResult").innerHTML = "";
 		response.forEach(element => controlerPresence(element));
 		if (infoPresence !== "") {
-			document.getElementById("restDbResult").innerHTML = "<span class='bi bi-exclamation-triangle'><BR>" + 
-			infoPresence;
+			document.getElementById("restDbResult").innerHTML = infoPresence + "<BR>";
 		}
 		function controlerPresence(element){
 			if (element.artist == document.getElementById("artist").value) {
-				infoPresence += "<BR>En base : " + element.artist + " Chanson : " + element.titre + " Nb Mots : " + element.nbMotsStop;
+				infoPresence += "<BR>!!! --> En base : <B>" + element.artist + "</B> Chanson : <B>" + element.titre + "</b> Nb Mots : <B>" + element.nbMotsStop + "</B>";
 			}
 		}
 	})
