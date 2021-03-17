@@ -119,8 +119,8 @@
 	    </tr>
 	    <tr>
 			<td text-align="left" colspan="3">
-				<div id="deezerResult"></div>
 				<div id="restDbResult"></div>
+				<div id="deezerResult"></div>
 			</td>
 		</tr>
 	</table>
@@ -255,7 +255,7 @@ function chargeValeurs(titre,artiste,idTrack) {
 		document.getElementById("restDbResult").innerHTML = "";
 		response.forEach(element => controlerPresence(element));
 		if (infoPresence !== "") {
-			document.getElementById("restDbResult").innerHTML = infoPresence;
+			document.getElementById("restDbResult").innerHTML = "<span class="bi bi-exclamation-triangle"><BR>" + infoPresence;
 		}
 		function controlerPresence(element){
 			if (element.artist == document.getElementById("artist").value) {
