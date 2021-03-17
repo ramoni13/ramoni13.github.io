@@ -263,7 +263,7 @@ function cherche()
 					document.getElementById("deezerResult").innerHTML += infoPresence;
 				}
 				function controlerPresence(element){
-					if (element.artist == document.getElementById("artist").value) {
+					if (element.artist == document.getElementById("artistIn").value) {
 						infoPresence += "<BR>En base : " + element.artist + " Chanson : " + element.titre + " Nb Mots : " + element.nbMotsStop;
 					}
 				}
