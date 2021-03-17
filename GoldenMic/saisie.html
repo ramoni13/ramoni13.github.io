@@ -257,6 +257,16 @@ function cherche()
 			$.ajax(ajaxSettings)
 			.done(function (response) {
 				console.log(response);
+				var infoPresence = "";
+				response.forEach(element => controlerPresence(element));
+				if (infoPresence !== "") {
+					document.getElementById("deezerResult").innerHTML += infoPresence;
+				}
+				function controlerPresence(element){
+					if (element.artist == document.getElementById("artist").value) {
+						infoPresence += "<BR>En base : " + element.artist + " Chanson : " + element.titre + " Nb Mots : " + element.nbMotsStop;
+					}
+				}
 			})
 			.fail(function (response) {
 			  $("#btn-submit").button("reset");
