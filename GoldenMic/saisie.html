@@ -242,7 +242,43 @@ function cherche()
 			}
 			if (compteur == 0) {
 				document.getElementById("deezerResult").innerHTML = "Aucun résultat.";
-			}
+			} 
+			var ajaxSettings = {
+				"async": true,
+				"crossDomain": true,
+				"url": "https://cors-anywhere.herokuapp.com/https://goldenmic-0ff1.restdb.io/rest/titres",
+				"method": "GET",
+				"headers": {
+				  "x-apikey": "fc15604b765756181951a03f7196297f43ff8",
+				  "content-type": "application/json"
+				},
+				"processData": false
+			  }
+			$.ajax(ajaxSettings)
+			.done(function (response) {
+				console.log(response);
+			})
+			.fail(function (response) {
+			  $("#btn-submit").button("reset");
+			  var error = response.responseJSON;
+			  if (error && error.name==="ValidationError"){
+				_.each(error.list,function(fielderr){
+				  var inputSelector = "[name="+fielderr.field+"]";
+				  var errorMessageCode = fielderr.message[1];
+				  var errorMessage = errorMessages[errorMessageCode] || "Invalid value";
+				  if (errorMessageCode==="TYPE"){
+					var fieldType = $(inputSelector).data("type");
+					errorMessage = errorMessages[fieldType] || "Invalid value";
+				  }
+				  $(inputSelector).after("<div class='help-block'>"+errorMessage+"</div>");
+				  $(inputSelector).parents(".form-group").addClass("has-error");
+				});
+			  }
+			  else{
+				var msg = (ajaxSettings.headers["x-apikey"] && ajaxSettings.headers["x-apikey"].length < 24) ? "Missing API-key": "Server Error";
+				alert(msg);
+			  }
+			});
 		});
 	}
 function accentsTidy(s) {
