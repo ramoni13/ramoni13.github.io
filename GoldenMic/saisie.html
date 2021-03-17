@@ -258,7 +258,7 @@ function chargeValeurs(titre,artiste,idTrack) {
 			document.getElementById("restDbResult").innerHTML = infoPresence;
 		}
 		function controlerPresence(element){
-			if (element.artist == document.getElementById("artiste").value) {
+			if (element.artist == document.getElementById("artist").value) {
 				infoPresence += "<BR>En base : " + element.artist + " Chanson : " + element.titre + " Nb Mots : " + element.nbMotsStop;
 			}
 		}
