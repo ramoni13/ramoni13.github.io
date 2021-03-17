@@ -75,6 +75,8 @@
 		var seconds = arguments[1] - minutes * 60;
 		seconds = Math.round(seconds * 100) / 100
 		pre.innerHTML = minutes + ":" + seconds;
+		var p1 = document.getElementById('p1');
+		p1.innerHTML = Math.round(arguments[1] * 100) / 100
 	}
 	function onPlayerLoaded() {
 		$("#controlers input").attr('disabled', false);
@@ -102,7 +104,11 @@
 		}
 	});
 </script>
-<center><pre id="event_listener" style="height:50px;width:100px;overflow:auto;font-size:20px"></pre></center>
+<center>
+	<pre id="event_listener" style="height:50px;width:100px;overflow:auto;font-size:20px"></pre>
+	<p id="p1"></p>
+	<button onclick="copyToClipboard('#p1')"><--Copy secs</button>
+	</center>
 <form role="form" id="titres-form">
 <center>
 	<table>
@@ -182,6 +188,14 @@
 </form>
 
 <script>
+
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+}
 
 function cherche() 
 	{
