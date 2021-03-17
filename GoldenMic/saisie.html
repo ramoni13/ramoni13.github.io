@@ -119,7 +119,7 @@
 	    </tr>
 	    <tr>
 			<td text-align="left" colspan="3">
-				<div id="restDbResult"></div>
+				<div id="restDbResult" style="color:red"></div>
 				<div id="deezerResult"></div>
 			</td>
 		</tr>
@@ -259,7 +259,7 @@ function chargeValeurs(titre,artiste,idTrack) {
 		}
 		function controlerPresence(element){
 			if (element.artist == document.getElementById("artist").value) {
-				infoPresence += "<BR><style color='red'>!!! --> En base : <B>" + element.artist + "</B> Chanson : <B>" + element.titre + "</b> Nb Mots : <B>" + element.nbMotsStop + "</B></style>";
+				infoPresence += "<BR>!!! --> En base : <B>" + element.artist + "</B> Chanson : <B>" + element.titre + "</b> Nb Mots : <B>" + element.nbMotsStop + "</B>";
 			}
 		}
 	})
