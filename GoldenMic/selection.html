@@ -68,11 +68,11 @@ $(function () {
   var apikey = "fc15604b765756181951a03f7196297f43ff8"; // TODO: INSERT YOUR CORS API KEY HERE OR add formapikey to settings
   
   if (!apikey) alert("Please insert a CORS API key");
-
+  var nomArtist = document.getElementById("artist").value;
   var ajaxSettings = {
     "async": true,
     "crossDomain": true,
-    "url": "https://cors-anywhere.herokuapp.com/https://goldenmic-0ff1.restdb.io/rest/titres?q={"artist": document.getElementById("artist").value}",
+    "url": "https://cors-anywhere.herokuapp.com/https://goldenmic-0ff1.restdb.io/rest/titres?q={'artist': " + nomArtist + "}",
     "method": "GET",
     "headers": {
       "x-apikey": apikey,
