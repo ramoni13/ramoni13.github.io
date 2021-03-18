@@ -144,6 +144,7 @@
 	
 	 // put your own error messages and/or message translation logic here
 	 var allRecords = [];
+	 var allThemes = [];
 	 
 	 var errorMessages = {
 		"REQUIRED": "This field is required",
@@ -180,8 +181,13 @@
 		var infoPresence = "";
 		
 		response.forEach(element => controlerPresence(element));
-		
+		var themeEncours;
 		function controlerPresence(element){
+			themeEncours = element.theme;
+			var trouve = allRecords.find(element => element.theme == themeEncours);
+			if (trouve == undefined) {
+				allThemes.add(themeEncours);
+			}
 			allRecords.push(element);
 		}
 		
@@ -195,6 +201,7 @@
 		});
 		
 		console.log(allRecords);
+		console.log(allThemes);
 	})
 	.fail(function (response) {
 		console.log(response);
