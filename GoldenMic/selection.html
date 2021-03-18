@@ -415,10 +415,14 @@
 		});
 	});
 	function event_listener_append() {
-		if (parseInt(stopEnCours)>=arguments[1]){
+		if (arguments[1]==parseInt(stopEnCours)){
+			console.log("stop strictement egal");
 			DZ.player.pause();
 		}
-		
+		if (arguments[1]>=parseInt(stopEnCours)){
+			console.log("stop superieur ou egal");
+			DZ.player.pause();
+		}
 		<!-- var pre = document.getElementById('event_listener'); -->
 		<!-- var minutes = Math.floor(arguments[1] / 60); -->
 		<!-- var seconds = arguments[1] - minutes * 60; -->
