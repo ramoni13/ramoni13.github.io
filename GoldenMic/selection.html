@@ -15,6 +15,18 @@
 	  <script src="https://goldenmic-0ff1.restdb.io/assets/js/jquery.datetimepicker.full.min.js"></script>
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.1/lodash.min.js"></script>
     <style>
+		.basEcran {
+			  height:200px;
+			  width:100%;
+			  z-index:0;
+			  position: relative;
+		}
+		.separateur {
+			  height:100px;
+			  width:100%;
+			  z-index:0;
+			  position: relative;
+		}
         .accueil {
 		  height:100%;
 		  width:100%;
@@ -88,13 +100,194 @@
 	<div id="slider_seek" class="progressbarplay" style="">
 	  <div class="bar" style="width: 0%;"></div>
 	</div>
+	<!-- CHARGEMENT -->
+	<div id="chargement">
+		<div class="badge bg-primary" id="IJ_nom_equipe1" style="font-size: xx-large;">
+		Chargement en cours...
+		</div>
+	</div>
+	
 	<!-- ACCUEIL -->
-	<div class="accueil">
-		<img src="logo.png">
+	<div id="accueil" onclick="menu('accueil')" hidden="hidden">
+		<div class="accueil">
+			<img src="logo.png">
+		</div>
+		<div class="basEcran">
+			&nbsp;
+		</div>
+		<div class="basEcran">
+			<button type="button" onclick="menu('nomEquipes')" class="btn btn-warning">Allez c'est parti !</button>
+		</div>
+	</div>
+	
+	<!-- NOM EQUIPES -->
+	<div id="nomEquipes" hidden="hidden">
+		<div class="input-group mb-3">
+		  <input type="text" class="form-control" id="nomEq1" placeholder="Equipe 1" aria-label="Equipe 1">
+		  <span class="input-group-text">VS</span>
+		  <input type="text" class="form-control" id="nomEq2" placeholder="Equipe 2" aria-label="Equipe 2">
+		</div>
+		<div class="basEcran">
+			<button type="button" onclick="menu('choixPack')" class="btn btn-warning">Valider</button>
+		</div>
+	</div>
+	
+	<!-- INFOS JEU -->
+	<div id="infosJeu" hidden="hidden">
+		<div class="badge bg-primary" id="IJ_nom_equipe1" style="font-size: xx-large;">
+		</div>
+		<div class="badge bg-primary" id="IJ_pts_equipe1" style="font-size: xx-large;">
+		</div>
+		<div class="badge bg-primary" id="IJ_nom_equipe2" style="font-size: xx-large;">
+		</div>
+		<div class="badge bg-primary" id="IJ_pts_equipe2" style="font-size: xx-large;">
+		</div>
+	</div>
+	
+	<!-- CHOIX PACK -->
+	<div id="choixPack" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;">
+			Choix du Pack
+		</div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div id="listeDesPacks"></div>
+	</div>
+		
+	<!-- CHOIX CHANSON -->
+	<div id="choixChanson" hidden="hidden">
+		choix chanson
 	</div>
 </center>
 <script>
-	var divEncours = "accueil";
+	var divEncours = "chargement";
+	var nomEquipe1;
+	var nomEquipe2;
+	var equipeEnCours = 1;
+	
+	var nomPackEnCours = "";
+	var bonusFoisDeux = [2];
+	var bonusSwitch = [2];
+	var bonusInitiales = [2];
+	var bonusPremierMot = [2];
+	var allRecords = [];
+	var allThemes = [];
+	var listeChansons = [];
+	 
+	function menu(menuEnCours){
+		switch (menuEnCours) {
+		  case "accueil":
+			console.log("Menu : accueil");
+			
+			break;
+		  case "nomEquipes":
+		    console.log("Menu : nomEquipes");
+			cacheDiv("accueil");
+			afficheDiv("nomEquipes");
+			break;
+		  case "choixPack":
+		    console.log("Menu : choixPack");
+			cacheDiv("nomEquipes");
+			afficheDiv("infosJeu");
+			afficheDiv("choixPack");
+			nomEquipe1 = document.getElementById("nomEq1").value;
+			nomEquipe2 = document.getElementById("nomEq2").value;
+			document.getElementById("IJ_nom_equipe1").innerHTML = nomEquipe1;
+			document.getElementById("IJ_nom_equipe2").innerHTML = nomEquipe2;
+			document.getElementById("IJ_pts_equipe1").innerHTML = 0;
+			document.getElementById("IJ_pts_equipe2").innerHTML = 0;
+			initBonus();
+			chargePacks();
+			break;
+		  case "choixChanson":
+			console.log("Menu : choixPack");
+			cacheDiv("choixPack");
+			afficheDiv("choixChanson");
+			break;
+		  case "autre":
+			console.log("menu");
+			break;
+		  default:
+			console.log("default");
+		}
+	}
+	
+	function initBonus() {
+		bonusFoisDeux[0] = 1;
+		bonusFoisDeux[1] = 1;
+		bonusSwitch[0] = 1;
+		bonusSwitch[1] = 1;
+		bonusInitiales[0] = 1;
+		bonusInitiales[1] = 1;
+		bonusPremierMot[0] = 1;
+		bonusPremierMot[1] = 1;
+	}
+	
+	function chargePacks() {
+		var listePacks = "";
+		var idCouleur = 0;
+		var nomCouleur = "";
+		for(var i = 0; i < allThemes.length; i++) {
+			if (idCouleur == 0) {
+				nomCouleur = "btn btn-primary";
+			}
+			if (idCouleur == 1) {
+				nomCouleur = "btn btn-secondary";
+			}
+			if (idCouleur == 2) {
+				nomCouleur = "btn btn-success";
+			}
+			if (idCouleur == 3) {
+				nomCouleur = "btn btn-danger";
+			}
+			if (idCouleur == 4) {
+				nomCouleur = "btn btn-warning";
+			}
+			if (idCouleur == 5) {
+				nomCouleur = "btn btn-info";
+			}
+			if (idCouleur == 6) {
+				nomCouleur = "btn btn-dark";
+			}
+			if ((i>0) && ((i % 2) == 0)){
+				listePacks += "<div class='separateur'>&nbsp;</div>";
+			} else {
+				if (i>0) {
+					listePacks += "&nbsp;&nbsp;";
+				}
+			}
+			listePacks += "<button type='button' class='" + nomCouleur + "' onclick=\"choixDuPack('" + allThemes[i] + "')\" style='font-size:xx-large'>" + allThemes[i] + "</button>";
+			
+			idCouleur++;
+			if (i>6) { i = 0;}
+		}
+		
+		document.getElementById("listeDesPacks").innerHTML = listePacks;
+	}
+	
+	function choixDuPack(nomPack) {
+		nomPackEnCours = nomPack;
+		allRecords.forEach(element => trierTheme(element));
+		
+		function trierTheme(element){
+			if (element.theme == nomPack){
+				listeChansons.push(element);
+			}
+		}	
+		
+		listeChansons.sort(function(a, b) {
+		  var keyA = a.nbMotsStop,
+			keyB = b.nbMotsStop;
+		  // Compare the 2 dates
+		  if (keyA < keyB) return -1;
+		  if (keyA > keyB) return 1;
+		  return 0;
+		});
+		console.log ("liste des chansons du pack '" + nomPack + "' = ");
+		console.log (listeChansons);
+		menu("choixChanson");
+	}
 	
 	$(document).ready(function(){
 		$("#controlers input").attr('disabled', true);
@@ -143,8 +336,6 @@
 	function init() {
 	
 	 // put your own error messages and/or message translation logic here
-	 var allRecords = [];
-	 var allThemes = [];
 	 
 	 var errorMessages = {
 		"REQUIRED": "This field is required",
@@ -177,14 +368,18 @@
 	  }
 	$.ajax(ajaxSettings)
 	.done(function (response) {
+		
+		cacheDiv("chargement");
+		afficheDiv("accueil");
+				
 		console.log(response);
 		var infoPresence = "";
 		
 		response.forEach(element => controlerPresence(element));
-		var themeEncours;
+		
 		function controlerPresence(element){
 			themeEncours = element.theme;
-			var trouve = allRecords.find(element => element.theme == themeEncours);
+			var trouve = allThemes.find(theme => theme == element.theme);
 			if (trouve == undefined) {
 				allThemes.push(themeEncours);
 			}
