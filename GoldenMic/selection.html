@@ -24,7 +24,7 @@
 			  position: relative;
 		}
 		.separateur {
-			  height:100px;
+			  height:50px;
 			  width:100%;
 			  z-index:0;
 			  position: relative;
@@ -136,27 +136,27 @@
 	
 	<!-- INFOS JEU -->
 	<div id="infosJeu" hidden="hidden">
-		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="switch_eq1">1</span></button>
-		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="fois2_eq1">0</span></button>
-		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="initiales_eq1">1</span></button>
-		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="unmot_eq1">0</span></button>
+		<button class="w3-btn w3-green" id="switch_eq1_btn" onclick="">SWITCH<span class="w3-badge w3-margin-left w3-white" id="switch_eq1">1</span></button>
+		<button class="w3-btn w3-green" id="fois2_eq1_btn" onclick="">X2<span class="w3-badge w3-margin-left w3-white" id="fois2_eq1">1</span></button>
+		<button class="w3-btn w3-green" id="initiales_eq1_btn" onclick="">INITIALES<span class="w3-badge w3-margin-left w3-white" id="initiales_eq1">1</span></button>
+		<button class="w3-btn w3-green" id="unmot_eq1_btn" onclick="">1er Mot<span class="w3-badge w3-margin-left w3-white" id="unmot_eq1">1</span></button>
 		<button type="button" class="btn btn-primary" id="IJ_nom_equipe1" style='font-size:xx-large'>
 		
 		</button>
 		<button type="button" class="btn btn-primary" id="IJ_pts_equipe1" style='font-size:xx-large'>
 		</button>
 		
-		<div class="badge bg-ligth" style="font-size: xx-large;">--</div>
+		<div class="badge bg-ligth" style="font-size: xx-large;">|</div>
 		
 		<button type="button" class="btn btn-danger" id="IJ_pts_equipe2" style='font-size:xx-large'>
 		</button>
 		<button type="button" class="btn btn-danger" id="IJ_nom_equipe2" style='font-size:xx-large'>
 		</button>
 		
-		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="unmot_eq2">0</span></button>
-		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="initiales_eq2">1</span></button>
-		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="fois2_eq2">0</span></button>
-		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="switch_eq2">1</span></button>
+		<button class="w3-btn w3-green" id="unmot_eq2_btn" onclick="">1er Mot<span class="w3-badge w3-margin-left w3-white" id="unmot_eq2">1</span></button>
+		<button class="w3-btn w3-green" id="initiales_eq2_btn" onclick="">INITIALES<span class="w3-badge w3-margin-left w3-white" id="initiales_eq2">1</span></button>
+		<button class="w3-btn w3-green" id="fois2_eq2_btn" onclick="">X2<span class="w3-badge w3-margin-left w3-white" id="fois2_eq2">1</span></button>
+		<button class="w3-btn w3-green" id="switch_eq2_btn" onclick="">SWITCH<span class="w3-badge w3-margin-left w3-white" id="switch_eq2">1</span></button>
 		<hr>
 	</div>
 	
@@ -173,16 +173,54 @@
 		
 	<!-- CHOIX CHANSON -->
 	<div id="choixChanson" hidden="hidden">
-		choix chanson
+		<div class="badge bg-primary" style="font-size: xx-large;" id="nbMots">
+		</div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div id="listeChansons"></div>
+	</div>
+	
+	<!-- CHOIX NIVEAU -->
+	<div id="niveauChanson" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" >Choix Niveau Difficulté</div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div><button type="button" onclick="choixNiveau(1)" class="btn btn-primary" style='font-size:xx-large'>Facile (X1)
+		</button></div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div><button type="button" onclick="choixNiveau(2)" class="btn btn-warning" style='font-size:xx-large'>Facile (X2)
+		</button></div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div><button type="button" onclick="choixNiveau(3)" class="btn btn-danger" tyle='font-size:xx-large'>Facile (X3)
+		</button></div>
+	</div>
+	
+	<!-- ECOUTE CHANSON -->
+	<div id="ecouteChanson" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" >
+		</div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div id="laChanson"></div>
 	</div>
 </center>
 <script>
 	var divEncours = "chargement";
-	var nomEquipe1;
-	var nomEquipe2;
-	var equipeEnCours = 1;
+	var nomEquipe = [];
+	var equipeEnCours = 0;
 	var nbMotsEnCours = 1;
-	
+	var niveauEnCours = 0;
+	var idTrackEnCours;
+	var stopEnCours;
+	var idChansonEnCours;
+	var chansonDejaJouee = [];
 	var nomPackEnCours = "";
 	var bonusFoisDeux = [2];
 	var bonusSwitch = [2];
@@ -208,19 +246,31 @@
 			cacheDiv("nomEquipes");
 			afficheDiv("infosJeu");
 			afficheDiv("choixPack");
-			nomEquipe1 = document.getElementById("nomEq1").value;
-			nomEquipe2 = document.getElementById("nomEq2").value;
-			document.getElementById("IJ_nom_equipe2").innerHTML = nomEquipe2;
-			document.getElementById("IJ_nom_equipe1").innerHTML = nomEquipe1;
+			nomEquipe[0] = document.getElementById("nomEq1").value;
+			nomEquipe[1] = document.getElementById("nomEq2").value;
+			document.getElementById("IJ_nom_equipe2").innerHTML = nomEquipe[1];
+			document.getElementById("IJ_nom_equipe1").innerHTML = nomEquipe[0];
 			document.getElementById("IJ_pts_equipe1").innerHTML = 0;
 			document.getElementById("IJ_pts_equipe2").innerHTML = 0;
 			initBonus();
 			chargePacks();
 			break;
 		  case "choixChanson":
-			console.log("Menu : choixPack");
+			console.log("Menu : choixChanson");
 			cacheDiv("choixPack");
 			afficheDiv("choixChanson");
+			afficheChoixChanson();
+			break;
+		  case "choixNiveau":
+			console.log("Menu : choixNiveau");
+			cacheDiv("choixChanson");
+			afficheDiv("choixNiveau");
+			break;
+		  case "ecouteChanson":
+			console.log("Menu : ecouteChanson");
+			cacheDiv("choixNiveau");
+			afficheDiv("ecouteChanson");
+			afficheEtLanceChanson();
 			break;
 		  case "autre":
 			console.log("menu");
@@ -228,6 +278,57 @@
 		  default:
 			console.log("default");
 		}
+	}
+	
+	function afficheEtLanceChanson() {
+		
+		listeChansons.forEach(element => {
+			if ((element._id == idChansonEnCours) {
+				idTrackEnCours = element.idDeezer;
+				if (niveauEnCours == 1) {
+					stopEnCours = element.timestop1;
+				}
+				if (niveauEnCours == 2) {
+					stopEnCours = element.timestop2;
+				}
+				if (niveauEnCours == 3) {
+					stopEnCours = element.timestop3;
+				}
+				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
+					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
+					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
+			}
+		});
+		document.getElementById("laChanson").innerHTML = binome;
+		var tableauD = [idTrackEnCours];
+		DZ.player.playTracks(tableauD);
+	}
+	
+	function afficheChoixChanson() {
+		document.getElementById("nbMots").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+		var binome="";
+		listeChansons.forEach(element => {
+			console.log(element);
+			var dejaJoue = chansonDejaJouee.find(item => item == element._id);
+			if ((parseInt(element.nbMotsStop) === nbMotsEnCours) && (dejaJoue == undefined)) {
+				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
+					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
+					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
+			}
+		});
+		document.getElementById("listeChansons").innerHTML = binome;
+	}
+	
+	function selectionChanson(idChanson) {
+		console.log(idChanson);
+		chansonDejaJouee.push(idChanson);
+		idChansonEnCours = idChanson;
+		menu("choixNiveau");
+	}
+	
+	function choixNiveau(niveau) {
+		niveauEnCours = niveau;
+		menu("ecouteChanson"),
 	}
 	
 	function initBonus() {
@@ -314,6 +415,10 @@
 		});
 	});
 	function event_listener_append() {
+		if (stopEnCours>=arguments[1]){
+			DZ.player.pause();
+		}
+		
 		<!-- var pre = document.getElementById('event_listener'); -->
 		<!-- var minutes = Math.floor(arguments[1] / 60); -->
 		<!-- var seconds = arguments[1] - minutes * 60; -->
