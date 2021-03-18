@@ -215,7 +215,7 @@
 	var divEncours = "chargement";
 	var nomEquipe = [];
 	var equipeEnCours = 0;
-	var nbMotsEnCours = 1;
+	var nbMotsEnCours = 2;
 	var niveauEnCours = 0;
 	var idTrackEnCours;
 	var stopEnCours;
@@ -264,11 +264,11 @@
 		  case "choixNiveau":
 			console.log("Menu : choixNiveau");
 			cacheDiv("choixChanson");
-			afficheDiv("choixNiveau");
+			afficheDiv("niveauChanson");
 			break;
 		  case "ecouteChanson":
 			console.log("Menu : ecouteChanson");
-			cacheDiv("choixNiveau");
+			cacheDiv("niveauChanson");
 			afficheDiv("ecouteChanson");
 			afficheEtLanceChanson();
 			break;
