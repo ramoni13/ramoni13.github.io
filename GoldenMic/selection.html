@@ -102,13 +102,13 @@
 	</div>
 	<!-- CHARGEMENT -->
 	<div id="chargement">
-		<div class="badge bg-primary" id="IJ_nom_equipe1" style="font-size: xx-large;">
+		<div class="badge bg-primary" style="font-size: xx-large;">
 		Chargement en cours...
 		</div>
 	</div>
 	
 	<!-- ACCUEIL -->
-	<div id="accueil" onclick="menu('accueil')" hidden="hidden">
+	<div id="accueil" onclick="menu('nomEquipes')" hidden="hidden">
 		<div class="accueil">
 			<img src="logo.png">
 		</div>
@@ -134,14 +134,28 @@
 	
 	<!-- INFOS JEU -->
 	<div id="infosJeu" hidden="hidden">
-		<div class="badge bg-primary" id="IJ_nom_equipe1" style="font-size: xx-large;">
-		</div>
-		<div class="badge bg-primary" id="IJ_pts_equipe1" style="font-size: xx-large;">
-		</div>
-		<div class="badge bg-primary" id="IJ_nom_equipe2" style="font-size: xx-large;">
-		</div>
-		<div class="badge bg-primary" id="IJ_pts_equipe2" style="font-size: xx-large;">
-		</div>
+		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="switch_eq1">1</span></button>
+		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="fois2_eq1">0</span></button>
+		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="initiales_eq1">1</span></button>
+		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="unmot_eq1">0</span></button>
+		<button type="button" class="btn btn-primary" id="IJ_nom_equipe1" style='font-size:xx-large'>
+		
+		</button>
+		<button type="button" class="btn btn-primary" id="IJ_pts_equipe1" style='font-size:xx-large'>
+		</button>
+		
+		<div class="badge bg-ligth" style="font-size: xx-large;">--</div>
+		
+		<button type="button" class="btn btn-danger" id="IJ_pts_equipe2" style='font-size:xx-large'>
+		</button>
+		<button type="button" class="btn btn-danger" id="IJ_nom_equipe2" style='font-size:xx-large'>
+		</button>
+		
+		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="unmot_eq2">0</span></button>
+		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="initiales_eq2">1</span></button>
+		<button class="w3-btn w3-gray">Button<span class="w3-badge w3-margin-left" id="fois2_eq2">0</span></button>
+		<button class="w3-btn w3-green">X2<span class="w3-badge w3-margin-left w3-white" id="switch_eq2">1</span></button>
+		<hr>
 	</div>
 	
 	<!-- CHOIX PACK -->
@@ -165,6 +179,7 @@
 	var nomEquipe1;
 	var nomEquipe2;
 	var equipeEnCours = 1;
+	var nbMotsEnCours = 1;
 	
 	var nomPackEnCours = "";
 	var bonusFoisDeux = [2];
@@ -193,8 +208,8 @@
 			afficheDiv("choixPack");
 			nomEquipe1 = document.getElementById("nomEq1").value;
 			nomEquipe2 = document.getElementById("nomEq2").value;
-			document.getElementById("IJ_nom_equipe1").innerHTML = nomEquipe1;
 			document.getElementById("IJ_nom_equipe2").innerHTML = nomEquipe2;
+			document.getElementById("IJ_nom_equipe1").innerHTML = nomEquipe1;
 			document.getElementById("IJ_pts_equipe1").innerHTML = 0;
 			document.getElementById("IJ_pts_equipe2").innerHTML = 0;
 			initBonus();
