@@ -186,7 +186,7 @@
 			themeEncours = element.theme;
 			var trouve = allRecords.find(element => element.theme == themeEncours);
 			if (trouve == undefined) {
-				allThemes.add(themeEncours);
+				allThemes.push(themeEncours);
 			}
 			allRecords.push(element);
 		}
