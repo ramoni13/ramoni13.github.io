@@ -281,7 +281,7 @@
 	}
 	
 	function afficheEtLanceChanson() {
-		
+		var theChanson;
 		listeChansons.forEach(element => {
 			if (element._id == idChansonEnCours) {
 				idTrackEnCours = element.idDeezer;
@@ -294,12 +294,12 @@
 				if (niveauEnCours == 3) {
 					stopEnCours = element.timestop3;
 				}
-				var binome = "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
-					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
+				theChanson = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
+					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
 			}
 		});
-		document.getElementById("laChanson").innerHTML = binome;
+		document.getElementById("laChanson").innerHTML = theChanson;
 		var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
 	}
