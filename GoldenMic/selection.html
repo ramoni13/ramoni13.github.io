@@ -314,7 +314,7 @@
 	var switchOn = false;
 	var idChansonsManche = [];
 	var binome="";
-	
+	var idEquipeAdv;
 	function menu(menuEnCours){
 		switch (menuEnCours) {
 		  case "accueil":
@@ -427,7 +427,7 @@
 	}
 		
 	function switche(idEq) {
-		if ((switchOn) && (bonusSwitch[idEq] == 1)) {
+		if ((switchOn) && (bonusSwitch[idEq] == 1) && (idEq == idEquipeAdv)) {
 			if (idChansonsManche[0] == idChansonEnCours) {
 				idChansonEnCours = idChansonsManche[1];
 			} else {
@@ -629,7 +629,6 @@
 		console.log(idChanson);
 		chansonDejaJouee.push(idChanson);
 		idChansonEnCours = idChanson;
-		var idEquipeAdv;
 		if (equipeEnCours == 0){
 			idEquipeAdv = 1;
 		} else {
