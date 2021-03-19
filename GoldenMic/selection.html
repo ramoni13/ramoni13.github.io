@@ -368,6 +368,8 @@
 		  case "prochaineSuivante":
 			console.log("Menu : prochaineSuivante");
 			cacheDiv("chansonSuivante");
+			cacheDiv("menuChanson");
+			DZ.player.pause();
 			chansonSuivante();
 			break;
 		  case "autre":
@@ -398,6 +400,11 @@
 		modeSolution = 0; // pour réactiver les stops
 		reponses[0] = "";
 		reponses[1] = "";
+		document.getElementById("btnRep1").style.display = 'none';
+		document.getElementById("btnRep").style.display = 'none';
+		document.getElementById("btnRep2").style.display = 'none';
+		document.getElementById("infoRep").style.display = 'none';
+		document.getElementById("infoRep").innerHTML = "";
 		if (equipeEnCours == 0) {
 			equipeEnCours = 1;
 		} else {
@@ -407,6 +414,7 @@
 	}
 	
 	function afficherGagnant() {
+		stopEnCours = 1000;
 		document.getElementById("infoGagnant").innerHTML = messageVainqueur;
 	}
 	
