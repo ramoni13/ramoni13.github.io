@@ -368,7 +368,6 @@
 			console.log("Menu : prochaineSuivante");
 			cacheDiv("chansonSuivante");
 			chansonSuivante();
-			afficheDiv("");
 			break;
 		  case "autre":
 			console.log("menu");
@@ -403,6 +402,7 @@
 		} else {
 			equipeEnCours = 0;
 		}
+		menu("choixChanson");
 	}
 	
 	function afficherGagnant() {
@@ -623,9 +623,9 @@
 			}
 		} else {
 			if (arguments[1]==parseInt(stopEnCours)){
-			console.log("stop strictement egal");
-			DZ.player.pause();
-			afficheDiv("menuChanson");
+				console.log("stop strictement egal");
+				DZ.player.pause();
+				afficheDiv("menuChanson");
 			}
 			if (arguments[1]>=parseInt(stopEnCours)){
 				console.log("stop superieur ou egal");
