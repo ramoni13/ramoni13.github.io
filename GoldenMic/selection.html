@@ -417,11 +417,11 @@
 	}
 	function resetBtnSwitch(){
 		if (idEquipeAdv == 0) {
-				document.getElementById("switch_eq1").style = "w3-badge w3-margin-left w3-white";
-				document.getElementById("switch_eq1_btn").style = "w3-btn w3-green";
+				document.getElementById("switch_eq1").classList = "w3-badge w3-margin-left w3-white";
+				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-green";
 			} else {
-				document.getElementById("switch_eq2").style = "w3-badge w3-margin-left w3-white";
-				document.getElementById("switch_eq2_btn").style = "w3-btn w3-green";
+				document.getElementById("switch_eq2").classList = "w3-badge w3-margin-left w3-white";
+				document.getElementById("switch_eq2_btn").classList = "w3-btn w3-green";
 			}
 		cacheDiv('proposeSwitch');
 		menu('choixNiveau');
@@ -436,12 +436,12 @@
 			}
 			bonusSwitch[idEq]=0;
 			if (idEq == 0) {
-				document.getElementById("switch_eq1").style = "w3-badge w3-margin-left";
-				document.getElementById("switch_eq1_btn").style = "w3-btn w3-gray";
+				document.getElementById("switch_eq1").classList = "w3-badge w3-margin-left";
+				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-gray";
 				document.getElementById("switch_eq1").innerHTML = 0;
 			} else {
-				document.getElementById("switch_eq2").style = "w3-badge w3-margin-left";
-				document.getElementById("switch_eq2_btn").style = "w3-btn w3-gray";
+				document.getElementById("switch_eq2").classList = "w3-badge w3-margin-left";
+				document.getElementById("switch_eq2_btn").classList = "w3-btn w3-gray";
 				document.getElementById("switch_eq2").innerHTML = 0;
 			}
 			cacheDiv("proposeSwitch");
@@ -452,9 +452,9 @@
 	function proposeSwitch() {
 		var theChanson;
 		if (idEquipeAdv == 1) {
-			document.getElementById("switch_eq1_btn").style = "w3-btn w3-green";
+			document.getElementById("switch_eq1_btn").classList = "w3-btn w3-green";
 		} else {
-			document.getElementById("switch_eq2_btn").style = "w3-btn w3-green";
+			document.getElementById("switch_eq2_btn").classList = "w3-btn w3-green";
 		}
 		
 		document.getElementById("libelleSwitch").innerHTML = "L'équipe " + nomEquipe[equipeEnCours] + 
