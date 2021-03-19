@@ -423,8 +423,8 @@
 				document.getElementById("switch_eq2").classList = "w3-badge w3-margin-left w3-white";
 				document.getElementById("switch_eq2_btn").classList = "w3-btn w3-green";
 			}
-		cacheDiv('proposeSwitch');
-		menu('choixNiveau');
+		cacheDiv("proposeSwitch");
+		menu("choixNiveau");
 	}
 		
 	function switche(idEq) {
@@ -446,12 +446,15 @@
 			}
 			cacheDiv("proposeSwitch");
 			menu("choixNiveau");
+		} else {
+			alert("Non jouable !");
 		}
+		
 	}
 		
 	function proposeSwitch() {
 		var theChanson;
-		if (idEquipeAdv == 1) {
+		if (idEquipeAdv == 0) {
 			document.getElementById("switch_eq1_btn").classList = "w3-btn w3-green";
 		} else {
 			document.getElementById("switch_eq2_btn").classList = "w3-btn w3-green";
