@@ -136,10 +136,10 @@
 	
 	<!-- INFOS JEU -->
 	<div id="infosJeu" hidden="hidden">
-		<button class="w3-btn w3-green" id="switch_eq1_btn" onclick="">SWITCH<span class="w3-badge w3-margin-left w3-white" id="switch_eq1">1</span></button>
-		<button class="w3-btn w3-green" id="fois2_eq1_btn" onclick="">X2<span class="w3-badge w3-margin-left w3-white" id="fois2_eq1">1</span></button>
-		<button class="w3-btn w3-green" id="initiales_eq1_btn" onclick="">INITIALES<span class="w3-badge w3-margin-left w3-white" id="initiales_eq1">1</span></button>
-		<button class="w3-btn w3-green" id="unmot_eq1_btn" onclick="">1er Mot<span class="w3-badge w3-margin-left w3-white" id="unmot_eq1">1</span></button>
+		<button class="w3-btn w3-yellow" id="switch_eq1_btn" onclick="switche(0)">SWITCH<span class="w3-badge w3-margin-left w3-white" id="switch_eq1">1</span></button>
+		<button class="w3-btn w3-yellow" id="fois2_eq1_btn" onclick="fois2(0)">X2<span class="w3-badge w3-margin-left w3-white" id="fois2_eq1">1</span></button>
+		<button class="w3-btn w3-yellow" id="initiales_eq1_btn" onclick="initiales(0)">INITIALES<span class="w3-badge w3-margin-left w3-white" id="initiales_eq1">1</span></button>
+		<button class="w3-btn w3-yellow" id="unmot_eq1_btn" onclick="unmot(0)">1er Mot<span class="w3-badge w3-margin-left w3-white" id="unmot_eq1">1</span></button>
 		<button type="button" class="btn btn-primary" id="IJ_nom_equipe1" style='font-size:xx-large'>
 		
 		</button>
@@ -153,10 +153,10 @@
 		<button type="button" class="btn btn-danger" id="IJ_nom_equipe2" style='font-size:xx-large'>
 		</button>
 		
-		<button class="w3-btn w3-green" id="unmot_eq2_btn" onclick="">1er Mot<span class="w3-badge w3-margin-left w3-white" id="unmot_eq2">1</span></button>
-		<button class="w3-btn w3-green" id="initiales_eq2_btn" onclick="">INITIALES<span class="w3-badge w3-margin-left w3-white" id="initiales_eq2">1</span></button>
-		<button class="w3-btn w3-green" id="fois2_eq2_btn" onclick="">X2<span class="w3-badge w3-margin-left w3-white" id="fois2_eq2">1</span></button>
-		<button class="w3-btn w3-green" id="switch_eq2_btn" onclick="">SWITCH<span class="w3-badge w3-margin-left w3-white" id="switch_eq2">1</span></button>
+		<button class="w3-btn w3-yellow" id="unmot_eq2_btn" onclick="unmot(1)">1er Mot<span class="w3-badge w3-margin-left w3-white" id="unmot_eq2">1</span></button>
+		<button class="w3-btn w3-yellow" id="initiales_eq2_btn" onclick="initiales(1)">INITIALES<span class="w3-badge w3-margin-left w3-white" id="initiales_eq2">1</span></button>
+		<button class="w3-btn w3-yellow" id="fois2_eq2_btn" onclick="fois2(1)">X2<span class="w3-badge w3-margin-left w3-white" id="fois2_eq2">1</span></button>
+		<button class="w3-btn w3-yellow" id="switch_eq2_btn" onclick="switche(1)">SWITCH<span class="w3-badge w3-margin-left w3-white" id="switch_eq2">1</span></button>
 		<hr>
 	</div>
 	
@@ -179,6 +179,21 @@
 			&nbsp;
 		</div>
 		<div id="listeChansons"></div>
+	</div>
+	
+	<!-- SWITCH -->
+	<div id="proposeSwitch" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleSwitch">
+		</div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div id="chansonSwitch"></div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div><button type="button" onclick="resetBtnSwitch()" class="btn btn-primary" style="font-size:xx-large">Ne PAS SWITCHER
+		</button></div>
 	</div>
 	
 	<!-- CHOIX NIVEAU -->
@@ -296,6 +311,9 @@
 	var autreEquipeReponse;
 	var modeSolution=0;
 	var messageVainqueur="";
+	var switchOn = false;
+	var idChansonsManche = [];
+	var binome="";
 	
 	function menu(menuEnCours){
 		switch (menuEnCours) {
@@ -327,6 +345,11 @@
 			cacheDiv("choixPack");
 			afficheDiv("choixChanson");
 			afficheChoixChanson();
+			break;
+		  case "switch":
+			console.log("Menu : switch");
+			cacheDiv("choixChanson");
+			afficheDiv("proposeSwitch");
 			break;
 		  case "choixNiveau":
 			console.log("Menu : choixNiveau");
@@ -378,6 +401,73 @@
 		  default:
 			console.log("default");
 		}
+	}
+	
+	function unmot(idEq) {
+	
+	}
+	
+	function initiales(idEq) {
+	
+	}
+	
+	function fois2(idEq) {
+	
+	}
+	function resetBtnSwitch(){
+		if (idEquipeAdv == 0) {
+				document.getElementById("switch_eq1").style = "w3-badge w3-margin-left w3-white";
+				document.getElementById("switch_eq1_btn").style = "w3-btn w3-green";
+			} else {
+				document.getElementById("switch_eq2").style = "w3-badge w3-margin-left w3-white";
+				document.getElementById("switch_eq2_btn").style = "w3-btn w3-green";
+			}
+		cacheDiv('proposeSwitch');
+		menu('choixNiveau');
+	}
+		
+	function switche(idEq) {
+		if ((switchOn) && (bonusSwitch[idEq] == 1)) {
+			if (idChansonsManche[0] == idChansonEnCours) {
+				idChansonEnCours = idChansonsManche[1];
+			} else {
+				idChansonEnCours = idChansonsManche[0];
+			}
+			bonusSwitch[idEq]=0;
+			if (idEq == 0) {
+				document.getElementById("switch_eq1").style = "w3-badge w3-margin-left";
+				document.getElementById("switch_eq1_btn").style = "w3-btn w3-gray";
+				document.getElementById("switch_eq1").innerHTML = 0;
+			} else {
+				document.getElementById("switch_eq2").style = "w3-badge w3-margin-left";
+				document.getElementById("switch_eq2_btn").style = "w3-btn w3-gray";
+				document.getElementById("switch_eq2").innerHTML = 0;
+			}
+			cacheDiv("proposeSwitch");
+			menu("choixNiveau");
+		}
+	}
+		
+	function proposeSwitch() {
+		var theChanson;
+		if (idEquipeAdv == 1) {
+			document.getElementById("switch_eq1_btn").style = "w3-btn w3-green";
+		} else {
+			document.getElementById("switch_eq2_btn").style = "w3-btn w3-green";
+		}
+		
+		document.getElementById("libelleSwitch").innerHTML = "L'équipe " + nomEquipe[equipeEnCours] + 
+		" a choisi la chanson suivante.<BR>Equipe " + nomEquipe[idEquipeAdv] + 
+		" voulez-vous SWITCHER ?<BR>Si oui appuyez sur votre Bonus.";
+		listeChansons.forEach(element => {
+			if (element._id == idChansonEnCours) {
+				//idTrackEnCours = element.idDeezer;
+				theChanson = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" >" +
+					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
+					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
+			}
+		});
+		document.getElementById("chansonSwitch").innerHTML = theChanson;
 	}
 	
 	function bonnereponse(idR) {
@@ -495,26 +585,41 @@
 	}
 	
 	function afficheChoixChanson() {
-		var binome="";
+		binome="";
+		var cptNbChanson = 0;
+		idChansonsManche = [];
 		listeChansons.forEach(element => {
 			console.log(element);
 			var dejaJoue = chansonDejaJouee.find(item => item == element._id);
 			if ((parseInt(element.nbMotsStop) === nbMotsEnCours) && (dejaJoue == undefined)) {
+				cptNbChanson++;
 				document.getElementById("nbMots").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
+				idChansonsManche.push(element._id);
 			}
 		});
+		
 		if (binome == "") {
 			//prochain niveau
 			nbMotsEnCours++;
 			if (nbMotsEnCours>10) {
 				// FIN PARTIE
+				if (ptsEquipe[0]>ptsEquipe[1]) {
+					document.getElementById("nbMots").innerHTML = "C'est l'équipe " + nomEquipe[0] + " qui gagne la partie !";
+				} else if (ptsEquipe[0]<ptsEquipe[1]) {
+					document.getElementById("nbMots").innerHTML = "C'est l'équipe " + nomEquipe[1] + " qui gagne la partie !";
+				} else {
+					document.getElementById("nbMots").innerHTML = "Egalité parfaite ! Refaites-en une !";
+				}
+				document.getElementById("listeChansons").innerHTML = "<button class='btn btn-primary btn-lg' onclick='window.location.reload();'>Nouvelle Partie</button>";
 			} else {
+				switchOn = true;
 				menu("choixChanson");
 			}
 		} else {
+			if (cptNbChanson == 1) { switchOn = false;} else { switchOn = true;}
 			document.getElementById("listeChansons").innerHTML = binome;
 		}
 		
@@ -524,7 +629,17 @@
 		console.log(idChanson);
 		chansonDejaJouee.push(idChanson);
 		idChansonEnCours = idChanson;
-		menu("choixNiveau");
+		var idEquipeAdv;
+		if (equipeEnCours == 0){
+			idEquipeAdv = 1;
+		} else {
+			idEquipeAdv = 0;
+		}
+		if ((switchOn) && (bonusFoisDeux[idEquipeAdv] == 1)){
+			menu("switch");
+		} else { 
+			menu("choixNiveau");
+		}
 	}
 	
 	function choixNiveau(niveau) {
