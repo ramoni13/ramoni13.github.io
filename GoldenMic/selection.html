@@ -187,28 +187,40 @@
 		<div class="separateur">
 			&nbsp;
 		</div>
-		<div><button type="button" onclick="choixNiveau(1)" class="btn btn-primary" style='font-size:xx-large'>Facile (X1)
+		<div><button type="button" onclick="choixNiveau(1)" class="btn btn-primary" style="font-size:xx-large">Facile (X1)
 		</button></div>
 		<div class="separateur">
 			&nbsp;
 		</div>
-		<div><button type="button" onclick="choixNiveau(2)" class="btn btn-warning" style='font-size:xx-large'>Facile (X2)
+		<div><button type="button" onclick="choixNiveau(2)" class="btn btn-warning" style="font-size:xx-large">Moyen (X2)
 		</button></div>
 		<div class="separateur">
 			&nbsp;
 		</div>
-		<div><button type="button" onclick="choixNiveau(3)" class="btn btn-danger" style='font-size:xx-large'>Facile (X3)
+		<div><button type="button" onclick="choixNiveau(3)" class="btn btn-danger" style="font-size:xx-large">Dur (X3)
 		</button></div>
 	</div>
 	
 	<!-- ECOUTE CHANSON -->
 	<div id="ecouteChanson" hidden="hidden">
-		<div class="badge bg-primary" style="font-size: xx-large;" >
+		<div class="badge bg-primary" style="font-size: xx-large;" id="timer">0:00</div>
+		<div class="separateur">
+			&nbsp;
 		</div>
+		<div class="badge bg-primary" style="font-size: xx-large;" id="infoChanson"></div>
 		<div class="separateur">
 			&nbsp;
 		</div>
 		<div id="laChanson"></div>
+	</div>
+	
+	<!-- MENU CHANSON -->
+	<div id="menuChanson" hidden="hidden">
+		<div><button type="button" onclick="rewind()" class="btn btn-success" style="font-size:xx-large">Rewind 15'</button></div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div><button type="button" onclick="reponse()" class="btn btn-success" style="font-size:xx-large">Réponse</button></div>
 	</div>
 </center>
 <script>
@@ -229,7 +241,9 @@
 	var allRecords = [];
 	var allThemes = [];
 	var listeChansons = [];
-	 
+	var tps;
+	var tpsencours;
+	
 	function menu(menuEnCours){
 		switch (menuEnCours) {
 		  case "accueil":
@@ -282,6 +296,7 @@
 	
 	function afficheEtLanceChanson() {
 		var theChanson;
+		document.getElementById("infoChanson").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 		listeChansons.forEach(element => {
 			if (element._id == idChansonEnCours) {
 				idTrackEnCours = element.idDeezer;
@@ -407,6 +422,13 @@
 		menu("choixChanson");
 	}
 	
+	function rewind() {
+		var coef = 100/tps;
+		var pourcentage = (tpsencours-15) * coef;
+		if (pourcentage<0) {pourcentage = 0};
+		DZ.player.seek(pourcentage);
+	}
+	
 	$(document).ready(function(){
 		$("#controlers input").attr('disabled', true);
 		$("#slider_seek").click(function(evt,arg){
@@ -415,13 +437,21 @@
 		});
 	});
 	function event_listener_append() {
+		var pre = document.getElementById('timer');
+		var minutes = Math.floor(arguments[1] / 60);
+		var seconds = arguments[1] - minutes * 60;
+		seconds = Math.round(seconds * 100) / 100
+		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
+		
 		if (arguments[1]==parseInt(stopEnCours)){
 			console.log("stop strictement egal");
 			DZ.player.pause();
+			afficheDiv("menuChanson");
 		}
 		if (arguments[1]>=parseInt(stopEnCours)){
 			console.log("stop superieur ou egal");
 			DZ.player.pause();
+			afficheDiv("menuChanson");
 		}
 		<!-- var pre = document.getElementById('event_listener'); -->
 		<!-- var minutes = Math.floor(arguments[1] / 60); -->
