@@ -448,6 +448,7 @@
 			}
 			if ((reponses[0] !== "") && (reponses[1] !== "")) {
 				// saisie terminee
+				document.getElementById("repEq").value = "";
 				menu("verification");
 			} else {
 				document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[autreEquipeReponse];
@@ -744,8 +745,8 @@
 			divEncours = idDiv;
 			document.getElementById(idDiv).style.display = 'block';
 	}
-	function cacheDiv(){
-			document.getElementById(divEncours).style.display = 'none';
+	function cacheDiv(idDiv){
+			document.getElementById(idDiv).style.display = 'none';
 	}
 </script>
 </form>
