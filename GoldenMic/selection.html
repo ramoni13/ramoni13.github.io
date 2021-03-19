@@ -238,18 +238,48 @@
 	</div>
 	
 	<!-- VERIFICATION -->
-	<div id="reponse" hidden="hidden">
-		Vérification
+	<div id="verification" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" id="infoRep1"></div>
+		<div  hidden="hidden" id="btnRep1" >
+			<button type="button" onclick="bonnereponse(0)" class="btn btn-success">Bonne Réponse !</button>
+		</div>
+		
+		<div class="badge bg-primary" style="font-size: xx-large;" id="infoRep" hidden="hidden"></div>
+		<div  hidden="hidden" id="btnRep" >
+			<button type="button" onclick="bonnereponse(-1)" class="btn btn-success">Aucune Bonne Réponse</button>
+		</div>
+		
+		<div class="badge bg-primary" style="font-size: xx-large;" id="infoRep2"></div>
+		<div  hidden="hidden" id="btnRep2" >
+			<button type="button" onclick="bonnereponse(1)" class="btn btn-success">Bonne Réponse !</button>
+		</div>
 	</div>
+	
+	<!-- VERIFICATION -->
+	<div id="chansonSuivante" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" id="infoGagnant"></div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div  >
+			<button type="button" onclick="menu('prochaineSuivante')" class="btn btn-success">Prochaine chanson !</button>
+		</div>
+	</div>
+	
 </center>
 <script>
 	var divEncours = "chargement";
 	var nomEquipe = [];
+	var ptsEquipe = [];
+	ptsEquipe[0] = 0;
+	ptsEquipe[1] = 0;
 	var equipeEnCours = 0;
 	var nbMotsEnCours = 2;
 	var niveauEnCours = 0;
+	var ptsEnCours = 0;
 	var idTrackEnCours;
 	var stopEnCours;
+	var solutionStop;
 	var idChansonEnCours;
 	var chansonDejaJouee = [];
 	var nomPackEnCours = "";
@@ -264,6 +294,8 @@
 	var tps;
 	var tpsencours;
 	var autreEquipeReponse;
+	var modeSolution=0;
+	var messageVainqueur="";
 	
 	function menu(menuEnCours){
 		switch (menuEnCours) {
@@ -318,7 +350,25 @@
 			console.log("Menu : verification");
 			cacheDiv("reponse");
 			afficheDiv("verification");
-			
+			lanceVerification();
+			break;
+		  case "afficheVainqueur":
+			console.log("Menu : afficheVainqueur");
+			cacheDiv("verification");
+			afficheDiv("chansonSuivante");
+			afficherGagnant();
+			break;
+		  case "chansonSuivante":
+			console.log("Menu : chansonSuivante");
+			cacheDiv("verification");
+			afficheDiv("chansonSuivante");
+			afficherGagnant();
+			break;
+		  case "prochaineSuivante":
+			console.log("Menu : prochaineSuivante");
+			cacheDiv("chansonSuivante");
+			chansonSuivante();
+			afficheDiv("");
 			break;
 		  case "autre":
 			console.log("menu");
@@ -326,6 +376,55 @@
 		  default:
 			console.log("default");
 		}
+	}
+	
+	function bonnereponse(idR) {
+		if (idR == -1) {
+			messageVainqueur = "Pas de vainqueur sur cette chanson";
+			menu("chansonSuivante");
+		} else {
+			ptsEquipe[idR] = ptsEquipe[idR] + ptsEnCours;
+			if (idR == 0) {
+				document.getElementById("IJ_pts_equipe1").innerHTML = ptsEquipe[idR];
+			} else {
+				document.getElementById("IJ_pts_equipe2").innerHTML = ptsEquipe[idR];
+			}
+			messageVainqueur = "L'équipe " + nomEquipe[idR] + " marque " + ptsEnCours " pts";
+			menu("chansonSuivante");
+		}
+	}
+	
+	function chansonSuivante() {
+		modeSolution = 0; // pour réactiver les stops
+		reponses[0] = "";
+		reponses[1] = "";
+		if (equipeEnCours == 0) {
+			equipeEnCours = 1;
+		} else {
+			equipeEnCours = 0;
+		}
+	}
+	
+	function afficherGagnant() {
+		document.getElementById("infoGagnant").innerHTML = messageVainqueur;
+	}
+	
+	function lanceVerification(){
+		document.getElementById("infoRep1").innerHTML = "Equipe "+ nomEquipe[0] + "<BR>" + reponses[0];
+		document.getElementById("infoRep2").innerHTML = "Equipe "+ nomEquipe[1] + "<BR>" + reponses[1];
+		modeSolution = 1;
+		rewind();
+		// btnRep1/btnRep/btnRep2/infoRep
+		//document.getElementById(idDiv).style.display = 'block';
+	
+	}
+	
+	function afficheSolution() {
+		document.getElementById("btnRep1").style.display = 'block';
+		document.getElementById("btnRep").style.display = 'block';
+		document.getElementById("btnRep2").style.display = 'block';
+		document.getElementById("infoRep").style.display = 'block';
+		document.getElementById("infoRep").innerHTML = solutionStop;
 	}
 	
 	function prepareReponse() {
@@ -359,18 +458,21 @@
 	
 	function afficheEtLanceChanson() {
 		var theChanson;
-		document.getElementById("infoChanson").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+		document.getElementById("infoChanson").innerHTML = nbMotsEnCours + " Mot(s) - " + ptsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 		listeChansons.forEach(element => {
 			if (element._id == idChansonEnCours) {
 				idTrackEnCours = element.idDeezer;
 				if (niveauEnCours == 1) {
 					stopEnCours = element.timestop1;
+					solutionStop = element.lyricsstop1;
 				}
 				if (niveauEnCours == 2) {
 					stopEnCours = element.timestop2;
+					solutionStop = element.lyricsstop2;
 				}
 				if (niveauEnCours == 3) {
 					stopEnCours = element.timestop3;
+					solutionStop = element.lyricsstop3;
 				}
 				theChanson = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
@@ -383,18 +485,27 @@
 	}
 	
 	function afficheChoixChanson() {
-		document.getElementById("nbMots").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 		var binome="";
 		listeChansons.forEach(element => {
 			console.log(element);
 			var dejaJoue = chansonDejaJouee.find(item => item == element._id);
 			if ((parseInt(element.nbMotsStop) === nbMotsEnCours) && (dejaJoue == undefined)) {
+				document.getElementById("nbMots").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
 			}
 		});
-		document.getElementById("listeChansons").innerHTML = binome;
+		if (binome == "") {
+			//prochain niveau
+			nbMotsEnCours++;
+			if (nbMotsEnCours>10) {
+				// FIN PARTIE
+			}
+		} else {
+			document.getElementById("listeChansons").innerHTML = binome;
+		}
+		
 	}
 	
 	function selectionChanson(idChanson) {
@@ -406,6 +517,7 @@
 	
 	function choixNiveau(niveau) {
 		niveauEnCours = niveau;
+		ptsEnCours = niveau * nbMotsEnCours;
 		menu("ecouteChanson");
 	}
 	
@@ -505,17 +617,23 @@
 		var seconds = arguments[1] - minutes * 60;
 		seconds = Math.round(seconds * 100) / 100
 		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
-		
-		if (arguments[1]==parseInt(stopEnCours)){
+		if (modeSolution == 1) {
+			if (arguments[1]>=parseInt(stopEnCours)){
+				afficheSolution();
+			}
+		} else {
+			if (arguments[1]==parseInt(stopEnCours)){
 			console.log("stop strictement egal");
 			DZ.player.pause();
 			afficheDiv("menuChanson");
+			}
+			if (arguments[1]>=parseInt(stopEnCours)){
+				console.log("stop superieur ou egal");
+				DZ.player.pause();
+				afficheDiv("menuChanson");
+			}
 		}
-		if (arguments[1]>=parseInt(stopEnCours)){
-			console.log("stop superieur ou egal");
-			DZ.player.pause();
-			afficheDiv("menuChanson");
-		}
+		
 		<!-- var pre = document.getElementById('event_listener'); -->
 		<!-- var minutes = Math.floor(arguments[1] / 60); -->
 		<!-- var seconds = arguments[1] - minutes * 60; -->
