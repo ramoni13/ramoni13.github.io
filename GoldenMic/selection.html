@@ -336,18 +336,19 @@
 	}
 	
 	function bloqueParoles() {
-	if ((reponses[0] !== "") && (reponses[1] !== "")) {
-		// saisie terminee
-		menu("verification");
-	} else {
-		reponses[autreEquipeReponse] = document.getElementById("repEq").value;
-		if (autreEquipeReponse == 0) {
-			autreEquipeReponse = 1; 
+		if ((reponses[0] !== "") && (reponses[1] !== "")) {
+			// saisie terminee
+			menu("verification");
 		} else {
-			autreEquipeReponse = 0;
+			reponses[autreEquipeReponse] = document.getElementById("repEq").value;
+			if (autreEquipeReponse == 0) {
+				autreEquipeReponse = 1; 
+			} else {
+				autreEquipeReponse = 0;
+			}
+			document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[autreEquipeReponse];
+			document.getElementById("nbMots").innerHTML = "";
 		}
-		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[autreEquipeReponse];
-		document.getElementById("nbMots").innerHTML = "";
 	}
 	
 	function afficheEtLanceChanson() {
