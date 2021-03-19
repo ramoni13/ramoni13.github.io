@@ -217,10 +217,29 @@
 	<!-- MENU CHANSON -->
 	<div id="menuChanson" hidden="hidden">
 		<div><button type="button" onclick="rewind()" class="btn btn-success" style="font-size:xx-large">Rewind 15'</button></div>
+		<div >
+			&nbsp;&nbsp;&nbsp;&nbsp;
+		</div>
+		<div><button type="button" onclick="menu('reponse')" class="btn btn-success" style="font-size:xx-large">Réponse</button></div>
+	</div>
+	
+	<!-- REPONSE -->
+	<div id="reponse" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" id="infoRepChanson"></div>
 		<div class="separateur">
 			&nbsp;
 		</div>
-		<div><button type="button" onclick="reponse()" class="btn btn-success" style="font-size:xx-large">Réponse</button></div>
+		<div class="input-group mb-3">
+		  <input type="text" class="form-control" id="repEq" placeholder="Reponse" aria-label="Reponse">
+		</div>
+		<div class="basEcran">
+			<button type="button" onclick="bloqueParoles()" class="btn btn-warning">On bloque les paroles !</button>
+		</div>
+	</div>
+	
+	<!-- VERIFICATION -->
+	<div id="reponse" hidden="hidden">
+		Vérification
 	</div>
 </center>
 <script>
@@ -241,8 +260,10 @@
 	var allRecords = [];
 	var allThemes = [];
 	var listeChansons = [];
+	var reponses = [];
 	var tps;
 	var tpsencours;
+	var autreEquipeReponse;
 	
 	function menu(menuEnCours){
 		switch (menuEnCours) {
@@ -286,12 +307,43 @@
 			afficheDiv("ecouteChanson");
 			afficheEtLanceChanson();
 			break;
+		  case "reponse":
+			console.log("Menu : reponse");
+			cacheDiv("menuChanson");
+			afficheDiv("reponse");
+			prepareReponse();
+			break;
+		  case "verification":
+			console.log("Menu : verification");
+			cacheDiv("reponse");
+			afficheDiv("verification");
+			
+			break;
 		  case "autre":
 			console.log("menu");
 			break;
 		  default:
 			console.log("default");
 		}
+	}
+	
+	function prepareReponse() {
+		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+		reponses = [];
+		reponses.push("");
+		reponses.push("");
+		autreEquipeReponse=equipeEnCours;
+	}
+	
+	function bloqueParoles() {
+	if ((reponses[0] !== "") && (reponses[1] !== "")) {
+		// saisie terminee
+		menu("verification");
+	} else {
+		reponses[autreEquipeReponse] = document.getElementById("repEq").value;
+		if autreEquipeReponse == 0 ? autreEquipeReponse = 1 : autreEquipeReponse = 0;
+		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[autreEquipeReponse];
+		document.getElementById("nbMots").innerHTML = "";
 	}
 	
 	function afficheEtLanceChanson() {
