@@ -216,11 +216,11 @@
 	
 	<!-- MENU CHANSON -->
 	<div id="menuChanson" hidden="hidden">
-		<div><button type="button" onclick="rewind()" class="btn btn-success" style="font-size:xx-large">Rewind 15'</button></div>
-		<div >
+		<div>
+			<button type="button" onclick="rewind()" class="btn btn-success" style="font-size:xx-large">Rewind 15'</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;
+			<button type="button" onclick="menu('reponse')" class="btn btn-success" style="font-size:xx-large">Réponse</button>
 		</div>
-		<div><button type="button" onclick="menu('reponse')" class="btn btn-success" style="font-size:xx-large">Réponse</button></div>
 	</div>
 	
 	<!-- REPONSE -->
@@ -310,6 +310,7 @@
 		  case "reponse":
 			console.log("Menu : reponse");
 			cacheDiv("menuChanson");
+			cacheDiv("ecouteChanson");
 			afficheDiv("reponse");
 			prepareReponse();
 			break;
@@ -346,8 +347,13 @@
 			} else {
 				autreEquipeReponse = 0;
 			}
-			document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[autreEquipeReponse];
-			document.getElementById("nbMots").innerHTML = "";
+			if ((reponses[0] !== "") && (reponses[1] !== "")) {
+				// saisie terminee
+				menu("verification");
+			} else {
+				document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[autreEquipeReponse];
+				document.getElementById("repEq").value = "";
+			}
 		}
 	}
 	
