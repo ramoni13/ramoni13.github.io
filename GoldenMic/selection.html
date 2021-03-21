@@ -431,11 +431,14 @@
 		
 	function switche(idEq) {
 		if ((switchOn) && (bonusSwitch[idEq] == 1) && (idEq == idEquipeAdv)) {
+			var indexSwitch = chansonDejaJouee.findIndex(idChansonEnCours);
+			chansonDejaJouee.splice(indexSwitch,1);
 			if (idChansonsManche[0] == idChansonEnCours) {
 				idChansonEnCours = idChansonsManche[1];
 			} else {
 				idChansonEnCours = idChansonsManche[0];
 			}
+			chansonDejaJouee.push(idChansonEnCours);
 			bonusSwitch[idEq]=0;
 			if (idEq == 0) {
 				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-gray";
@@ -615,6 +618,11 @@
 		if (binome == "") {
 			//prochain niveau
 			nbMotsEnCours++;
+			if (equipeEnCours == 0) {
+			equipeEnCours = 1;
+			} else {
+				equipeEnCours = 0;
+			}
 			if (nbMotsEnCours>10) {
 				// FIN PARTIE
 				if (ptsEquipe[0]>ptsEquipe[1]) {
