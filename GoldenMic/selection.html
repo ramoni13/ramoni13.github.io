@@ -156,7 +156,7 @@
 		<button class="w3-btn w3-yellow" id="unmot_eq2_btn" onclick="unmot(1)">1er Mot<span class="w3-badge w3-margin-left w3-white" id="unmot_eq2">1</span></button>
 		<button class="w3-btn w3-yellow" id="initiales_eq2_btn" onclick="initiales(1)">INITIALES<span class="w3-badge w3-margin-left w3-white" id="initiales_eq2">1</span></button>
 		<button class="w3-btn w3-yellow" id="fois2_eq2_btn" onclick="fois2(1)">X2<span class="w3-badge w3-margin-left w3-white" id="fois2_eq2">1</span></button>
-		<button class="w3-btn w3-yellow" id="switch_eq2_btn" onclick="switche(1)">SWITCH</button>
+		<button  id="switch_eq2_btn" onclick="switche(1)">SWITCH</button>
 		<hr>
 	</div>
 	
@@ -436,7 +436,7 @@
 			if (idEq == 0) {
 				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-gray";
 			} else {
-				document.getElementById("switch_eq2_btn").classList = "w3-btn w3-gray";
+				//document.getElementById("switch_eq2_btn").classList = "w3-btn w3-gray";
 			}
 			cacheDiv("proposeSwitch");
 			menu("choixNiveau");
@@ -451,7 +451,7 @@
 		if (idEquipeAdv == 0) {
 			document.getElementById("switch_eq1_btn").classList = "w3-btn w3-green";
 		} else {
-			document.getElementById("switch_eq2_btn").classList = "w3-btn w3-green";
+			//document.getElementById("switch_eq2_btn").classList = "w3-btn w3-green";
 		}
 		
 		document.getElementById("libelleSwitch").innerHTML = "L'équipe " + nomEquipe[equipeEnCours] + 
