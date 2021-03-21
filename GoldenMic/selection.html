@@ -192,7 +192,17 @@
 		<div class="separateur">
 			&nbsp;
 		</div>
-		<div><button type="button" onclick="resetBtnSwitch()" class="btn btn-primary" style="font-size:xx-large">Ne PAS SWITCHER
+		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleSwitch2">
+		</div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div id="chansonSwitch2"></div>
+		<div class="separateur">
+			&nbsp;
+		</div>
+		<div><button type="button" onclick="resetBtnSwitch()" class="btn btn-primary" 
+		style="font-size:xx-large">Ne PAS SWITCHER
 		</button></div>
 	</div>
 	
@@ -448,6 +458,7 @@
 		
 	function proposeSwitch() {
 		var theChanson;
+		var theChanson2;
 		if (idEquipeAdv == 0) {
 			document.getElementById("switch_eq1_btn").classList = "w3-btn w3-green";
 		} else {
@@ -455,17 +466,25 @@
 		}
 		
 		document.getElementById("libelleSwitch").innerHTML = "L'équipe " + nomEquipe[equipeEnCours] + 
-		" a choisi la chanson suivante.<BR>Equipe " + nomEquipe[idEquipeAdv] + 
-		" voulez-vous SWITCHER ?<BR>Si oui appuyez sur votre Bonus.";
+		" a choisi la chanson suivante."
+		document.getElementById("libelleSwitch2").innerHTML = "<BR>Equipe " + nomEquipe[idEquipeAdv] + 
+		" voulez-vous SWITCHER ou garder celle ci-dessous ?<BR>(Si oui appuyez sur votre Bonus)";
+		
 		listeChansons.forEach(element => {
 			if (element._id == idChansonEnCours) {
 				//idTrackEnCours = element.idDeezer;
 				theChanson = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" >" +
 					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
+			} else {
+				//idTrackEnCours = element.idDeezer;
+				theChanson2 = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" >" +
+					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
+					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
 			}
 		});
 		document.getElementById("chansonSwitch").innerHTML = theChanson;
+		document.getElementById("chansonSwitch").innerHTML = theChanson2;
 	}
 	
 	function bonnereponse(idR) {
