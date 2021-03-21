@@ -556,13 +556,42 @@
 		reponses.push("");
 		autreEquipeReponse=equipeEnCours;
 	}
-	
+	document.getElementById("switch_eq1_btn").classList = "w3-btn w3-green";
 	function bloqueParoles() {
+		var activeBonus=0;
+		var nomIdBtn;
 		if ((reponses[0] !== "") && (reponses[1] !== "")) {
 			// saisie terminee
 			menu("verification");
 		} else {
+			if (autreEquipeReponse = equipeEnCours) {
+				if (bonusDeuxMots[equipeEnCours] == 1) {
+					nomIdBtn = "deuxmots_eq" + equipeEnCours + "_btn"
+					document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
+					activeBonus=1;
+				}
+				if (bonusInitiales[equipeEnCours] == 1) {
+					nomIdBtn = "initiales_eq" + equipeEnCours + "_btn"
+					document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
+					activeBonus=1;
+				}
+				if (bonusFoisDeux[equipeEnCours] == 1) {
+					nomIdBtn = "fois2_eq" + equipeEnCours + "_btn"
+					document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
+					activeBonus=1;
+				}
+				if (bonusPremierMot[equipeEnCours] == 1) {
+					nomIdBtn = "unmot_eq" + equipeEnCours + "_btn"
+					document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
+					activeBonus=1;
+				}
+				if (activeBonus == 1) {
+					document.getElementById("infoRepChanson").innerHTML += "<BR>Des bonus sont disponibles (1 seul par chanson)";
+				}
+			}
+			
 			reponses[autreEquipeReponse] = document.getElementById("repEq").value;
+			eteindreBonus(autreEquipeReponse);
 			if (autreEquipeReponse == 0) {
 				autreEquipeReponse = 1; 
 			} else {
@@ -578,6 +607,37 @@
 			}
 		}
 	}
+	
+	function eteindreBonus(idJ) {
+		if (bonusDeuxMots[idJ] == 1) {
+			nomIdBtn = "deuxmots_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+		} else {
+			nomIdBtn = "deuxmots_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray;
+		}
+		if (bonusInitiales[idJ] == 1) {
+			nomIdBtn = "initiales_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+		} else {
+			nomIdBtn = "initiales_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray;
+		}
+		if (bonusFoisDeux[idJ] == 1) {
+			nomIdBtn = "fois2_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+		} else {
+			nomIdBtn = "fois2_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray;
+		}
+		if (bonusPremierMot[idJ] == 1) {
+			nomIdBtn = "unmot_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+		} else {
+			nomIdBtn = "unmot_eq" + idJ + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray;
+		}
+	}	
 	
 	function afficheEtLanceChanson() {
 		var theChanson;
@@ -628,7 +688,7 @@
 			//prochain niveau
 			nbMotsEnCours++;
 			if (equipeEnCours == 0) {
-			equipeEnCours = 1;
+				equipeEnCours = 1;
 			} else {
 				equipeEnCours = 0;
 			}
