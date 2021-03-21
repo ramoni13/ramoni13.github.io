@@ -29,6 +29,12 @@
 			  z-index:0;
 			  position: relative;
 		}
+		.separateur2 {
+			  height:10px;
+			  width:100%;
+			  z-index:0;
+			  position: relative;
+		}
         .accueil {
 		  height:100%;
 		  width:100%;
@@ -209,17 +215,17 @@
 	<!-- CHOIX NIVEAU -->
 	<div id="niveauChanson" hidden="hidden">
 		<div class="badge bg-primary" style="font-size: xx-large;" >Choix Niveau Difficulté</div>
-		<div class="separateur">
+		<div class="separateur2">
 			&nbsp;
 		</div>
 		<div><button type="button" onclick="choixNiveau(1)" class="btn btn-primary" style="font-size:xx-large">Facile (X1)
 		</button></div>
-		<div class="separateur">
+		<div class="separateur2">
 			&nbsp;
 		</div>
 		<div><button type="button" onclick="choixNiveau(2)" class="btn btn-warning" style="font-size:xx-large">Moyen (X2)
 		</button></div>
-		<div class="separateur">
+		<div class="separateur2">
 			&nbsp;
 		</div>
 		<div><button type="button" onclick="choixNiveau(3)" class="btn btn-danger" style="font-size:xx-large">Dur (X3)
@@ -466,8 +472,8 @@
 		}
 		
 		document.getElementById("libelleSwitch").innerHTML = "L'équipe " + nomEquipe[equipeEnCours] + 
-		" a choisi la chanson suivante."
-		document.getElementById("libelleSwitch2").innerHTML = "<BR>Equipe " + nomEquipe[idEquipeAdv] + 
+		" a choisi la chanson suivante :"
+		document.getElementById("libelleSwitch2").innerHTML = "Equipe " + nomEquipe[idEquipeAdv] + 
 		" voulez-vous SWITCHER ou garder celle ci-dessous ?<BR>(Si oui appuyez sur votre Bonus)";
 		
 		listeChansons.forEach(element => {
@@ -484,7 +490,7 @@
 			}
 		});
 		document.getElementById("chansonSwitch").innerHTML = theChanson;
-		document.getElementById("chansonSwitch").innerHTML = theChanson2;
+		document.getElementById("chansonSwitch2").innerHTML = theChanson2;
 	}
 	
 	function bonnereponse(idR) {
