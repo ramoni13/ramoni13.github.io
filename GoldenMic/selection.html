@@ -608,33 +608,33 @@
 	}
 	
 	function eteindreBonus(idJ) {
-		idJ=idJ+1;
+		
 		if (bonusDeuxMots[idJ] == 1) {
-			nomIdBtn = "deuxmots_eq" + idJ + "_btn"
+			nomIdBtn = "deuxmots_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
 		} else {
-			nomIdBtn = "deuxmots_eq" + idJ + "_btn"
+			nomIdBtn = "deuxmots_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
 		}
 		if (bonusInitiales[idJ] == 1) {
-			nomIdBtn = "initiales_eq" + idJ + "_btn"
+			nomIdBtn = "initiales_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
 		} else {
-			nomIdBtn = "initiales_eq" + idJ + "_btn"
+			nomIdBtn = "initiales_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
 		}
 		if (bonusFoisDeux[idJ] == 1) {
-			nomIdBtn = "fois2_eq" + idJ + "_btn"
+			nomIdBtn = "fois2_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
 		} else {
-			nomIdBtn = "fois2_eq" + idJ + "_btn"
+			nomIdBtn = "fois2_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
 		}
 		if (bonusPremierMot[idJ] == 1) {
-			nomIdBtn = "unmot_eq" + idJ + "_btn"
+			nomIdBtn = "unmot_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
 		} else {
-			nomIdBtn = "unmot_eq" + idJ + "_btn"
+			nomIdBtn = "unmot_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
 		}
 	}	
@@ -744,6 +744,8 @@
 		bonusInitiales[1] = 1;
 		bonusPremierMot[0] = 1;
 		bonusPremierMot[1] = 1;
+		bonusDeuxMots[0] = 1;
+		bonusDeuxMots[1] = 1;
 	}
 	
 	function chargePacks() {
