@@ -557,22 +557,22 @@
 		autreEquipeReponse=equipeEnCours;
 		if (autreEquipeReponse = equipeEnCours) {
 			if (bonusDeuxMots[equipeEnCours] == 1) {
-				nomIdBtn = "deuxmots_eq" + equipeEnCours + "_btn"
+				nomIdBtn = "deuxmots_eq" + (equipeEnCours+1) + "_btn"
 				document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
 				activeBonus=1;
 			}
 			if (bonusInitiales[equipeEnCours] == 1) {
-				nomIdBtn = "initiales_eq" + equipeEnCours + "_btn"
+				nomIdBtn = "initiales_eq" + (equipeEnCours+1) + "_btn"
 				document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
 				activeBonus=1;
 			}
 			if (bonusFoisDeux[equipeEnCours] == 1) {
-				nomIdBtn = "fois2_eq" + equipeEnCours + "_btn"
+				nomIdBtn = "fois2_eq" + (equipeEnCours+1) + "_btn"
 				document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
 				activeBonus=1;
 			}
 			if (bonusPremierMot[equipeEnCours] == 1) {
-				nomIdBtn = "unmot_eq" + equipeEnCours + "_btn"
+				nomIdBtn = "unmot_eq" + (equipeEnCours+1) + "_btn"
 				document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
 				activeBonus=1;
 			}
