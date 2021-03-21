@@ -456,6 +456,7 @@
 	function proposeSwitch() {
 		var theChanson;
 		var theChanson2;
+		var idChansonDeux = 0;
 		if (idEquipeAdv == 0) {
 			document.getElementById("switch_eq1_btn").classList = "w3-btn w3-green";
 		} else {
@@ -466,14 +467,18 @@
 		" a choisi la chanson suivante :"
 		document.getElementById("libelleSwitch2").innerHTML = "Equipe " + nomEquipe[idEquipeAdv] + 
 		" voulez-vous SWITCHER ou garder celle ci-dessous ?<BR>(Si oui appuyez sur votre Bonus)";
-		
+		for(var i = 0; i < 2; i++) {
+			if (idchansonEnCours !== idChansonsManche[i]) {
+				idChansonDeux = idChansonsManche[i];
+			}
+		}
 		listeChansons.forEach(element => {
 			if (element._id == idChansonEnCours) {
 				//idTrackEnCours = element.idDeezer;
 				theChanson = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" >" +
 					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div>";
-			} else {
+			} else if (element._id == idChansonDeux) {
 				//idTrackEnCours = element.idDeezer;
 				theChanson2 = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" >" +
 					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
