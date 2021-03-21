@@ -431,7 +431,7 @@
 		
 	function switche(idEq) {
 		if ((switchOn) && (bonusSwitch[idEq] == 1) && (idEq == idEquipeAdv)) {
-			var indexSwitch = chansonDejaJouee.findIndex(idChansonEnCours);
+			var indexSwitch = chansonDejaJouee.indexOf(idChansonEnCours);
 			chansonDejaJouee.splice(indexSwitch,1);
 			if (idChansonsManche[0] == idChansonEnCours) {
 				idChansonEnCours = idChansonsManche[1];
