@@ -220,10 +220,12 @@
 		<button type="button" id="btnAnnulerUnMotInitiales" onclick="annulerUnMotInitiales()" class="btn btn-primary" 
 			style="font-size:xx-large">ANNULER</button>
 		</div>
-		<button type="button" id="btnRetourJeuUnMotInitiales" onclick="retourJeuUnMotInitiales()" class="btn btn-primary" 
+		<div>
+		<div class="badge bg-primary" hidden="hidden" id="reponseUnMotInitiales" style="font-size: xx-large;" >
+		
+		<button type="button" hidden="hidden" id="btnRetourJeuUnMotInitiales" onclick="retourJeuUnMotInitiales()" class="btn btn-primary" 
 			style="font-size:xx-large">DONNER SA REPONSE</button>
 		</div>
-		<div class="badge bg-primary" style="font-size: xx-large;" id="reponseUnMotInitiales">
 		</div>
 	</div>
 	
@@ -457,9 +459,10 @@
 	function afficheUnMot(){
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
-		document.getElementById("libelleUnMotInitiales").innerHTML = "Le 1Er mot est :";
+		document.getElementById("libelleUnMotInitiales").innerHTML = "Le 1er mot est :";
 		document.getElementById("btnUnMot").style.display = 'none';
 		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
+		document.getElementById("reponseUnMotInitiales").style.display = 'block';
 		document.getElementById("reponseUnMotInitiales").innerHTML = res[0];
 		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
 		bonusPremierMot[equipeEnCours] = 0;
