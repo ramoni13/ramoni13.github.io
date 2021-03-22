@@ -206,6 +206,7 @@
 	<!-- BONUS 1 MOT et INITIALES -->
 	<div id="bonusUNMOTINITIALES" hidden="hidden">
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleUnMotInitiales">
+		Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder) ou Annulez
 		</div>
 		<div>
 			<button type="button" hidden="hidden" id="btnUnMot" onclick="afficheUnMot()" class="btn btn-primary" 
@@ -218,6 +219,9 @@
 		<div>
 		<button type="button" id="btnAnnulerUnMotInitiales" onclick="annulerUnMotInitiales()" class="btn btn-primary" 
 			style="font-size:xx-large">ANNULER</button>
+		</div>
+		<button type="button" id="btnRetourJeuUnMotInitiales" onclick="retourJeuUnMotInitiales()" class="btn btn-primary" 
+			style="font-size:xx-large">DONNER SA REPONSE</button>
 		</div>
 		<div class="badge bg-primary" style="font-size: xx-large;" id="reponseUnMotInitiales">
 		</div>
@@ -444,24 +448,38 @@
 		document.getElementById("btnInitiales").style.display = 'block';
 	}
 	
+	function retourJeuUnMotInitiales() {
+		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'none';
+		afficheDiv("reponse");
+		cacheDiv("bonusUNMOTINITIALES");
+	}
+	
 	function afficheUnMot(){
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
+		document.getElementById("libelleUnMotInitiales").innerHTML = "Le 1Er mot est :";
 		document.getElementById("btnUnMot").style.display = 'none';
 		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
 		document.getElementById("reponseUnMotInitiales").innerHTML = res[0];
+		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
+		bonusPremierMot[equipeEnCours] = 0;
+		eteindreBonus(equipeEnCours);
 	}
 	
 	function afficheInitiales(){
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
-		document.getElementById("btnUnMot").style.display = 'none';
+		document.getElementById("libelleUnMotInitiales").innerHTML = "Les initiales de chaque mot sont :";
+		document.getElementById("btnInitiales").style.display = 'none';
 		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
 		var repInit = "";
 		for(var i = 0; i < res.length; i++) {
 			repInit += res[i].substring(0,1) + "___ ";
 		}
 		document.getElementById("reponseUnMotInitiales").innerHTML = repInit;
+		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
+		bonusInitiales[equipeEnCours] = 0;
+		eteindreBonus(equipeEnCours);
 	}
 		
 	function annulerUnMotInitiales(){
