@@ -464,6 +464,7 @@
 	function afficheUnMot(){
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
+		document.getElementById("libelleUnMotInitiales").style.display = 'block';
 		document.getElementById("libelleUnMotInitiales").innerHTML = "Le 1er mot est :";
 		document.getElementById("btnUnMot").style.display = 'none';
 		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
@@ -471,12 +472,14 @@
 		document.getElementById("reponseUnMotInitiales").innerHTML = res[0];
 		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
 		bonusPremierMot[equipeEnCours] = 0;
+		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 		eteindreBonus(equipeEnCours);
 	}
 	
 	function afficheInitiales(){
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
+		document.getElementById("libelleUnMotInitiales").style.display = 'block';
 		document.getElementById("libelleUnMotInitiales").innerHTML = "Les initiales de chaque mot sont :";
 		document.getElementById("reponseUnMotInitiales").style.display = 'block';
 		document.getElementById("btnInitiales").style.display = 'none';
