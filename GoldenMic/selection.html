@@ -230,6 +230,21 @@
 		</div>
 	</div>
 	
+	<!-- BONUS X2 -->
+	<div id="bonusFOIS2" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleUnMotInitiales">
+		Confirmez l'utilisation du X2 ou Annulez
+		</div>
+		<div>
+			<button type="button" onclick="confirmerFois2()" class="btn btn-primary" 
+			style="font-size:xx-large">X2</button>
+		</div>
+		<div>
+		<button type="button" onclick="btnAnnulerFois2()" 
+		class="btn btn-primary" style="font-size:xx-large">ANNULER</button>
+		</div>
+	</div>
+	
 	<!-- CHOIX NIVEAU -->
 	<div id="niveauChanson" hidden="hidden">
 		<div class="badge bg-primary" style="font-size: xx-large;" >Choix Niveau Difficulté</div>
@@ -333,6 +348,7 @@
 	var chansonDejaJouee = [];
 	var nomPackEnCours = "";
 	var bonusFoisDeux = [2];
+	var foisDeuxEncours = -1;
 	var bonusSwitch = [2];
 	var bonusInitiales = [2];
 	var bonusPremierMot = [2];
@@ -501,9 +517,22 @@
 		document.getElementById("btnInitiales").style.display = 'none';
 		cacheDiv("bonusUNMOTINITIALES");
 	}
-	
+	function confirmerFois2() {
+		bonusInitiales[equipeEnCours] = 0;
+		foisDeuxEncours = equipeEnCours;
+		eteindreBonus(equipeEnCours);
+		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+		cacheDiv("bonusFOIS2");
+		afficheDiv("reponse");
+	}
 	function fois2(idEq) {
+		cacheDiv("reponse");
+		afficheDiv("bonusFOIS2");
+	}
 	
+	function btnAnnulerFois2() {
+		cacheDiv("bonusFOIS2");
+		afficheDiv("reponse");
 	}
 	
 	function resetBtnSwitch(){
@@ -581,13 +610,24 @@
 			messageVainqueur = "Pas de vainqueur sur cette chanson";
 			menu("chansonSuivante");
 		} else {
-			ptsEquipe[idR] = ptsEquipe[idR] + ptsEnCours;
+			if (foisDeuxEncours == idR) {
+				ptsEquipe[idR] = ptsEquipe[idR] + (ptsEnCours*2);
+			} else {
+				ptsEquipe[idR] = ptsEquipe[idR] + ptsEnCours;
+			}
+			
 			if (idR == 0) {
 				document.getElementById("IJ_pts_equipe1").innerHTML = ptsEquipe[idR];
 			} else {
 				document.getElementById("IJ_pts_equipe2").innerHTML = ptsEquipe[idR];
 			}
-			messageVainqueur = "L'équipe " + nomEquipe[idR] + " marque " + ptsEnCours + " pts";
+			if (foisDeuxEncours == idR) {
+				messageVainqueur = "L'équipe " + nomEquipe[idR] + " marque " + (ptsEnCours*2) +
+				" pts (" + ptsEnCours + "X2) avec le Bonus X2";
+			} else {
+				messageVainqueur = "L'équipe " + nomEquipe[idR] + " marque " + ptsEnCours + " pts";
+			}
+			
 			menu("chansonSuivante");
 		}
 	}
