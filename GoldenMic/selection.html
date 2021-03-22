@@ -712,7 +712,12 @@
 			// saisie terminee
 			menu("verification");
 		} else {
-			reponses[autreEquipeReponse] = document.getElementById("repEq").value;
+			if (document.getElementById("repEq").value == "") {
+				reponses[autreEquipeReponse] = "pas de réponse";
+			} else {
+				reponses[autreEquipeReponse] = document.getElementById("repEq").value;
+			}
+			
 			eteindreBonus(autreEquipeReponse);
 			if (autreEquipeReponse == 0) {
 				autreEquipeReponse = 1; 
