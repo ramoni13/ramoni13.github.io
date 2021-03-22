@@ -1068,6 +1068,8 @@
 			var left = evt.offsetX;
 			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
 		});
+		//Appending HTML5 Audio Tag in HTML Body
+		$('<audio id="chatAudio"><source src="jingle.mp3" type="audio/mpeg"></audio>').appendTo('body');
 	});
 	function event_listener_append() {
 		var pre = document.getElementById('timer');
@@ -1080,6 +1082,10 @@
 				afficheSolution();
 			}
 		} else {
+			if ((arguments[1]>=parseInt(stopEnCours-5)) && (arguments[1]<parseInt(stopEnCours-4){
+				$('#chatAudio')[0].play();
+			}
+			
 			if (arguments[1]==parseInt(stopEnCours)){
 				console.log("stop strictement egal");
 				DZ.player.pause();
