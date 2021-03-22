@@ -257,7 +257,7 @@
 		<div>
 		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots2()" class="btn btn-default" style="font-size:xx-large">VALIDER</button>
 		</div>
-		<
+		
 		<div>
 		<button type="button" id="btnAnnuler2Mots" onclick="btnAnnuler2Mots2()" class="btn btn-primary" style="font-size:xx-large">ANNULER</button>
 		</div>
@@ -528,24 +528,27 @@
 	}
 	
 	function btnValider2Mots2(){
-		document.getElementById("listeMots").innerHTML = "";
-		var str2 = solutionStop.replace (/'/g, ' ');
-		var res = str2.split(" ");
-		for(var i = 0; i < res.length; i++) {
-			if ((i == mot1) || (i == mot2)) {
-				document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
-				+ "\" class=\"btn btn-success\" style=\"font-size:xx-large\">" + res[i] + "</button> ";
-			} else {
-				document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
-				+ "\" class=\"btn btn-default\" style=\"font-size:xx-large\">" + (i+1) + "° Mot</button> ";
+		if (bonusDeuxMots[equipeEnCours] = 1) {
+			document.getElementById("listeMots").innerHTML = "";
+			var str2 = solutionStop.replace (/'/g, ' ');
+			var res = str2.split(" ");
+			for(var i = 0; i < res.length; i++) {
+				if ((i == mot1) || (i == mot2)) {
+					document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
+					+ "\" class=\"btn btn-success\" style=\"font-size:xx-large\">" + res[i] + "</button> ";
+				} else {
+					document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
+					+ "\" class=\"btn btn-default\" style=\"font-size:xx-large\">" + (i+1) + "° Mot</button> ";
+				}
 			}
+			bonusDeuxMots[equipeEnCours] = 0;
+			document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+			document.getElementById("btnRetourJeuDeuxMotsInitiales").style.display = 'block';
+			document.getElementById("btnValider2Mots").style.display = 'none';
+			document.getElementById("btnAnnuler2Mots").style.display = 'none';
 		}
-		bonusDeuxMots[equipeEnCours] = 0;
-		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
-		document.getElementById("btnRetourJeuDeuxMotsInitiales").style.display = 'block';
-		document.getElementById("btnValider2Mots").style.display = 'none';
-		document.getElementById("btnAnnuler2Mots").style.display = 'none';
 	}
+	
 	
 	function btnRetourJeuDeuxMotsInitiales2(){
 		eteindreBonus(equipeEnCours);
@@ -581,37 +584,41 @@
 	}
 	
 	function afficheUnMot(){
-		var str2 = solutionStop.replace (/'/g, ' ');
-		var res = str2.split(" ");
-		document.getElementById("libelleUnMotInitiales").style.display = 'block';
-		document.getElementById("libelleUnMotInitiales").innerHTML = "Le 1er mot est :";
-		document.getElementById("btnUnMot").style.display = 'none';
-		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
-		document.getElementById("reponseUnMotInitiales").style.display = 'block';
-		document.getElementById("reponseUnMotInitiales").innerHTML = res[0];
-		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
-		bonusPremierMot[equipeEnCours] = 0;
-		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
-		eteindreBonus(equipeEnCours);
+		if (bonusPremierMot[equipeEnCours] = 1) {
+			var str2 = solutionStop.replace (/'/g, ' ');
+			var res = str2.split(" ");
+			document.getElementById("libelleUnMotInitiales").style.display = 'block';
+			document.getElementById("libelleUnMotInitiales").innerHTML = "Le 1er mot est :";
+			document.getElementById("btnUnMot").style.display = 'none';
+			document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
+			document.getElementById("reponseUnMotInitiales").style.display = 'block';
+			document.getElementById("reponseUnMotInitiales").innerHTML = res[0];
+			document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
+			bonusPremierMot[equipeEnCours] = 0;
+			document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+			eteindreBonus(equipeEnCours);
+		}
 	}
 	
 	function afficheInitiales(){
-		var str2 = solutionStop.replace (/'/g, ' ');
-		var res = str2.split(" ");
-		document.getElementById("libelleUnMotInitiales").style.display = 'block';
-		document.getElementById("libelleUnMotInitiales").innerHTML = "Les initiales de chaque mot sont :";
-		document.getElementById("reponseUnMotInitiales").style.display = 'block';
-		document.getElementById("btnInitiales").style.display = 'none';
-		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
-		var repInit = "";
-		for(var i = 0; i < res.length; i++) {
-			repInit += res[i].substring(0,1) + "___ ";
+		if (bonusInitiales[equipeEnCours] = 1) {
+			var str2 = solutionStop.replace (/'/g, ' ');
+			var res = str2.split(" ");
+			document.getElementById("libelleUnMotInitiales").style.display = 'block';
+			document.getElementById("libelleUnMotInitiales").innerHTML = "Les initiales de chaque mot sont :";
+			document.getElementById("reponseUnMotInitiales").style.display = 'block';
+			document.getElementById("btnInitiales").style.display = 'none';
+			document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
+			var repInit = "";
+			for(var i = 0; i < res.length; i++) {
+				repInit += res[i].substring(0,1) + "___ ";
+			}
+			document.getElementById("reponseUnMotInitiales").innerHTML = repInit;
+			document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
+			bonusInitiales[equipeEnCours] = 0;
+			document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+			eteindreBonus(equipeEnCours);
 		}
-		document.getElementById("reponseUnMotInitiales").innerHTML = repInit;
-		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
-		bonusInitiales[equipeEnCours] = 0;
-		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
-		eteindreBonus(equipeEnCours);
 	}
 		
 	function annulerUnMotInitiales(){
