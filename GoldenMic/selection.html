@@ -564,6 +564,8 @@
 	function unmot(idEq) {
 		cacheDiv("reponse");
 		afficheDiv("bonusUNMOTINITIALES");
+		document.getElementById("libelleUnMotInitiales").style.display = 'block';
+		document.getElementById("libelleUnMotInitiales").innerHTML = "Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez";
 		document.getElementById("btnUnMot").style.display = 'block';
 		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
 	}
@@ -571,6 +573,8 @@
 	function initiales(idEq) {
 		cacheDiv("reponse");
 		afficheDiv("bonusUNMOTINITIALES");
+		document.getElementById("libelleUnMotInitiales").style.display = 'block';
+		document.getElementById("libelleUnMotInitiales").innerHTML = "Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez";
 		document.getElementById("btnInitiales").style.display = 'block';
 		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
 	}
