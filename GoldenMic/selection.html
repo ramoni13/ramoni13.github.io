@@ -250,10 +250,10 @@
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelle2Mots">
 		Sélectionnez 2 Mots ou Annulez
 		</div>
-		
+		<BR>
 		<div class="badge bg-primary" id="listeMots" style="font-size: xx-large;" >
 		</div>
-		
+		<BR>
 		<div>
 		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots()" 
 		class="btn btn-default" style="font-size:xx-large">VALIDER</button>
@@ -482,7 +482,8 @@
 		afficheDiv("bonus2Mots");
 		mot1 = -1;
 		mot2 = -1;
-		document.getElementById("infoRepChanson").innerHTML = "";
+		document.getElementById("listeMots").innerHTML = "";
+		document.getElementById("btnValider2Mots").classList = "btn btn-default";
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
 		for(var i = 0; i < res.length; i++) {
@@ -520,6 +521,13 @@
 			}
 		}
 	}
+	
+	btnValider2Mots
+	function btnAnnuler2Mots(){
+		afficheDiv("reponse");
+		cacheDiv("bonus2Mots");
+	}
+	
 	
 	function unmot(idEq) {
 		cacheDiv("reponse");
