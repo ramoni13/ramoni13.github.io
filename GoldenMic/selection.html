@@ -532,7 +532,7 @@
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
 		for(var i = 0; i < res.length; i++) {
-			if ((i == Mot1) || (i == Mot2)) {
+			if ((i == mot1) || (i == mot2)) {
 				document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
 				+ "\" class=\"btn btn-success\" style=\"font-size:xx-large\">" + res[i] + "</button> ";
 			} else {
