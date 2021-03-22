@@ -162,7 +162,7 @@
 		</button>
 		
 		<button type="button" class="w3-btn w3-yellow" id="unmot_eq2_btn" onclick="unmot(1)">1er Mot</button>
-		<button type="button" class="w3-btn w3-yellow" id="deuxmots_eq2_btn" onclick="unmot(0)">2 Mots</button>
+		<button type="button" class="w3-btn w3-yellow" id="deuxmots_eq2_btn" onclick="unmot(1)">2 Mots</button>
 		<button type="button" class="w3-btn w3-yellow" id="initiales_eq2_btn" onclick="initiales(1)">INITIALES</button>
 		<button type="button" class="w3-btn w3-yellow" id="fois2_eq2_btn" onclick="fois2(1)">X2</button>
 		<button type="button" class="w3-btn w3-yellow" id="switch_eq2_btn" onclick="switche(1)">SWITCH</button>
@@ -201,6 +201,26 @@
 		<div><button type="button" onclick="resetBtnSwitch()" class="btn btn-primary" 
 		style="font-size:xx-large">Ne PAS SWITCHER
 		</button></div>
+	</div>
+	
+	<!-- BONUS 1 MOT et INITIALES -->
+	<div id="bonusUNMOTINITIALES" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleUnMotInitiales">
+		</div>
+		<div>
+			<button type="button" hidden="hidden" id="btnUnMot" onclick="afficheUnMot()" class="btn btn-primary" 
+			style="font-size:xx-large">AFFICHER 1er MOT</button>
+		</div>
+		<div>
+			<button type="button" hidden="hidden" id="btnInitiales" onclick="afficheInitiales()" class="btn btn-primary" 
+			style="font-size:xx-large">AFFICHER 1er MOT</button>
+		</div>
+		<div>
+		<button type="button" id="btnAnnulerUnMotInitiales" onclick="annulerUnMotInitiales()" class="btn btn-primary" 
+			style="font-size:xx-large">ANNULER</button>
+		</div>
+		<div class="badge bg-primary" style="font-size: xx-large;" id="reponseUnMotInitiales">
+		</div>
 	</div>
 	
 	<!-- CHOIX NIVEAU -->
@@ -413,16 +433,48 @@
 	}
 	
 	function unmot(idEq) {
-	
+		cacheDiv("reponse");
+		afficheDiv("bonusUNMOTINITIALES");
+		document.getElementById("btnUnMot").style.display = 'block';
 	}
 	
 	function initiales(idEq) {
+		cacheDiv("reponse");
+		afficheDiv("bonusUNMOTINITIALES");
+		document.getElementById("btnInitiales").style.display = 'block';
+	}
 	
+	function afficheUnMot(){
+		var str2 = solutionStop.replace (/'/g, ' ');
+		var res = str2.split(" ");
+		document.getElementById("btnUnMot").style.display = 'none';
+		document.getElementById("btnAnnulerUnMotInitialesInitiales").style.display = 'none';
+		document.getElementById("reponseUnMotInitiales").innerHTML = res;
+	}
+	
+	function afficheInitiales(){
+		var str2 = solutionStop.replace (/'/g, ' ');
+		var res = str2.split(" ");
+		document.getElementById("btnUnMot").style.display = 'none';
+		document.getElementById("btnAnnulerUnMotInitialesInitiales").style.display = 'none';
+		var repInit = "";
+		for(var i = 0; i < res.length; i++) {
+			repInit += res[i].substring(0,1) + "___ ";
+		}
+		document.getElementById("reponseUnMotInitiales").innerHTML = repInit;
+	}
+		
+	function annulerUnMotInitiales(){
+		afficheDiv("reponse");
+		document.getElementById("btnUnMot").style.display = 'none';
+		document.getElementById("btnInitiales").style.display = 'none';
+		cacheDiv("bonusUNMOTINITIALES");
 	}
 	
 	function fois2(idEq) {
 	
 	}
+	
 	function resetBtnSwitch(){
 		if (idEquipeAdv == 0) {
 				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-yellow";
