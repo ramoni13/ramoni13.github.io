@@ -145,7 +145,7 @@
 		<button type="button" class="w3-btn w3-yellow" id="switch_eq1_btn" onclick="switche(0)">SWITCH</button>
 		<button type="button" class="w3-btn w3-yellow" id="fois2_eq1_btn" onclick="fois2(0)">X2</button>
 		<button type="button" class="w3-btn w3-yellow" id="initiales_eq1_btn" onclick="initiales(0)">INITIALES</button>
-		<button type="button" class="w3-btn w3-yellow" id="deuxmots_eq1_btn" onclick="unmot(0)">2 Mots</button>
+		<button type="button" class="w3-btn w3-yellow" id="deuxmots_eq1_btn" onclick="deuxMots(0)">2 Mots</button>
 		<button type="button" class="w3-btn w3-yellow" id="unmot_eq1_btn" onclick="unmot(0)">1er Mot</button>
 		
 		<button type="button" class="btn btn-primary" id="IJ_nom_equipe1" style='font-size:xx-large'>
@@ -162,7 +162,7 @@
 		</button>
 		
 		<button type="button" class="w3-btn w3-yellow" id="unmot_eq2_btn" onclick="unmot(1)">1er Mot</button>
-		<button type="button" class="w3-btn w3-yellow" id="deuxmots_eq2_btn" onclick="unmot(1)">2 Mots</button>
+		<button type="button" class="w3-btn w3-yellow" id="deuxmots_eq2_btn" onclick="deuxMots(1)">2 Mots</button>
 		<button type="button" class="w3-btn w3-yellow" id="initiales_eq2_btn" onclick="initiales(1)">INITIALES</button>
 		<button type="button" class="w3-btn w3-yellow" id="fois2_eq2_btn" onclick="fois2(1)">X2</button>
 		<button type="button" class="w3-btn w3-yellow" id="switch_eq2_btn" onclick="switche(1)">SWITCH</button>
@@ -235,9 +235,26 @@
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleUnMotInitiales">
 		Confirmez l'utilisation du X2 ou Annulez
 		</div>
+		<div class="badge bg-primary" id="listeMots" style="font-size: xx-large;" >
+		</div>
+		<div>
+		<button type="button" onclick="btnAnnuler2Mots()" 
+		class="btn btn-primary" style="font-size:xx-large">ANNULER</button>
+		</div>
+	</div>
+	
+	<!-- BONUS 2 MOTS -->
+	<div id="bonus2Mots" hidden="hidden">
+		<div class="badge bg-primary" style="font-size: xx-large;" id="libelle2Mots">
+		Sélectionnez 2 Mots ou Annulez
+		</div>
 		<div>
 			<button type="button" onclick="confirmerFois2()" class="btn btn-primary" 
 			style="font-size:xx-large">X2</button>
+		</div>
+		<div>
+		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots()" 
+		class="btn btn-default" style="font-size:xx-large">VALIDER</button>
 		</div>
 		<div>
 		<button type="button" onclick="btnAnnulerFois2()" 
@@ -353,6 +370,8 @@
 	var bonusInitiales = [2];
 	var bonusPremierMot = [2];
 	var bonusDeuxMots = [2];
+	var mot1 = -1;
+	var mot2 = -1;
 	var allRecords = [];
 	var allThemes = [];
 	var listeChansons = [];
@@ -452,6 +471,50 @@
 			break;
 		  default:
 			console.log("default");
+		}
+	}
+	
+	function deuxMots(idEq) {
+		cacheDiv("reponse");
+		afficheDiv("bonusDeuxMots");
+		mot1 = -1;
+		mot2 = -1;
+		document.getElementById("infoRepChanson").innerHTML = "";
+		var str2 = solutionStop.replace (/'/g, ' ');
+		var res = str2.split(" ");
+		for(var i = 0; i < 2; i++) {
+			document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
+			+ "\" onclick=\"selectionMot(" +  i
+			+ ")\" class=\"btn btn-default\" style=\"font-size:xx-large\">" + (i+1) 
+			+ "° Mot</button> ";
+		}
+	}
+	
+	function selectionMot(idM) {
+		var nomBtn = "MotsN" + idM;
+		if ((mot1 != -1) && (mot2 != -1)) {
+			alert("Vous avez déjà sélectionné 2 mots ! \nPour déselctionné un mot rechoisissez-le.");
+		} else {
+			if (document.getElementById(nomBtn).classList == "btn btn-default") {
+				if (mot1 == -1) {
+					mot1 = idM;
+				} else {
+					mot2 = idM;
+				}
+				document.getElementById(nomBtn).classList = "btn btn-success";
+			} else {
+				if (mot1 != -1) {
+					mot1 = -1;
+				} else {
+					mot2 = -1;
+				}
+				document.getElementById(nomBtn).classList = "btn btn-default";
+			}
+			if ((mot1 != -1) && (mot2 != -1)) {
+				document.getElementById("btnValider2Mots").classList = "btn btn-primary";
+			} else {
+				document.getElementById("btnValider2Mots").classList = "btn btn-default";
+			}
 		}
 	}
 	
@@ -679,7 +742,7 @@
 		reponses.push("");
 		autreEquipeReponse=equipeEnCours;
 		if (autreEquipeReponse == equipeEnCours) {
-			if (bonusDeuxMots[equipeEnCours] == 1) {
+			if ((bonusDeuxMots[equipeEnCours] == 1) && (nbMotsEnCours>1)) {
 				nomIdBtn = "deuxmots_eq" + (equipeEnCours+1) + "_btn"
 				document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
 				activeBonus=1;
