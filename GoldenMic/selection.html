@@ -255,11 +255,11 @@
 		</div>
 		
 		<div>
-		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots()" class="btn btn-default" style="font-size:xx-large">VALIDER</button>
+		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots2()" class="btn btn-default" style="font-size:xx-large">VALIDER</button>
 		</div>
 		
 		<div>
-		<button type="button" id="btnAnnuler2Mots" onclick="btnAnnuler2Mots()" class="btn btn-primary" style="font-size:xx-large">ANNULER</button>
+		<button type="button" id="btnAnnuler2Mots" onclick="btnAnnuler2Mots2()" class="btn btn-primary" style="font-size:xx-large">ANNULER</button>
 		</div>
 		
 		<div hidden="hidden" id="btnRetourJeuDeuxMotsInitiales">
@@ -527,7 +527,7 @@
 		}
 	}
 	
-	function btnValider2Mots(){
+	function btnValider2Mots2(){
 		document.getElementById("listeMots").innerHTML = "";
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
@@ -553,7 +553,7 @@
 		cacheDiv("bonus2Mots");
 	}
 	
-	function btnAnnuler2Mots(){
+	function btnAnnuler2Mots2(){
 		afficheDiv("reponse");
 		cacheDiv("bonus2Mots");
 	}
