@@ -536,10 +536,10 @@
 		for(var i = 0; i < res.length; i++) {
 			if ((i == Mot1) || (i == Mot2)) {
 				document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
-				+ "\" class=\"btn btn-success\" style=\"font-size:xx-large\">" + res[i] +"</button> ";
+				+ "\" class=\"btn btn-success\" style=\"font-size:xx-large\">" + res[i] + "</button> ";
 			} else {
 				document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
-				+ "\" class=\"btn btn-default\" style=\"font-size:xx-large\">" + (i+1) + "° Mot</button>"
+				+ "\" class=\"btn btn-default\" style=\"font-size:xx-large\">" + (i+1) + "° Mot</button> "
 			}
 		}
 		bonusDeuxMots[equipeEnCours] = 0;
@@ -553,13 +553,13 @@
 		eteindreBonus(equipeEnCours);
 		afficheDiv("reponse");
 		cacheDiv("bonus2Mots");
+	}
 	
 	function btnAnnuler2Mots(){
 		afficheDiv("reponse");
 		cacheDiv("bonus2Mots");
 	}
-	
-	
+		
 	function unmot(idEq) {
 		cacheDiv("reponse");
 		afficheDiv("bonusUNMOTINITIALES");
