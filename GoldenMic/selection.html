@@ -235,10 +235,12 @@
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleUnMotInitiales">
 		Confirmez l'utilisation du X2 ou Annulez
 		</div>
-		<div class="badge bg-primary" id="listeMots" style="font-size: xx-large;" >
+		<div>
+			<button type="button" onclick="confirmerFois2()" class="btn btn-primary" 
+			style="font-size:xx-large">X2</button>
 		</div>
 		<div>
-		<button type="button" onclick="btnAnnuler2Mots()" 
+		<button type="button" onclick="btnAnnulerFois2()" 
 		class="btn btn-primary" style="font-size:xx-large">ANNULER</button>
 		</div>
 	</div>
@@ -248,10 +250,10 @@
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelle2Mots">
 		Sélectionnez 2 Mots ou Annulez
 		</div>
-		<div>
-			<button type="button" onclick="confirmerFois2()" class="btn btn-primary" 
-			style="font-size:xx-large">X2</button>
+		<div class="badge bg-primary" id="listeMots" style="font-size: xx-large;" >
 		</div>
+		<div>
+		<button type="button" onclick="btnAnnuler2Mots()" 
 		<div>
 		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots()" 
 		class="btn btn-default" style="font-size:xx-large">VALIDER</button>
