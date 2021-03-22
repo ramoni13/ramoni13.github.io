@@ -213,7 +213,7 @@
 		</div>
 		<div>
 			<button type="button" hidden="hidden" id="btnInitiales" onclick="afficheInitiales()" class="btn btn-primary" 
-			style="font-size:xx-large">AFFICHER 1er MOT</button>
+			style="font-size:xx-large">AFFICHER INITIALES</button>
 		</div>
 		<div>
 		<button type="button" id="btnAnnulerUnMotInitiales" onclick="annulerUnMotInitiales()" class="btn btn-primary" 
@@ -448,15 +448,15 @@
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
 		document.getElementById("btnUnMot").style.display = 'none';
-		document.getElementById("btnAnnulerUnMotInitialesInitiales").style.display = 'none';
-		document.getElementById("reponseUnMotInitiales").innerHTML = res;
+		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
+		document.getElementById("reponseUnMotInitiales").innerHTML = res[0];
 	}
 	
 	function afficheInitiales(){
 		var str2 = solutionStop.replace (/'/g, ' ');
 		var res = str2.split(" ");
 		document.getElementById("btnUnMot").style.display = 'none';
-		document.getElementById("btnAnnulerUnMotInitialesInitiales").style.display = 'none';
+		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'none';
 		var repInit = "";
 		for(var i = 0; i < res.length; i++) {
 			repInit += res[i].substring(0,1) + "___ ";
