@@ -443,16 +443,20 @@
 		cacheDiv("reponse");
 		afficheDiv("bonusUNMOTINITIALES");
 		document.getElementById("btnUnMot").style.display = 'block';
+		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
 	}
 	
 	function initiales(idEq) {
 		cacheDiv("reponse");
 		afficheDiv("bonusUNMOTINITIALES");
 		document.getElementById("btnInitiales").style.display = 'block';
+		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
 	}
 	
 	function retourJeuUnMotInitiales() {
 		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'none';
+		document.getElementById("libelleUnMotInitiales").style.display = 'none';
+		document.getElementById("reponseUnMotInitiales").style.display = 'none';
 		afficheDiv("reponse");
 		cacheDiv("bonusUNMOTINITIALES");
 	}
@@ -484,6 +488,7 @@
 		document.getElementById("reponseUnMotInitiales").innerHTML = repInit;
 		document.getElementById("btnRetourJeuUnMotInitiales").style.display = 'block';
 		bonusInitiales[equipeEnCours] = 0;
+		document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 		eteindreBonus(equipeEnCours);
 	}
 		
