@@ -206,7 +206,7 @@
 	<!-- BONUS 1 MOT et INITIALES -->
 	<div id="bonusUNMOTINITIALES" hidden="hidden">
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleUnMotInitiales">
-		Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder) ou Annulez
+		Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez
 		</div>
 		<div>
 			<button type="button" hidden="hidden" id="btnUnMot" onclick="afficheUnMot()" class="btn btn-primary" 
@@ -627,7 +627,7 @@
 			} else {
 				messageVainqueur = "L'équipe " + nomEquipe[idR] + " marque " + ptsEnCours + " pts";
 			}
-			
+			foisDeuxEncours = -1;
 			menu("chansonSuivante");
 		}
 	}
