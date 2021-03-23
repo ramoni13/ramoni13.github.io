@@ -216,6 +216,26 @@
 	.fail(function (response) {
 		console.log(response);
 	});
+	
+	$(document).ready(function(){
+		$("#controlers input").attr('disabled', true);
+		$("#slider_seek").click(function(evt,arg){
+			var left = evt.offsetX;
+			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
+		});
+	});
+	DZ.init({
+		appId  : '8',
+		channelUrl : 'http://developers.deezer.com/examples/channel.php',
+		player : {
+			container : 'player',
+			cover : true,
+			playlist : true,
+			width : 650,
+			height : 100,
+			onload : onPlayerLoaded
+		}
+	});
 }; // init
 
 function chargePacks() {
@@ -685,13 +705,7 @@ var listeChansons = [];
 var valeursStop = [];
 var stopEncours;
 
-	$(document).ready(function(){
-		$("#controlers input").attr('disabled', true);
-		$("#slider_seek").click(function(evt,arg){
-			var left = evt.offsetX;
-			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
-		});
-	});
+	
 	var tps;
 	var tpsencours;
 	function chargerDonnees(st1, st2, st3, idDeezer) {
@@ -753,18 +767,7 @@ var stopEncours;
 			$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
 		});
 	}
-	DZ.init({
-		appId  : '8',
-		channelUrl : 'http://developers.deezer.com/examples/channel.php',
-		player : {
-			container : 'player',
-			cover : true,
-			playlist : true,
-			width : 650,
-			height : 100,
-			onload : onPlayerLoaded
-		}
-	});
+	
 </script>
  
 </body>
