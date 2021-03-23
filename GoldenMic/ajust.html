@@ -43,6 +43,23 @@
 		<input type="button" onclick="goToStop(2); return false;" value="STOP2 -10'"/>
 		<input type="button" onclick="goToStop(3); return false;" value="STOP3 -10'"/>
 	</center>
+	<HR>
+	<center>
+		<div width="100%">
+		<table>
+		<tr>
+			<td>
+				<div id="event_listener" style="height:50px;width:100px;overflow:auto;font-size:20px"></div>
+			</td>
+			<td>
+				<div id="p1" style="height:50px;width:100px;overflow:auto;font-size:20px"></div>
+			</td>
+			<td style="vertical-align: top;">
+				<button onclick="copyToClipboard('#p1')">Copy secs</button>
+			</td>
+		</tr>
+		</div>
+	</center>
 	<!--<input type="button" onclick="DZ.player.playAlbum(302127); return false;" value="Play Daft Punk - Discovery"/>
 	<input type="button" onclick="DZ.player.playAlbum(301775); return false;" value="Play Daft Punk - Homework"/>
 	<br/>
@@ -62,6 +79,12 @@
   <div class="bar" style="width: 0%;"></div>
 </div>
 <script>
+var allThemes = [];
+var allRecords = [];
+var listeChansons = [];
+var valeursStop = [];
+var stopEncours;
+
 	$(document).ready(function(){
 		$("#controlers input").attr('disabled', true);
 		$("#slider_seek").click(function(evt,arg){
@@ -144,23 +167,6 @@
 	});
 </script>
 
-<center>
-	<div width="100%">
-	<table>
-	<tr>
-		<td>
-			<div id="event_listener" style="height:50px;width:100px;overflow:auto;font-size:20px"></div>
-		</td>
-		<td>
-			<div id="p1" style="height:50px;width:100px;overflow:auto;font-size:20px"></div>
-		</td>
-		<td style="vertical-align: top;">
-			<button onclick="copyToClipboard('#p1')">Copy secs</button>
-		</td>
-	</tr>
-	</div>
-</center>
-	
 <form role="form" id="titres-form">
 <center>
 	<div id="listeDesPacks"></div>
@@ -217,11 +223,7 @@
 
 <script>
 
-var allThemes = [];
-var allRecords = [];
-var listeChansons = [];
-var valeursStop = [];
-var stopEncours;
+
 	function init() {
 	
 	 // put your own error messages and/or message translation logic here
