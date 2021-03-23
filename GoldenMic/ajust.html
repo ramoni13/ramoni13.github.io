@@ -87,6 +87,7 @@
 		var pourcentage = (valeursStop[numStop]-10) * coef;
 		if (pourcentage<0) {pourcentage = 0};
 		DZ.player.seek(pourcentage);
+		stopEncours = valeursStop[numStop];
 	}
 	
 	function rewind() {
@@ -104,6 +105,17 @@
 		pre.innerHTML = minutes + ":" + seconds;
 		var p1 = document.getElementById('p1');
 		p1.innerHTML = Math.round(arguments[1] * 100) / 100
+		
+		if (arguments[1]==parseInt(stopEnCours)){
+				console.log("stop strictement egal");
+				DZ.player.pause();
+				//afficheDiv("menuChanson");
+			}
+			if (arguments[1]>=parseInt(stopEnCours)){
+				console.log("stop superieur ou egal");
+				DZ.player.pause();
+				//afficheDiv("menuChanson");
+			}
 	}
 	function onPlayerLoaded() {
 		$("#controlers input").attr('disabled', false);
@@ -209,7 +221,7 @@ var allThemes = [];
 var allRecords = [];
 var listeChansons = [];
 var valeursStop = [];
-
+var stopEncours;
 	function init() {
 	
 	 // put your own error messages and/or message translation logic here
