@@ -78,94 +78,7 @@
 <div id="slider_seek" class="progressbarplay" style="">
   <div class="bar" style="width: 0%;"></div>
 </div>
-<script>
-var allThemes = [];
-var allRecords = [];
-var listeChansons = [];
-var valeursStop = [];
-var stopEncours;
 
-	$(document).ready(function(){
-		$("#controlers input").attr('disabled', true);
-		$("#slider_seek").click(function(evt,arg){
-			var left = evt.offsetX;
-			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
-		});
-	});
-	var tps;
-	var tpsencours;
-	function chargerDonnees(st1, st2, st3, idDeezer) {
-		valeursStop = [];
-		valeursStop.push(st1);
-		valeursStop.push(st2);
-		valeursStop.push(st3);
-		
-		document.getElementById("idDeezer").value = idDeezer;
-		var tableauD = [idDeezer];
-		DZ.player.playTracks(tableauD);
-			}
-	
-	function goToStop(numStop) {
-		var coef = 100/tps;
-		var pourcentage = (valeursStop[numStop]-10) * coef;
-		if (pourcentage<0) {pourcentage = 0};
-		DZ.player.seek(pourcentage);
-		stopEncours = valeursStop[numStop];
-	}
-	
-	function rewind() {
-		var pre = document.getElementById('event_listener');
-		var coef = 100/tps;
-		var pourcentage = (tpsencours-5) * coef;
-		if (pourcentage<0) {pourcentage = 0};
-		DZ.player.seek(pourcentage);
-	}
-	function event_listener_append() {
-		var pre = document.getElementById('event_listener');
-		var minutes = Math.floor(arguments[1] / 60);
-		var seconds = arguments[1] - minutes * 60;
-		seconds = Math.round(seconds * 100) / 100
-		pre.innerHTML = minutes + ":" + seconds;
-		var p1 = document.getElementById('p1');
-		p1.innerHTML = Math.round(arguments[1] * 100) / 100
-		
-		if (arguments[1]==parseInt(stopEnCours)){
-				console.log("stop strictement egal");
-				DZ.player.pause();
-				//afficheDiv("menuChanson");
-			}
-			if (arguments[1]>=parseInt(stopEnCours)){
-				console.log("stop superieur ou egal");
-				DZ.player.pause();
-				//afficheDiv("menuChanson");
-			}
-	}
-	function onPlayerLoaded() {
-		$("#controlers input").attr('disabled', false);
-		event_listener_append('player_loaded');
-		DZ.Event.subscribe('current_track', function(arg){
-			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
-		});
-		DZ.Event.subscribe('player_position', function(arg){
-			tps= arg[1];
-			tpsencours = arg[0]; 
-			event_listener_append('position', arg[0], arg[1]);
-			$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
-		});
-	}
-	DZ.init({
-		appId  : '8',
-		channelUrl : 'http://developers.deezer.com/examples/channel.php',
-		player : {
-			container : 'player',
-			cover : true,
-			playlist : true,
-			width : 650,
-			height : 100,
-			onload : onPlayerLoaded
-		}
-	});
-</script>
 
 <form role="form" id="titres-form">
 <center>
@@ -204,6 +117,17 @@ var stopEncours;
           </td>
           <td colspan="2">
               <label>Timestop3: </label><input class="form-control" id="timestop3" name="timestop3" data-type="text" type="text">
+          </td>
+      </tr>
+	  <tr>
+          <td colspan="2">
+              <label>avantStop1: </label><input class="form-control" id="avantStop1" name="avantStop1" data-type="text" type="text">
+          </td>
+          <td colspan="2">
+              <label>avantStop2: </label><input class="form-control" id="avantStop2" name="avantStop2" data-type="text" type="text">
+          </td>
+          <td colspan="2">
+              <label>avantStop3: </label><input class="form-control" id="avantStop3" name="avantStop3" data-type="text" type="text">
           </td>
       </tr>
       <tr>
@@ -753,7 +677,96 @@ $(function () {
         return false;
     });
 });
-</script>  
+</script> 
+<script>
+var allThemes = [];
+var allRecords = [];
+var listeChansons = [];
+var valeursStop = [];
+var stopEncours;
+
+	$(document).ready(function(){
+		$("#controlers input").attr('disabled', true);
+		$("#slider_seek").click(function(evt,arg){
+			var left = evt.offsetX;
+			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
+		});
+	});
+	var tps;
+	var tpsencours;
+	function chargerDonnees(st1, st2, st3, idDeezer) {
+		valeursStop = [];
+		valeursStop.push(st1);
+		valeursStop.push(st2);
+		valeursStop.push(st3);
+		
+		document.getElementById("idDeezer").value = idDeezer;
+		var tableauD = [idDeezer];
+		DZ.player.playTracks(tableauD);
+			}
+	
+	function goToStop(numStop) {
+		var coef = 100/tps;
+		var pourcentage = (valeursStop[numStop]-10) * coef;
+		if (pourcentage<0) {pourcentage = 0};
+		DZ.player.seek(pourcentage);
+		stopEncours = valeursStop[numStop];
+	}
+	
+	function rewind() {
+		var pre = document.getElementById('event_listener');
+		var coef = 100/tps;
+		var pourcentage = (tpsencours-5) * coef;
+		if (pourcentage<0) {pourcentage = 0};
+		DZ.player.seek(pourcentage);
+	}
+	function event_listener_append() {
+		var pre = document.getElementById('event_listener');
+		var minutes = Math.floor(arguments[1] / 60);
+		var seconds = arguments[1] - minutes * 60;
+		seconds = Math.round(seconds * 100) / 100
+		pre.innerHTML = minutes + ":" + seconds;
+		var p1 = document.getElementById('p1');
+		p1.innerHTML = Math.round(arguments[1] * 100) / 100
+		
+		if (arguments[1]==parseInt(stopEnCours)){
+				console.log("stop strictement egal");
+				DZ.player.pause();
+				//afficheDiv("menuChanson");
+			}
+			if (arguments[1]>=parseInt(stopEnCours)){
+				console.log("stop superieur ou egal");
+				DZ.player.pause();
+				//afficheDiv("menuChanson");
+			}
+	}
+	function onPlayerLoaded() {
+		$("#controlers input").attr('disabled', false);
+		event_listener_append('player_loaded');
+		DZ.Event.subscribe('current_track', function(arg){
+			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
+		});
+		DZ.Event.subscribe('player_position', function(arg){
+			tps= arg[1];
+			tpsencours = arg[0]; 
+			event_listener_append('position', arg[0], arg[1]);
+			$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
+		});
+	}
+	DZ.init({
+		appId  : '8',
+		channelUrl : 'http://developers.deezer.com/examples/channel.php',
+		player : {
+			container : 'player',
+			cover : true,
+			playlist : true,
+			width : 650,
+			height : 100,
+			onload : onPlayerLoaded
+		}
+	});
+</script>
+ 
 </body>
 </html>
 
