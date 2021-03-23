@@ -70,7 +70,7 @@
 	var tpsencours;
 	function ecouterStop(nbsec, idDeezer) {
 		document.getElementById("idDeezer").value = idDeezer;
-		var tableauD = [idTrack];
+		var tableauD = [idDeezer];
 		DZ.player.playTracks(tableauD);
 		var pre = document.getElementById('event_listener');
 		var coef = 100/tps;
