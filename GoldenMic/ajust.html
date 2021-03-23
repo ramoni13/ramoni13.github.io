@@ -322,14 +322,14 @@ function choixDuPack(nomPack) {
 		console.log (listeChansons);
 		listeChansonPack = "";
 		for(var i = 0; i < listeChansons.length; i++) {
-			listeChansonPack += element.nbMotsStop + " Mot(s) - " + element.artist + " - " + element.titre + 
-			" | STOP 1 : Avant '" + element.avantStop1 + "' Mot(s) '" + element.lyricsstop1 + 
-			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 1</button>" +
-			" | STOP 2 : Avant '" + element.avantStop2 + "' Mot(s) '" + element.lyricsstop2 + 
-			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 2</button>" +
-			" | STOP 3 : Avant '" + element.avantStop3 + "' Mot(s) '" + element.lyricsstop3 + 
-			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 3</button>" +
-			" <button type='button' onclick=chargerDonnees(" + element._id + ") >Charger les données</button>";
+			listeChansonPack += listeChansons[i].nbMotsStop + " Mot(s) - " + listeChansons[i].artist + " - " + listeChansons[i].titre + 
+			" | STOP 1 : Avant '" + listeChansons[i].avantStop1 + "' Mot(s) '" + listeChansons[i].lyricsstop1 + 
+			" <button type='button' onclick=ecouterStop(" + listeChansons[i].timestop1 + ") >Ecouter Stop 1</button>" +
+			" | STOP 2 : Avant '" + listeChansons[i].avantStop2 + "' Mot(s) '" + listeChansons[i].lyricsstop2 + 
+			" <button type='button' onclick=ecouterStop(" + listeChansons[i].timestop1 + ") >Ecouter Stop 2</button>" +
+			" | STOP 3 : Avant '" + listeChansons[i].avantStop3 + "' Mot(s) '" + listeChansons[i].lyricsstop3 + 
+			" <button type='button' onclick=ecouterStop(" + listeChansons[i].timestop1 + ") >Ecouter Stop 3</button>" +
+			" <button type='button' onclick=chargerDonnees(" + listeChansons[i]._id + ") >Charger les données</button>";
 		}
 		
 		document.getElementById("listeChansonsDuPack").innerHTML = listeChansonPack;
