@@ -391,6 +391,9 @@
 	var idChansonsManche = [];
 	var binome="";
 	var idEquipeAdv;
+	var timerFlash = null;
+	
+	
 	function menu(menuEnCours){
 		switch (menuEnCours) {
 		  case "accueil":
@@ -1083,7 +1086,8 @@
 			}
 		} else {
 			if ((arguments[1]>=parseInt(stopEnCours-5)) && (arguments[1]<parseInt(stopEnCours-4))){
-				$('#chatAudio')[0].play();
+				//$('#chatAudio')[0].play();
+				timerFlash = self.setTimeout("lightning()",1);
 			}
 			
 			if (arguments[1]==parseInt(stopEnCours)){
@@ -1106,6 +1110,29 @@
 		<!-- var p1 = document.getElementById('p1'); -->
 		<!-- p1.innerHTML = Math.round(arguments[1] * 100) / 100 -->
 	}
+	function lightning()
+	{
+		flash=flash+1;
+		if(flash==1){document.getElementById('titres-form').bgColor='red'; setTimeout("lightning()",100);}
+		if(flash==2){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==3){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==4){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==5){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==6){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==7){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==8){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==9){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==10){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==11){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==12){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==13){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==14){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==15){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==16){document.getElementById('titres-form').bgColor='white'; timerFlash =setTimeout("lightning()",90);}
+		if(flash==17){document.getElementById('titres-form').bgColor='red'; timerFlash =setTimeout("lightning()",100);}
+		if(flash==18){document.getElementById('titres-form').bgColor='white';flash=0;clearTimeout(timerFlash)}
+		}
+	
 	function onPlayerLoaded() {
 		$("#controlers input").attr('disabled', false);
 		event_listener_append('player_loaded');
