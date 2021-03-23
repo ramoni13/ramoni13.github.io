@@ -322,12 +322,12 @@ function choixDuPack(nomPack) {
 		for(var i = 0; i < listeChansons.length; i++) {
 			listeChansonPack += element.nbMotsStop + " Mot(s) - " + element.artist + " - " + element.titre + 
 			" | STOP 1 : Avant '" + element.avantStop1 + "' Mot(s) '" + element.lyricsstop1 + 
-			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 1</button> +
+			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 1</button>" +
 			" | STOP 2 : Avant '" + element.avantStop2 + "' Mot(s) '" + element.lyricsstop2 + 
-			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 2</button> +
+			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 2</button>" +
 			" | STOP 3 : Avant '" + element.avantStop3 + "' Mot(s) '" + element.lyricsstop3 + 
-			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 3</button> +
-			" <button type='button' onclick=chargerDonnees(" + element._id + ") >Charger les données</button> +
+			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 3</button>" +
+			" <button type='button' onclick=chargerDonnees(" + element._id + ") >Charger les données</button>";
 		}
 		
 		document.getElementById("listeChansonsDuPack").innerHTML = listeChansonPack;
