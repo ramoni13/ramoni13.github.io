@@ -303,6 +303,10 @@
 	
 	<!-- MENU CHANSON -->
 	<div id="menuChanson" hidden="hidden">
+		<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="justeAvant"></div>
+		<div class="separateur">
+			&nbsp;
+		</div>
 		<div>
 			<button type="button" onclick="rewind()" class="btn btn-success" style="font-size:xx-large">Rewind 15'</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;
@@ -367,6 +371,7 @@
 	var idTrackEnCours;
 	var stopEnCours;
 	var solutionStop;
+	var motsAvantStop;
 	var idChansonEnCours;
 	var chansonDejaJouee = [];
 	var nomPackEnCours = "";
@@ -893,18 +898,22 @@
 				if (niveauEnCours == 1) {
 					stopEnCours = element.timestop1;
 					solutionStop = element.lyricsstop1;
+					motsAvantStop = element.avantStop1;
 				}
 				if (niveauEnCours == 2) {
 					stopEnCours = element.timestop2;
 					solutionStop = element.lyricsstop2;
+					motsAvantStop = element.avantStop2;
 				}
 				if (niveauEnCours == 3) {
 					stopEnCours = element.timestop3;
 					solutionStop = element.lyricsstop3;
+					motsAvantStop = element.avantStop3;
 				}
 				theChanson = "<div class=\"w3-tag w3-round w3-red\" style=\"padding:3px\" >" +
 					"<div class=\"w3-tag w3-round w3-yellow w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
+				document.getElementById("justeAvant").innerHTML = motsAvantStop + "...";	
 			}
 		});
 		document.getElementById("laChanson").innerHTML = theChanson;
