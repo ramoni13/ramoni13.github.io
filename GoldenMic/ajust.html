@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="//cdns-files.deezer.com/js/min/dz.js"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous">
+  	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-hQpvDQiCJaD2H465dQfA717v7lu5qHWtDbWNPvaTJ0ID5xnPUlVXnKzq7b8YUkbN" crossorigin="anonymous">
+  	<link href="https://goldenmic-0ff1.restdb.io/assets/css/jquery.datetimepicker.min.css" rel="stylesheet">
+	  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
+	  <script src="https://goldenmic-0ff1.restdb.io/assets/js/jquery-serialize-object.min.js"></script>
+	  <script src="https://goldenmic-0ff1.restdb.io/assets/js/jquery.datetimepicker.full.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.1/lodash.min.js"></script>
+
+	<style type="text/css">
+		.progressbarplay {
+			cursor:pointer;overflow: hidden;height: 8px;margin-bottom: 8px;background-color: #F7F7F7;background-image: -moz-linear-gradient(top,whiteSmoke,#F9F9F9);background-image: -ms-linear-gradient(top,whiteSmoke,#F9F9F9);background-image: -webkit-gradient(linear,0 0,0 100%,from(whiteSmoke),to(#F9F9F9));background-image: -webkit-linear-gradient(top,whiteSmoke,#F9F9F9);background-image: -o-linear-gradient(top,whiteSmoke,#F9F9F9);background-image: linear-gradient(top,whiteSmoke,#F9F9F9);background-repeat: repeat-x;filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f5f5',endColorstr='#f9f9f9',GradientType=0);-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);-moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);-webkit-border-radius: 6px;-moz-border-radius: 6px;border-radius: 6px;
+		}
+		.progressbarplay .bar {
+			cursor:pointer;background: #4496C6;width: 0;height: 8px;color: white;font-size: 12px;text-align: center;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);-webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);-moz-box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15);box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;-webkit-transition: width .6s ease;-moz-transition: width .6s ease;-ms-transition: width .6s ease;-o-transition: width .6s ease;transition: width .6s ease;
+		}
+		.separateur {
+			  height:10px;
+			  width:100%;
+			  z-index:0;
+			  position: relative;
+		}
+	</style>
+</head>
+<body>
+<div id="dz-root"></div>
+<div id="player" style="width:100%;" align="center"></div>
+<br/>
+<div id="controlers">
+	<center>
+ 		<input type="button" onclick="DZ.player.play(); return false;" value="play"/>
+		<input type="button" onclick="DZ.player.pause(); return false;" value="pause"/>
+		<input type="button" onclick="rewind(); return false;" value="-5 secondes"/>
+		<input type="button" onclick="chercheParoles(); return false;" value="Cherche/Paroles.net"/>
+	</center>
+	<!--<input type="button" onclick="DZ.player.playAlbum(302127); return false;" value="Play Daft Punk - Discovery"/>
+	<input type="button" onclick="DZ.player.playAlbum(301775); return false;" value="Play Daft Punk - Homework"/>
+	<br/>
+	<input type="button" onclick="DZ.player.playRadio(203); return false;" value="Play Radio"/>
+	<input type="button" onclick="DZ.player.playSmartRadio(13); return false;" value="Play Smart Radio"/>
+	
+	<br/>
+	<input type="button" onclick="DZ.player.play(); return false;" value="play"/>
+	<input type="button" onclick="DZ.player.pause(); return false;" value="pause"/>
+	<input type="button" onclick="DZ.player.prev(); return false;" value="prev"/>
+	<input type="button" onclick="DZ.player.next(); return false;" value="next"/>
+	<br/>
+	<input type="button" onclick="DZ.player.setVolume(20); return false;" value="set Volume 20"/>
+	<input type="button" onclick="DZ.player.setVolume(80); return false;" value="set Volume 80"/>-->
+</div>
+<div id="slider_seek" class="progressbarplay" style="">
+  <div class="bar" style="width: 0%;"></div>
+</div>
+<script>
+	$(document).ready(function(){
+		$("#controlers input").attr('disabled', true);
+		$("#slider_seek").click(function(evt,arg){
+			var left = evt.offsetX;
+			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
+		});
+	});
+	var tps;
+	var tpsencours;
+	function rewind() {
+		var pre = document.getElementById('event_listener');
+		var coef = 100/tps;
+		var pourcentage = (tpsencours-5) * coef;
+		if (pourcentage<0) {pourcentage = 0};
+		DZ.player.seek(pourcentage);
+	}
+	function event_listener_append() {
+		var pre = document.getElementById('event_listener');
+		var minutes = Math.floor(arguments[1] / 60);
+		var seconds = arguments[1] - minutes * 60;
+		seconds = Math.round(seconds * 100) / 100
+		pre.innerHTML = minutes + ":" + seconds;
+		var p1 = document.getElementById('p1');
+		p1.innerHTML = Math.round(arguments[1] * 100) / 100
+	}
+	function onPlayerLoaded() {
+		$("#controlers input").attr('disabled', false);
+		event_listener_append('player_loaded');
+		DZ.Event.subscribe('current_track', function(arg){
+			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
+		});
+		DZ.Event.subscribe('player_position', function(arg){
+			tps= arg[1];
+			tpsencours = arg[0]; 
+			event_listener_append('position', arg[0], arg[1]);
+			$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
+		});
+	}
+	DZ.init({
+		appId  : '8',
+		channelUrl : 'http://developers.deezer.com/examples/channel.php',
+		player : {
+			container : 'player',
+			cover : true,
+			playlist : true,
+			width : 650,
+			height : 100,
+			onload : onPlayerLoaded
+		}
+	});
+</script>
+
+<center>
+	<div width="100%">
+	<table>
+	<tr>
+		<td>
+			<div id="event_listener" style="height:50px;width:100px;overflow:auto;font-size:20px"></div>
+		</td>
+		<td>
+			<div id="p1" style="height:50px;width:100px;overflow:auto;font-size:20px"></div>
+		</td>
+		<td style="vertical-align: top;">
+			<button onclick="copyToClipboard('#p1')">Copy secs</button>
+		</td>
+	</tr>
+	</div>
+</center>
+	
+<form role="form" id="titres-form">
+<center>
+	<div id="listeDesPacks"></div>
+	<BR>
+	<div id="listeChansonsDuPack"></div>
+<table border="1px">
+      <tr>
+          <td>
+              <label>Artist: </label><input class="form-control" id="artist" name="artist" data-type="text" type="text">
+          </td>
+          <td>
+              <label>Titre: </label><input class="form-control" id="titre" name="titre" data-type="text" type="text">
+          </td>
+          <td>
+              <label>Nbmotsstop: </label><input class="form-control" id="nbMotsStop" name="nbMotsStop" data-type="text" type="text">
+          </td>
+          <td>
+              <label>Theme: </label><input class="form-control" id="theme" name="theme" data-type="text" type="text">
+          </td>
+          <td>
+              <label>Iddeezer: </label><input class="form-control" id="idDeezer" name="idDeezer" data-type="text" type="text">
+          </td>
+          <td>
+                <div id="fg-errors" class="form-group">
+                </div>
+                <button class="btn btn-primary btn-lg" id="btn-submit" type="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Submitting...">Submit</button>
+          </td>
+      </tr>
+      <tr>
+          <td colspan="2">
+              <label>Timestop1: </label><input class="form-control" id="timestop1" name="timestop1" data-type="text" type="text">
+          </td>
+          <td colspan="2">
+              <label>Timestop2: </label><input class="form-control" id="timestop2" name="timestop2" data-type="text" type="text">
+          </td>
+          <td colspan="2">
+              <label>Timestop3: </label><input class="form-control" id="timestop3" name="timestop3" data-type="text" type="text">
+          </td>
+      </tr>
+      <tr>
+          <td colspan="2">
+              <label>Lyricsstop1: </label><input class="form-control" id="lyricsstop1" name="lyricsstop1" data-type="text" type="text">
+          </td>
+          <td colspan="2">
+              <label>Lyricsstop2: </label><input class="form-control" id="lyricsstop2" name="lyricsstop2" data-type="text" type="text">
+          </td>
+          <td colspan="2">
+              <label>Lyricsstop3: </label><input class="form-control" id="lyricsstop3" name="lyricsstop3" data-type="text" type="text">
+          </td>
+      </tr>
+  </table> 
+</center>
+</form>
+
+<script>
+
+var allThemes = [];
+
+	function init() {
+	
+	 // put your own error messages and/or message translation logic here
+	 
+	 var errorMessages = {
+		"REQUIRED": "This field is required",
+		"UNIQUE": "This value already exists",
+		"TYPE": "Invalid data type",
+		"REGEX":"Invalid data format",
+		"number": "Must be an integer number",
+		"money": "Must be a number with max two decimals",
+		"JSON":"Not a valid JSON",
+		"float_number":"Must be a decimal number",
+		"email": "Must be a valid email",
+		"FILESIZE": "Upload exceeds file size limit per field (max 1 MB)",
+		"UPLOADERROR": "Unable to upload file, please try again",
+		"GENERIC_ERROR": "A server error occured, please reload page"
+	  }
+	var apikey = "fc15604b765756181951a03f7196297f43ff8"; // TODO: INSERT YOUR CORS API KEY HERE OR add formapikey to settings
+  
+	  if (!apikey) alert("Please insert a CORS API key");
+	  
+	  var ajaxSettings = {
+		"async": true,
+		"crossDomain": true,
+		"url": "https://cors-anywhere.herokuapp.com/https://goldenmic-0ff1.restdb.io/rest/titres",
+		"method": "GET",
+		"headers": {
+		  "x-apikey": apikey,
+		  "content-type": "application/json"
+		},
+		"processData": false
+	  }
+	$.ajax(ajaxSettings)
+	.done(function (response) {
+		
+		
+		console.log(response);
+		
+		response.forEach(element => controlerPresence(element));
+		
+		function controlerPresence(element){
+			themeEncours = element.theme;
+			var trouve = allThemes.find(theme => theme == element.theme);
+			if (trouve == undefined) {
+				allThemes.push(themeEncours);
+			}
+			allRecords.push(element);
+		}
+		
+		allRecords.sort(function(a, b) {
+		  var keyA = a.theme,
+			keyB = b.theme;
+		  // Compare the 2 dates
+		  if (keyA < keyB) return -1;
+		  if (keyA > keyB) return 1;
+		  return 0;
+		});
+		
+		console.log(allRecords);
+		console.log(allThemes);
+		
+		chargePacks();
+		
+	})
+	.fail(function (response) {
+		console.log(response);
+	});
+}; // init
+
+function chargePacks() {
+		var listePacks = "";
+		var idCouleur = 0;
+		var nomCouleur = "";
+		for(var i = 0; i < allThemes.length; i++) {
+			if (idCouleur == 0) {
+				nomCouleur = "btn btn-primary";
+			}
+			if (idCouleur == 1) {
+				nomCouleur = "btn btn-secondary";
+			}
+			if (idCouleur == 2) {
+				nomCouleur = "btn btn-success";
+			}
+			if (idCouleur == 3) {
+				nomCouleur = "btn btn-danger";
+			}
+			if (idCouleur == 4) {
+				nomCouleur = "btn btn-warning";
+			}
+			if (idCouleur == 5) {
+				nomCouleur = "btn btn-info";
+			}
+			if (idCouleur == 6) {
+				nomCouleur = "btn btn-dark";
+			}
+			if ((i>0) && ((i % 2) == 0)){
+				listePacks += "<div class='separateur'>&nbsp;</div>";
+			} else {
+				if (i>0) {
+					listePacks += "&nbsp;&nbsp;";
+				}
+			}
+			listePacks += "<button type='button' class='" + nomCouleur + "' onclick=\"choixDuPack('" + allThemes[i] + "')\" style='font-size:xx-large'>" + allThemes[i] + "</button>";
+			
+			idCouleur++;
+			if (i>6) { i = 0;}
+		}
+		
+		document.getElementById("listeDesPacks").innerHTML = listePacks;
+	}
+
+function choixDuPack(nomPack) {
+		nomPackEnCours = nomPack;
+		allRecords.forEach(element => trierTheme(element));
+		var listeChansonPack = "";
+		function trierTheme(element){
+			if (element.theme == nomPack){
+				listeChansons.push(element);
+			}
+		}	
+		
+		listeChansons.sort(function(a, b) {
+		  var keyA = a.nbMotsStop,
+			keyB = b.nbMotsStop;
+		  // Compare the 2 dates
+		  if (keyA < keyB) return -1;
+		  if (keyA > keyB) return 1;
+		  return 0;
+		});
+		console.log ("liste des chansons du pack '" + nomPack + "' = ");
+		console.log (listeChansons);
+		listeChansonPack = "";
+		for(var i = 0; i < listeChansons.length; i++) {
+			listeChansonPack += element.nbMotsStop + " Mot(s) - " + element.artist + " - " + element.titre + 
+			" | STOP 1 : Avant '" + element.avantStop1 + "' Mot(s) '" + element.lyricsstop1 + 
+			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 1</button> +
+			" | STOP 2 : Avant '" + element.avantStop2 + "' Mot(s) '" + element.lyricsstop2 + 
+			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 2</button> +
+			" | STOP 3 : Avant '" + element.avantStop3 + "' Mot(s) '" + element.lyricsstop3 + 
+			" <button type='button' onclick=ecouterStop(" + element.timestop1 + ") >Ecouter Stop 3</button> +
+			" <button type='button' onclick=chargerDonnees(" + element._id + ") >Charger les données</button> +
+		}
+		
+		document.getElementById("listeChansonsDuPack").innerHTML = listeChansonPack;
+	}
+	
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+}
+
+function cherche() 
+	{
+		document.getElementById("deezerResult").innerHTML = "";
+		let artiste = document.getElementById("artistIn").value;
+		let track = document.getElementById("trackIn").value;
+		let url = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=track:'" + track + "'";
+		if (artiste != "") {
+			url= url + " artist:'" + artiste + "'";
+		}
+		fetch(url)
+		.then(response => response.json())
+		.then(data => {
+			var compteur = 0;
+			data.data.forEach(element => afficheDetail(element));
+
+			function afficheDetail(element) {
+				compteur++;
+				titre = element.title;
+				idTrack = element.id;
+				duration = element.duration;
+				album = element.album.title;
+				artiste	= element.artist.name;
+				document.getElementById("deezerResult").innerHTML += 
+				compteur + " - " + artiste + 
+				" -- " + titre + 
+				" (" + album + ")" +
+				" -- " + duration + " secs" +
+				" -- idTrack=" + idTrack + 
+				" <input type=\"button\" value=\"Play\" onclick=\"javascript:chargeValeurs('" + accentsTidy(titre) + "','" + accentsTidy(artiste) + "','" + idTrack + "');\">" +
+				"<BR>";
+			}
+			if (compteur == 0) {
+				document.getElementById("deezerResult").innerHTML = "Aucun résultat.";
+			} 
+		});
+	}
+function accentsTidy(s) {
+    var r=s.toLowerCase();
+    // espaces	
+    //r = r.replace(new RegExp(/\s/g),"");
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");                
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+	// parentheses
+    //r = r.replace(new RegExp(/\W/g),"");
+    r = r.replace(/'/g,' ');
+    var retour = r.split("(");
+    return retour[0];
+};
+function chargeValeurs(titre,artiste,idTrack) {
+	document.getElementById("artist").value = artiste;
+	document.getElementById("titre").value = titre;
+	document.getElementById("idDeezer").value = idTrack;
+	var tableauD = [idTrack];
+	DZ.player.playTracks(tableauD);
+	var ajaxSettings = {
+		"async": true,
+		"crossDomain": true,
+		"url": "https://cors-anywhere.herokuapp.com/https://goldenmic-0ff1.restdb.io/rest/titres",
+		"method": "GET",
+		"headers": {
+		  "x-apikey": "fc15604b765756181951a03f7196297f43ff8",
+		  "content-type": "application/json"
+		},
+		"processData": false
+	  }
+	$.ajax(ajaxSettings)
+	.done(function (response) {
+		console.log(response);
+		var infoPresence = "";
+		document.getElementById("restDbResult").innerHTML = "";
+		response.forEach(element => controlerPresence(element));
+		if (infoPresence !== "") {
+			document.getElementById("restDbResult").innerHTML = infoPresence + "<BR>";
+		}
+		function controlerPresence(element){
+			if (element.artist == document.getElementById("artist").value) {
+				infoPresence += "<BR>!!! --> En base : <B>" + element.artist + "</B> Chanson : <B>" + element.titre + "</b> Nb Mots : <B>" + element.nbMotsStop + "</B>";
+			}
+		}
+	})
+	.fail(function (response) {
+	  $("#btn-submit").button("reset");
+	  var error = response.responseJSON;
+	  if (error && error.name==="ValidationError"){
+		_.each(error.list,function(fielderr){
+		  var inputSelector = "[name="+fielderr.field+"]";
+		  var errorMessageCode = fielderr.message[1];
+		  var errorMessage = errorMessages[errorMessageCode] || "Invalid value";
+		  if (errorMessageCode==="TYPE"){
+			var fieldType = $(inputSelector).data("type");
+			errorMessage = errorMessages[fieldType] || "Invalid value";
+		  }
+		  $(inputSelector).after("<div class='help-block'>"+errorMessage+"</div>");
+		  $(inputSelector).parents(".form-group").addClass("has-error");
+		});
+	  }
+	  else{
+		var msg = (ajaxSettings.headers["x-apikey"] && ajaxSettings.headers["x-apikey"].length < 24) ? "Missing API-key": "Server Error";
+		alert(msg);
+	  }
+	});
+}
+
+function chercheParoles() {
+	var artistePlay = document.getElementById("artist").value;
+	var titrePlay = document.getElementById("titre").value;
+	if ((artistePlay) && (titrePlay)) {
+		artistePlay = artistePlay.replace(/[&\/\\\-#,+()$~%.'":*?<>{}]/g,'').trim();
+		titrePlay = titrePlay.replace(/[&\/\\\-#,+()$~%.'":*?<>{}]/g,'').trim();
+		artistePlay = artistePlay.replace(/\s+/g,"-");
+		titrePlay = titrePlay.replace(/\s+/g,"-");
+		var urlTab = "https://www.paroles.net/" + artistePlay + "/paroles-" + titrePlay;
+		urlTab = urlTab.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		window.open(urlTab, '_blank');
+	}
+}
+
+
+	
+$(function () {
+
+  // put your own error messages and/or message translation logic here
+
+  var errorMessages = {
+    "REQUIRED": "This field is required",
+    "UNIQUE": "This value already exists",
+    "TYPE": "Invalid data type",
+    "REGEX":"Invalid data format",
+    "number": "Must be an integer number",
+    "money": "Must be a number with max two decimals",
+    "JSON":"Not a valid JSON",
+    "float_number":"Must be a decimal number",
+    "email": "Must be a valid email",
+    "FILESIZE": "Upload exceeds file size limit per field (max 1 MB)",
+    "UPLOADERROR": "Unable to upload file, please try again",
+    "GENERIC_ERROR": "A server error occured, please reload page"
+  }
+
+  var successMessage = "Thank you!";
+
+  // enable javascript datetimepicker unless supported
+  // Docs and settings: http://xdsoft.net/jqplugins/datetimepicker/
+
+  $.datetimepicker.setLocale('en');
+
+  // if missing support for datetime, then use jquery.datetimepicker
+
+  if (!Modernizr.inputtypes.datetime){
+      $("input[data-type=date]").datetimepicker({timepicker:false,format:"Y/m/d"}).attr("type","text");
+      $("input[data-type=datetime]").datetimepicker({}).attr("type","text");
+      $("input[data-type=time]").datetimepicker({datepicker:false,format:"H:i",value:"12:00"}).attr("type","text");
+  }
+
+  $("#titres-form input[data-type=file], #titres-form input[data-type=image]").on("change",function(){
+    $(this).data("uploadedfiles",[]);    
+  });
+  var apikey = "fc15604b765756181951a03f7196297f43ff8"; // TODO: INSERT YOUR CORS API KEY HERE OR add formapikey to settings
+  
+  if (!apikey) alert("Please insert a CORS API key");
+
+  var ajaxSettings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://cors-anywhere.herokuapp.com/https://goldenmic-0ff1.restdb.io/rest/titres",
+    "method": "POST",
+    "headers": {
+      "x-apikey": apikey,
+      "content-type": "application/json"
+    },
+    "processData": false
+  }
+
+  var ajaxSettingsAttachments = {
+     "async": true,
+     "url": "https://goldenmic-0ff1.restdb.io/media",
+     "method": "POST",
+     "contentType": false,
+     "headers": {
+       "x-apikey": apikey
+     },
+     "cache": false,
+     "processData": false
+   }
+
+
+
+  function uploadAttachment(item){
+    var deferred = $.Deferred();
+    var datatype = $(item).attr("data-type");
+    var element_name = $(item).attr("name");
+    var formData = new FormData();
+    var files = $(item)[0].files;
+    var totalsize = 0;
+    var files_to_upload = []
+    _.each(files,function(file){
+      // ignore non-images
+      if(datatype==="image" && !file.type.match('image.*')){
+        return;
+      }else{
+        files_to_upload.push(file);
+        totalsize += file.size;        
+      }
+    });
+
+    // check max upload file size for development plan
+    if (totalsize<=1000000){
+      _.each(files_to_upload,function(file){
+        formData.append(element_name, file, file.name);
+      });
+      var asa = _.clone(ajaxSettingsAttachments);
+      asa.xhr = function() {
+        var xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function(evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100)+"%";
+            $("#"+element_name+"_progress")
+            .css("width",percentComplete)
+          }
+        }, false);
+        return xhr;
+      }
+      asa.data = formData;
+      var uploadedbefore = $(item).data("uploaded");
+      if (!uploadedbefore){
+        $("#"+element_name+"_progress").parent().removeClass("hidden");
+        $("#btn-submit").button("loading");
+        $.ajax(asa)
+        .success(function(data){
+          var result = data.ids || [];
+          var successObj = {};
+          successObj[element_name] = result;
+          $(item).data("uploaded",result);
+          deferred.resolve(successObj);       
+        })
+        .fail(function(){
+          deferred.reject({field: element_name, error: errorMessages.UPLOADERROR});
+        });
+      }else{
+        var obj = {};
+        obj[element_name]=uploadedbefore;
+        deferred.resolve(obj);
+      }
+    }else{
+      deferred.reject({field: element_name, error: errorMessages.FILESIZE});
+    }
+    return deferred.promise();
+  }
+
+  function postForm() {
+
+    // clear errors
+    $("#titres-form .has-error").removeClass("has-error");
+    $("#titres-form .help-block").remove();
+
+    $("#btn-submit").button("loading");
+
+  // we need to reformat date, datetime, datetime-local and time to ISO date strings
+
+    $("input[data-type=datetime],input[data-type=datetime-local]").each(function(){
+        var theDate = $(this).val();
+        if(theDate){
+            var isodate_str = new Date(theDate).toISOString();
+            $(this).val(isodate_str);   
+        }
+    });
+
+    $("input[data-type=date]").each(function(){
+      var theDate = $(this).val();
+      if (theDate){
+          theDate += " GMT";
+          var isodate_str = new Date(theDate).toISOString();
+          $(this).val(isodate_str);
+      }
+    });
+
+     $("input[data-type=time]").each(function(){
+        var timeval = $(this).val();
+        if (timeval){
+            var regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
+            if (timeval.match(regex)){
+                var isodate_str = new Date("1970-01-01T"+$(this).val()+":00Z").toISOString();
+                $(this).val(isodate_str);
+            }   
+        }
+    });
+
+
+ // get the form data
+    var formObj = $("#titres-form").serializeObject();
+
+    // get attachments from inputs
+    var attachments = [];
+
+    $("#titres-form input[data-type=file], #titres-form input[data-type=image]").each(function(input){
+      var files = $(this)[0].files;
+      if(files && files.length>0){
+        attachments.push($(this));
+      }
+    });
+
+    var attachFuncs = [];
+    _.each(attachments,function(attachment){
+      attachFuncs.push(uploadAttachment(attachment));
+    });
+  
+    // upload all attachments and return with ids when done
+    $.when.apply(null,attachFuncs)
+      .done(function(){
+        // get the attachment id's from arguments and store into form obj
+
+        _.each(arguments,function(fieldObj){
+          formObj = _.assign(formObj,fieldObj);
+        });
+
+       // submit the whole form with attachment ids 
+
+       ajaxSettings.data = JSON.stringify(formObj);
+        $.ajax(ajaxSettings)
+        .done(function (response) {
+          // replaces form with a thank you message, please replace with your own functionality
+          $("#titres-form").replaceWith("<div class='thank-you'>"+successMessage+"</div>"+
+          "<button class='btn btn-primary btn-lg' onclick='window.location.reload();'>Nouvelle Saisie</button>");
+        })
+        .fail(function (response) {
+          $("#btn-submit").button("reset");
+          var error = response.responseJSON;
+          if (error && error.name==="ValidationError"){
+            _.each(error.list,function(fielderr){
+              var inputSelector = "[name="+fielderr.field+"]";
+              var errorMessageCode = fielderr.message[1];
+              var errorMessage = errorMessages[errorMessageCode] || "Invalid value";
+              if (errorMessageCode==="TYPE"){
+                var fieldType = $(inputSelector).data("type");
+                errorMessage = errorMessages[fieldType] || "Invalid value";
+              }
+              $(inputSelector).after("<div class='help-block'>"+errorMessage+"</div>");
+              $(inputSelector).parents(".form-group").addClass("has-error");
+            });
+          }
+          else{
+            var msg = (ajaxSettings.headers["x-apikey"] && ajaxSettings.headers["x-apikey"].length < 24) ? "Missing API-key": "Server Error";
+            alert(msg);
+          }
+        });
+      })
+      .fail( function (response) {
+        $("#btn-submit").button("reset");
+        if (response.field && response.error){
+          var inputSelector = "[name="+response.field+"]";
+          $(inputSelector).after("<div class='help-block'>"+response.error+"</div>");
+          $(inputSelector).parents(".form-group").addClass("has-error");
+        }else{
+          var errorMessage = errorMessages.GENERIC_ERROR || "Problem submitting form";
+          $("#fg-errors").addClass("has-error")
+          .append("<div class='help-block'>"+errorMessage+"</div>");
+        }
+      });
+  };
+
+  $("#titres-form").submit(function (event) {
+        postForm();
+        event.preventDefault();
+        return false;
+    });
+});
+</script>  
+</body>
+</html>
+
+
