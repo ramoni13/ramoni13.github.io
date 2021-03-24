@@ -799,8 +799,14 @@
 	}
 	
 	function lanceVerification(){
-		document.getElementById("infoRep1").innerHTML = "Equipe "+ nomEquipe[0] + "<BR>" + reponses[0];
-		document.getElementById("infoRep2").innerHTML = "Equipe "+ nomEquipe[1] + "<BR>" + reponses[1];
+		if (equipeEnCours == 0) {
+			document.getElementById("infoRep1").innerHTML = ">Equipe "+ nomEquipe[0] + "<BR>" + reponses[0];
+			document.getElementById("infoRep2").innerHTML = "Equipe "+ nomEquipe[1] + "<BR>" + reponses[1];
+		} else {
+			document.getElementById("infoRep1").innerHTML = "Equipe "+ nomEquipe[0] + "<BR>" + reponses[0];
+			document.getElementById("infoRep2").innerHTML = ">Equipe "+ nomEquipe[1] + "<BR>" + reponses[1];
+		}
+		
 		modeSolution = 1;
 		rewind();
 		// btnRep1/btnRep/btnRep2/infoRep
