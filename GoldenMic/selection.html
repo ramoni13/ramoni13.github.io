@@ -582,6 +582,7 @@
 	}
 	
 	function btnAnnuler2Mots2(){
+		activeBonus = 1;
 		afficheDiv("reponse");
 		cacheDiv("bonus2Mots");
 	}
@@ -661,6 +662,7 @@
 	}
 		
 	function annulerUnMotInitiales(){
+		activeBonus = 1;
 		afficheDiv("reponse");
 		document.getElementById("btnUnMot").style.display = 'none';
 		document.getElementById("btnInitiales").style.display = 'none';
@@ -684,6 +686,7 @@
 	}
 	
 	function btnAnnulerFois2() {
+		activeBonus = 1;
 		cacheDiv("bonusFOIS2");
 		afficheDiv("reponse");
 	}
