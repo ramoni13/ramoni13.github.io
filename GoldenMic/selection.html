@@ -401,6 +401,7 @@
 	var idEquipeAdv;
 	var timerFlash = null;
 	var flash=0;
+	var activeBonus=0;
 	
 	function menu(menuEnCours){
 		switch (menuEnCours) {
@@ -492,21 +493,23 @@
 	}
 	
 	function deuxMots(idEq) {
-		cacheDiv("reponse");
-		afficheDiv("bonus2Mots");
-		mot1 = -1;
-		mot2 = -1;
-		document.getElementById("listeMots").innerHTML = "";
-		document.getElementById("btnValider2Mots").classList = "btn btn-default";
-		document.getElementById("btnRetourJeuDeuxMotsInitiales").style.display = 'none';
-		document.getElementById("btnValider2Mots").style.display = 'block';
-		document.getElementById("btnAnnuler2Mots").style.display = 'block';
-		var str2 = solutionStop.replace (/'/g, ' ');
-		var res = str2.split(" ");
-		for(var i = 0; i < res.length; i++) {
-			document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
-			+ "\" onclick=\"selectionMot(" +  i
-			+ ")\" class=\"btn btn-default\" style=\"font-size:xx-large\">" + (i+1) + "° Mot</button> ";
+		if (activeBonus==1) {
+			cacheDiv("reponse");
+			afficheDiv("bonus2Mots");
+			mot1 = -1;
+			mot2 = -1;
+			document.getElementById("listeMots").innerHTML = "";
+			document.getElementById("btnValider2Mots").classList = "btn btn-default";
+			document.getElementById("btnRetourJeuDeuxMotsInitiales").style.display = 'none';
+			document.getElementById("btnValider2Mots").style.display = 'block';
+			document.getElementById("btnAnnuler2Mots").style.display = 'block';
+			var str2 = solutionStop.replace (/'/g, ' ');
+			var res = str2.split(" ");
+			for(var i = 0; i < res.length; i++) {
+				document.getElementById("listeMots").innerHTML += "<button type=\"button\" id=\"MotsN" + i 
+				+ "\" onclick=\"selectionMot(" +  i
+				+ ")\" class=\"btn btn-default\" style=\"font-size:xx-large\">" + (i+1) + "° Mot</button> ";
+			}
 		}
 	}
 	
@@ -558,6 +561,7 @@
 			document.getElementById("btnRetourJeuDeuxMotsInitiales").style.display = 'block';
 			document.getElementById("btnValider2Mots").style.display = 'none';
 			document.getElementById("btnAnnuler2Mots").style.display = 'none';
+			activeBonus = 0;
 		}
 	}
 	
@@ -582,21 +586,25 @@
 	}
 		
 	function unmot(idEq) {
-		cacheDiv("reponse");
-		afficheDiv("bonusUNMOTINITIALES");
-		document.getElementById("libelleUnMotInitiales").style.display = 'block';
-		document.getElementById("libelleUnMotInitiales").innerHTML = "Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez";
-		document.getElementById("btnUnMot").style.display = 'block';
-		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
+		if (activeBonus==1) {
+			cacheDiv("reponse");
+			afficheDiv("bonusUNMOTINITIALES");
+			document.getElementById("libelleUnMotInitiales").style.display = 'block';
+			document.getElementById("libelleUnMotInitiales").innerHTML = "Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez";
+			document.getElementById("btnUnMot").style.display = 'block';
+			document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
+		}
 	}
 	
 	function initiales(idEq) {
-		cacheDiv("reponse");
-		afficheDiv("bonusUNMOTINITIALES");
-		document.getElementById("libelleUnMotInitiales").style.display = 'block';
-		document.getElementById("libelleUnMotInitiales").innerHTML = "Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez";
-		document.getElementById("btnInitiales").style.display = 'block';
-		document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
+		if (activeBonus==1) {
+			cacheDiv("reponse");
+			afficheDiv("bonusUNMOTINITIALES");
+			document.getElementById("libelleUnMotInitiales").style.display = 'block';
+			document.getElementById("libelleUnMotInitiales").innerHTML = "Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez";
+			document.getElementById("btnInitiales").style.display = 'block';
+			document.getElementById("btnAnnulerUnMotInitiales").style.display = 'block';
+		}
 	}
 	
 	function retourJeuUnMotInitiales() {
@@ -622,6 +630,7 @@
 			document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 			coloreDiv(equipeEnCours, "infoRepChanson");
 			eteindreBonus(equipeEnCours);
+			activeBonus=0;
 		}
 	}
 	
@@ -644,6 +653,7 @@
 			document.getElementById("infoRepChanson").innerHTML = "Saisie " + nbMotsEnCours + " Mot(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 			coloreDiv(equipeEnCours, "infoRepChanson");
 			eteindreBonus(equipeEnCours);
+			activeBonus=0;
 		}
 	}
 		
@@ -663,8 +673,10 @@
 		afficheDiv("reponse");
 	}
 	function fois2(idEq) {
-		cacheDiv("reponse");
-		afficheDiv("bonusFOIS2");
+		if (activeBonus==1) {
+			cacheDiv("reponse");
+			afficheDiv("bonusFOIS2");
+		}
 	}
 	
 	function btnAnnulerFois2() {
