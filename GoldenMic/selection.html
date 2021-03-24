@@ -310,7 +310,7 @@
 		<div>
 			<button type="button" onclick="rewind()" class="btn btn-success" style="font-size:xx-large">Rewind 15'</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			<button type="button" onclick="menu('reponse')" class="btn btn-success" style="font-size:xx-large">Réponse</button>
+			<button type="button" onclick="menu('reponse')" class="btn btn-success" style="font-size:xx-large">BONUS & Réponses</button>
 		</div>
 	</div>
 	
@@ -674,9 +674,9 @@
 	
 	function resetBtnSwitch(){
 		if (idEquipeAdv == 0) {
-				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-yellow";
+				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-blue w3-round-xxlarge";
 			} else {
-				document.getElementById("switch_eq2_btn").classList = "w3-btn w3-yellow";
+				document.getElementById("switch_eq2_btn").classList =  "w3-btn w3-red w3-round-xxlarge";
 			}
 		cacheDiv("proposeSwitch");
 		menu("choixNiveau");
@@ -694,9 +694,9 @@
 			chansonDejaJouee.push(idChansonEnCours);
 			bonusSwitch[idEq]=0;
 			if (idEq == 0) {
-				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-gray";
+				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
 			} else {
-				document.getElementById("switch_eq2_btn").classList = "w3-btn w3-gray";
+				document.getElementById("switch_eq2_btn").classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
 			}
 			cacheDiv("proposeSwitch");
 			menu("choixNiveau");
@@ -852,7 +852,7 @@
 				activeBonus=1;
 			}
 			if (activeBonus == 1) {
-				document.getElementById("infoRepChanson").innerHTML += "<BR>Des bonus sont disponibles (1 seul par chanson)";
+				document.getElementById("infoRepChanson").innerHTML += "<BR>Des bonus (en vert) sont disponibles<BR>(1 seul par chanson)";
 			}
 		}
 	}
@@ -892,31 +892,31 @@
 		
 		if (bonusDeuxMots[idJ] == 1) {
 			nomIdBtn = "deuxmots_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+			document.getElementById(nomIdBtn).classList = (idJ == 0) ? "w3-btn w3-blue w3-round-xxlarge" : "w3-btn w3-red w3-round-xxlarge";
 		} else {
 			nomIdBtn = "deuxmots_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
 		}
 		if (bonusInitiales[idJ] == 1) {
 			nomIdBtn = "initiales_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+			document.getElementById(nomIdBtn).classList = (idJ == 0) ? "w3-btn w3-blue w3-round-xxlarge" : "w3-btn w3-red w3-round-xxlarge";
 		} else {
 			nomIdBtn = "initiales_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
 		}
 		if (bonusFoisDeux[idJ] == 1) {
 			nomIdBtn = "fois2_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+			document.getElementById(nomIdBtn).classList = (idJ == 0) ? "w3-btn w3-blue w3-round-xxlarge" : "w3-btn w3-red w3-round-xxlarge";
 		} else {
 			nomIdBtn = "fois2_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
 		}
 		if (bonusPremierMot[idJ] == 1) {
 			nomIdBtn = "unmot_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-yellow";
+			document.getElementById(nomIdBtn).classList = (idJ == 0) ? "w3-btn w3-blue w3-round-xxlarge" : "w3-btn w3-red w3-round-xxlarge";
 		} else {
 			nomIdBtn = "unmot_eq" + (idJ+1) + "_btn"
-			document.getElementById(nomIdBtn).classList = "w3-btn w3-gray";
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
 		}
 	}	
 	
