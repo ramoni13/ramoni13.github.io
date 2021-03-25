@@ -338,6 +338,7 @@ function chargeValeurs(titre,artiste,idTrack) {
 			if (element.artist == document.getElementById("artist").value) {
 				infoPresence += "<BR>!!! --> En base : <B>" + element.artist + "</B> Chanson : <B>" + element.titre + "</b> Nb Mots : <B>" + element.nbMotsStop + "</B>";
 			}
+			chargePacks();
 		}
 	})
 	.fail(function (response) {
