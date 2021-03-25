@@ -81,7 +81,12 @@
 		seconds = Math.round(seconds * 100) / 100
 		pre.innerHTML = minutes + ":" + seconds;
 		var p1 = document.getElementById('p1');
-		p1.innerHTML = Math.round(arguments[1] * 100) / 100
+		p1.innerHTML = Math.round(arguments[1] * 100) / 100;
+		if ((stopEnCours>0) && (stopActif == 1) && (arguments[1]>=parseInt(stopEnCours)){
+			console.log("stop superieur ou egal");
+			DZ.player.pause();
+			stopActif = 0;
+		}
 	}
 	function onPlayerLoaded() {
 		$("#controlers input").attr('disabled', false);
@@ -213,8 +218,9 @@ var allThemes = [];
 var allRecords = [];
 var listeChansons = [];
 var valeursStop = [];
-var stopEncours;
+var stopEncours=0;
 var themeEncours;
+var stopActif=0;
 
 function chargerDonnees(st1, st2, st3, idDeezer) {
 		valeursStop = [];
@@ -229,6 +235,7 @@ function chargerDonnees(st1, st2, st3, idDeezer) {
 	}
 	
 	function goToStop(numStop) {
+		stopActif=1;
 		var coef = 100/tps;
 		var pourcentage = (valeursStop[numStop-1]-10) * coef;
 		if (pourcentage<0) {pourcentage = 0};
