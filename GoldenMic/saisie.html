@@ -209,6 +209,7 @@ var allRecords = [];
 var listeChansons = [];
 var valeursStop = [];
 var stopEncours;
+var themeEncours;
 
 function chargerDonnees(st1, st2, st3, idDeezer) {
 		valeursStop = [];
@@ -319,9 +320,7 @@ function chargeValeurs(titre,artiste,idTrack) {
 		allRecords = [];
 		
 		response.forEach(element => controlerPresence(element));
-		if (infoPresence !== "") {
-			document.getElementById("restDbResult").innerHTML = infoPresence + "<BR>";
-		}
+		
 		function controlerPresence(element){
 			allRecords.push(element);
 			allRecords.sort(function(a, b) {
@@ -333,13 +332,21 @@ function chargeValeurs(titre,artiste,idTrack) {
 			  return 0;
 			});
 		
-			console.log(allRecords);
-			console.log(allThemes);
 			if (element.artist == document.getElementById("artist").value) {
 				infoPresence += "<BR>!!! --> En base : <B>" + element.artist + "</B> Chanson : <B>" + element.titre + "</b> Nb Mots : <B>" + element.nbMotsStop + "</B>";
 			}
-			chargePacks();
+			themeEncours = element.theme;
+			var trouve = allThemes.find(theme => theme == element.theme);
+			if (trouve == undefined) {
+				allThemes.push(themeEncours);
+			}
 		}
+		console.log("allRecords = " + allRecords);
+			console.log("allThemes = " + allThemes);
+		if (infoPresence !== "") {
+			document.getElementById("restDbResult").innerHTML = infoPresence + "<BR>";
+		}
+		chargePacks();
 	})
 	.fail(function (response) {
 	  $("#btn-submit").button("reset");
