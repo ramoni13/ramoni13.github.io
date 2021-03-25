@@ -820,11 +820,11 @@
 	
 	function lanceVerification(){
 		if (equipeEnCours == 0) {
-			document.getElementById("infoRep1").innerHTML = "<i class='bi bi-hand-index-thumb'></i>Equipe "+ nomEquipe[0] + "<BR>" + reponses[0];
+			document.getElementById("infoRep1").innerHTML = "<span class='glyphicon glyphicon-hand-right'></span>Equipe "+ nomEquipe[0] + "<BR>" + reponses[0];
 			document.getElementById("infoRep2").innerHTML = "Equipe "+ nomEquipe[1] + "<BR>" + reponses[1];
 		} else {
 			document.getElementById("infoRep1").innerHTML = "Equipe "+ nomEquipe[0] + "<BR>" + reponses[0];
-			document.getElementById("infoRep2").innerHTML = "<i class='bi bi-hand-index-thumb'></i>Equipe "+ nomEquipe[1] + "<BR>" + reponses[1];
+			document.getElementById("infoRep2").innerHTML = "Equipe "+ nomEquipe[1] + "<span class='glyphicon glyphicon-hand-left'></span><BR>" + reponses[1];
 		}
 		
 		modeSolution = 1;
