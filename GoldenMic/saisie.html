@@ -230,7 +230,7 @@ function chargerDonnees(st1, st2, st3, idDeezer) {
 	
 	function goToStop(numStop) {
 		var coef = 100/tps;
-		var pourcentage = (valeursStop[numStop]-10) * coef;
+		var pourcentage = (valeursStop[numStop-1]-10) * coef;
 		if (pourcentage<0) {pourcentage = 0};
 		DZ.player.seek(pourcentage);
 		stopEncours = valeursStop[numStop];
