@@ -124,7 +124,7 @@
 			&nbsp;
 		</div>
 		<div class="basEcran">
-			<button type="button" onclick="menu('nomEquipes')" class="btn btn-warning">Allez c'est parti !</button>
+			<button type="button" onclick="menu('nomEquipes')" class="btn btn-success">Allez c'est parti !</button>
 		</div>
 	</div>
 	
@@ -198,7 +198,7 @@
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleSwitch2">
 		</div>
 		<div id="chansonSwitch2"></div>
-		<div><button type="button" onclick="resetBtnSwitch()" class="btn btn-warning" 
+		<div><button type="button" onclick="resetBtnSwitch()" class="btn btn-success" 
 		style="font-size:xx-large">Ne PAS SWITCHER
 		</button></div>
 	</div>
@@ -209,11 +209,11 @@
 		Confirmez l'utilisation du Bonus (équipe adverse ne doit pas regarder)<BR>ou Annulez
 		</div>
 		<div>
-			<button type="button" hidden="hidden" id="btnUnMot" onclick="afficheUnMot()" class="btn btn-warning" 
+			<button type="button" hidden="hidden" id="btnUnMot" onclick="afficheUnMot()" class="btn btn-success" 
 			style="font-size:xx-large">AFFICHER 1er MOT</button>
 		</div>
 		<div>
-			<button type="button" hidden="hidden" id="btnInitiales" onclick="afficheInitiales()" class="btn btn-warning" 
+			<button type="button" hidden="hidden" id="btnInitiales" onclick="afficheInitiales()" class="btn btn-success" 
 			style="font-size:xx-large">AFFICHER INITIALES</button>
 		</div>
 		<div>
@@ -224,7 +224,7 @@
 		<div class="badge bg-primary" hidden="hidden" id="reponseUnMotInitiales" style="font-size: xx-large;" >
 		</div>
 		<div hidden="hidden" id="btnRetourJeuUnMotInitiales">
-		<button type="button"  onclick="retourJeuUnMotInitiales()" class="btn btn-warning" 
+		<button type="button"  onclick="retourJeuUnMotInitiales()" class="btn btn-success" 
 			style="font-size:xx-large">DONNER SA REPONSE</button>
 		</div>
 		</div>
@@ -236,7 +236,7 @@
 		Confirmez l'utilisation du X2 ou Annulez
 		</div>
 		<div>
-			<button type="button" onclick="confirmerFois2()" class="btn btn-warning" 
+			<button type="button" onclick="confirmerFois2()" class="btn btn-success" 
 			style="font-size:xx-large">X2</button>
 		</div>
 		<div>
@@ -255,7 +255,7 @@
 		</div>
 		<BR>
 		<div>
-		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots2()" class="btn btn-warning" style="font-size:xx-large">VALIDER</button>
+		<button type="button" id="btnValider2Mots" onclick="btnValider2Mots2()" class="btn btn-success" style="font-size:xx-large">VALIDER</button>
 		</div>
 		
 		<div>
@@ -263,7 +263,7 @@
 		</div>
 		
 		<div hidden="hidden" id="btnRetourJeuDeuxMotsInitiales">
-		<button type="button"  onclick="retourJeuDeuxMotsInitiales2()" class="btn btn-warning" 
+		<button type="button"  onclick="retourJeuDeuxMotsInitiales2()" class="btn btn-success" 
 			style="font-size:xx-large">DONNER SA REPONSE</button>
 		</div>
 	</div>
@@ -324,7 +324,7 @@
 		  <input type="text" class="form-control" id="repEq" placeholder="Reponse" aria-label="Reponse">
 		</div>
 		<div class="basEcran">
-			<button type="button" onclick="bloqueParoles()" class="btn btn-warning">On bloque les paroles !</button>
+			<button type="button" onclick="bloqueParoles()" class="btn btn-success">On bloque les paroles !</button>
 		</div>
 	</div>
 	
@@ -345,7 +345,7 @@
 		<HR>
 		<div class="badge bg-primary" style="font-size: xx-large;" id="infoRep" hidden="hidden"></div>
 		<div  hidden="hidden" id="btnRep" >
-			<button type="button" onclick="bonnereponse(-1)" class="btn btn-warning">Aucune Bonne Réponse</button>
+			<button type="button" onclick="bonnereponse(-1)" class="btn btn-success">Aucune Bonne Réponse</button>
 		</div>
 	</div>
 	
@@ -356,7 +356,7 @@
 			&nbsp;
 		</div>
 		<div  >
-			<button type="button" onclick="menu('prochaineSuivante')" class="btn btn-warning">Prochaine chanson !</button>
+			<button type="button" onclick="menu('prochaineSuivante')" class="btn btn-success">Prochaine chanson !</button>
 		</div>
 	</div>
 	
@@ -493,7 +493,7 @@
 	}
 	
 	function deuxMots(idEq) {
-		if ((activeBonus==1) && (idEq == equipeEnCours)) {
+		if ((activeBonus==1) && (idEq == equipeEnCours) && (nbMotsEnCours > 1)) {
 			activeBonus = 0;
 			cacheDiv("reponse");
 			afficheDiv("bonus2Mots");
