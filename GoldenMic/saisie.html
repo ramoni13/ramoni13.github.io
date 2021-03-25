@@ -123,6 +123,9 @@
 </center>
 	
 <form role="form" id="titres-form">
+<div id="listeDesPacks"></div>
+<BR>
+<div id="listeChansonsDuPack"></div>
 <center>
 	<table>
 	    <tr>
@@ -201,6 +204,30 @@
 </form>
 
 <script>
+var allThemes = [];
+var allRecords = [];
+var listeChansons = [];
+var valeursStop = [];
+var stopEncours;
+
+function chargerDonnees(st1, st2, st3, idDeezer) {
+		valeursStop = [];
+		valeursStop.push(st1);
+		valeursStop.push(st2);
+		valeursStop.push(st3);
+		
+		document.getElementById("idDeezer").value = idDeezer;
+		var tableauD = [idDeezer];
+		DZ.player.playTracks(tableauD);
+			}
+	
+	function goToStop(numStop) {
+		var coef = 100/tps;
+		var pourcentage = (valeursStop[numStop]-10) * coef;
+		if (pourcentage<0) {pourcentage = 0};
+		DZ.player.seek(pourcentage);
+		stopEncours = valeursStop[numStop];
+	}
 
 function copyToClipboard(element) {
   var $temp = $("<input>");
@@ -288,11 +315,26 @@ function chargeValeurs(titre,artiste,idTrack) {
 		console.log(response);
 		var infoPresence = "";
 		document.getElementById("restDbResult").innerHTML = "";
+		allRecords = [];
+		allRecords = [];
+		
 		response.forEach(element => controlerPresence(element));
 		if (infoPresence !== "") {
 			document.getElementById("restDbResult").innerHTML = infoPresence + "<BR>";
 		}
 		function controlerPresence(element){
+			allRecords.push(element);
+			allRecords.sort(function(a, b) {
+			  var keyA = a.theme,
+				keyB = b.theme;
+			  // Compare the 2 dates
+			  if (keyA < keyB) return -1;
+			  if (keyA > keyB) return 1;
+			  return 0;
+			});
+		
+			console.log(allRecords);
+			console.log(allThemes);
 			if (element.artist == document.getElementById("artist").value) {
 				infoPresence += "<BR>!!! --> En base : <B>" + element.artist + "</B> Chanson : <B>" + element.titre + "</b> Nb Mots : <B>" + element.nbMotsStop + "</B>";
 			}
@@ -321,6 +363,82 @@ function chargeValeurs(titre,artiste,idTrack) {
 	});
 }
 
+function chargePacks() {
+		var listePacks = "";
+		var idCouleur = 0;
+		var nomCouleur = "";
+		for(var i = 0; i < allThemes.length; i++) {
+			if (idCouleur == 0) {
+				nomCouleur = "btn btn-primary";
+			}
+			if (idCouleur == 1) {
+				nomCouleur = "btn btn-secondary";
+			}
+			if (idCouleur == 2) {
+				nomCouleur = "btn btn-success";
+			}
+			if (idCouleur == 3) {
+				nomCouleur = "btn btn-danger";
+			}
+			if (idCouleur == 4) {
+				nomCouleur = "btn btn-warning";
+			}
+			if (idCouleur == 5) {
+				nomCouleur = "btn btn-info";
+			}
+			if (idCouleur == 6) {
+				nomCouleur = "btn btn-dark";
+			}
+			if ((i>0) && ((i % 2) == 0)){
+				listePacks += "<div class='separateur'>&nbsp;</div>";
+			} else {
+				if (i>0) {
+					listePacks += "&nbsp;&nbsp;";
+				}
+			}
+			listePacks += "<button type='button' class='" + nomCouleur + "' onclick=\"choixDuPack('" + allThemes[i] + "')\" style='font-size:xx-large'>" + allThemes[i] + "</button>";
+			
+			idCouleur++;
+			if (i>6) { i = 0;}
+		}
+		
+		document.getElementById("listeDesPacks").innerHTML = listePacks;
+	}
+function choixDuPack(nomPack) {
+		nomPackEnCours = nomPack;
+		allRecords.forEach(element => trierTheme(element));
+		var listeChansonPack = "";
+		function trierTheme(element){
+			if (element.theme == nomPack){
+				listeChansons.push(element);
+			}
+		}	
+		
+		listeChansons.sort(function(a, b) {
+		  var keyA = a.nbMotsStop,
+			keyB = b.nbMotsStop;
+		  // Compare the 2 dates
+		  if (keyA < keyB) return -1;
+		  if (keyA > keyB) return 1;
+		  return 0;
+		});
+		console.log ("liste des chansons du pack '" + nomPack + "' = ");
+		console.log (listeChansons);
+		listeChansonPack = "";
+		for(var i = 0; i < listeChansons.length; i++) {
+			listeChansonPack += listeChansons[i].nbMotsStop + " Mot(s) - " + listeChansons[i].artist + " - " + listeChansons[i].titre + 
+			" | <B>STOP 1</B> : Avant '" + listeChansons[i].avantStop1 + "' Mot(s) '" + listeChansons[i].lyricsstop1 + 
+			"' " +
+			" | <B>STOP 2</B> : Avant '" + listeChansons[i].avantStop2 + "' Mot(s) '" + listeChansons[i].lyricsstop2 + 
+			"' " +
+			" | <B>STOP 3</B> : Avant '" + listeChansons[i].avantStop3 + "' Mot(s) '" + listeChansons[i].lyricsstop3 + 
+			"' " +
+			" <button type='button' onclick=chargerDonnees(" + listeChansons[i].timestop1 + "," + listeChansons[i].timestop2 + "," + listeChansons[i].timestop3 + "," + listeChansons[i].idDeezer + ") >PLAY</button><BR>";
+		}
+		
+		document.getElementById("listeChansonsDuPack").innerHTML = listeChansonPack;
+	}
+	
 function chercheParoles() {
 	var artistePlay = document.getElementById("artist").value;
 	var titrePlay = document.getElementById("titre").value;
