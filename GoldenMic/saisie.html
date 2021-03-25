@@ -82,7 +82,7 @@
 		pre.innerHTML = minutes + ":" + seconds;
 		var p1 = document.getElementById('p1');
 		p1.innerHTML = Math.round(arguments[1] * 100) / 100;
-		if ((stopEnCours>0) && (stopActif == 1) && (arguments[1]>=parseInt(stopEnCours)){
+		if ((stopEnCours>0) && (stopActif == 1) && (arguments[1]>=parseInt(stopEnCours))){
 			console.log("stop superieur ou egal");
 			DZ.player.pause();
 			stopActif = 0;
