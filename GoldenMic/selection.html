@@ -388,6 +388,7 @@
 	var mot2 = -1;
 	var allRecords = [];
 	var allThemes = [];
+	var infosPack = [];
 	var listeChansons = [];
 	var reponses = [];
 	var tps;
@@ -1091,7 +1092,10 @@
 					listePacks += "&nbsp;&nbsp;";
 				}
 			}
-			listePacks += "<button type='button' class='" + nomCouleur + "' onclick=\"choixDuPack('" + allThemes[i] + "')\" style='font-size:xx-large'>" + allThemes[i] + "</button>";
+			listePacks += "<button type='button' class='" + nomCouleur + 
+			"' onclick=\"choixDuPack('" + allThemes[i] + 
+			"')\" style='font-size:xx-large'>" + allThemes[i] + 
+			"<BR>" + (infosPack[i]/2) + " manches</button>";
 			
 			idCouleur++;
 			if (i>6) { i = 0;}
@@ -1290,12 +1294,30 @@
 		
 		console.log(allRecords);
 		console.log(allThemes);
+		chargeInfosPack();
 	})
 	.fail(function (response) {
 		console.log(response);
 	});
 }; // init
+	
+	function chargeInfosPack() {
+		var nomduPack;
+		var nbChansons = 0;
+		for(var i = 0; i < allThemes.length; i++) {
+			nbChansons = 0;
+			nomduPack = allThemes[i];
+			allRecords.forEach(element => compterChansons(element, nomduPack));
+			infosPack.push(nbChansons);
+		}
 		
+		function compterChansons(element, nom){
+			if (element.theme == nom){
+				nbChansons++;
+			}
+		}	
+	}
+	
 	function afficheDiv(idDiv){
 			divEncours = idDiv;
 			document.getElementById(idDiv).style.display = 'block';
