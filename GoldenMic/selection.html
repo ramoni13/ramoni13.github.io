@@ -1007,10 +1007,11 @@
 			if ((parseInt(element.nbMotsStop) === nbMotsEnCours) && (dejaJoue == undefined)) {
 				cptNbChanson++;
 				document.getElementById("nbMots").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+				var preEcouteId = "preEcoute" + cptNbChanson;
 				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div>" +
-					"</div><div onclick=\"preecouteChanson('" + element._id + "')\"><img style=\"width:200px\" src=\"preload.png\"></div><div class=\"separateur\">&nbsp;</div>";
+					"</div><div id=\"" + preEcouteId + "\" onclick=\"preecouteChanson('" + element._id + "')\"><img style=\"width:200px\" src=\"preload.png\"></div><div class=\"separateur\">&nbsp;</div>";
 				idChansonsManche.push(element._id);
 				coloreDiv(equipeEnCours, "nbMots");
 			}
@@ -1042,7 +1043,17 @@
 				menu("choixChanson");
 			}
 		} else {
-			if (cptNbChanson == 1) { switchOn = false;} else { switchOn = true;}
+			if (cptNbChanson == 1) { 
+				switchOn = false;
+				var preEcouteId = "preEcoute" + 1;
+				document.getElementById(idDiv).style.display = 'none';
+			} else { 
+				for(var i = 1; i < cptNbChanson+1; i++) {
+					var preEcouteId = "preEcoute" + i;
+					document.getElementById(idDiv).style.display = 'block';
+				}
+				switchOn = true;
+			}
 			document.getElementById("listeChansons").innerHTML = binome;
 		}
 		
