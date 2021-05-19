@@ -403,6 +403,7 @@
 	var timerFlash = null;
 	var flash=0;
 	var activeBonus=0;
+	var modePreEcoute = 0;
 	
 	function menu(menuEnCours){
 		switch (menuEnCours) {
@@ -991,6 +992,7 @@
 			}
 		});
 		document.getElementById("laChanson").innerHTML = theChanson;
+		modePreEcoute = 0;
 		var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
 	}
@@ -1007,7 +1009,8 @@
 				document.getElementById("nbMots").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
-					"<b>" + element.titre + "</b><BR>" + element.artist + "</div></div><div class=\"separateur\">&nbsp;</div>";
+					"<b>" + element.titre + "</b><BR>" + element.artist + "</div>" +
+					"<div onclick=\"preecouteChanson('" + element._id + "')\"><img src=\"preload.png\"></div></div><div class=\"separateur\">&nbsp;</div>";
 				idChansonsManche.push(element._id);
 				coloreDiv(equipeEnCours, "nbMots");
 			}
@@ -1043,6 +1046,20 @@
 			document.getElementById("listeChansons").innerHTML = binome;
 		}
 		
+	}
+	
+	function preecouteChanson(idChanson) {
+		console.log(idChanson);
+		listeChansons.forEach(element => {
+			if (element._id == idChanson) {
+				idTrackEnCours = element.idDeezer;
+				stopEnCours = element.timestop1;
+				modePreEcoute = 1;
+				var tableauD = [idTrackEnCours];
+				DZ.player.playTracks(tableauD);
+				break;
+			}
+		}
 	}
 	
 	function selectionChanson(idChanson) {
@@ -1171,7 +1188,12 @@
 		var seconds = arguments[1] - minutes * 60;
 		seconds = Math.round(seconds * 100) / 100;
 		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
-		if (modeSolution == 1) {
+		if (modePreEcoute == 1) {
+			if (arguments[1]>=parseInt(5)){
+				console.log("stop superieur ou egal à 5 (préécoute)");
+				DZ.player.pause();
+			}
+		} else if (modeSolution == 1) {
 			if (arguments[1]>=parseInt(stopEnCours)){
 				afficheSolution();
 			}
