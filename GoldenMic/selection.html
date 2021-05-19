@@ -443,7 +443,7 @@
 			break;
 		  case "choixNiveau":
 			console.log("Menu : choixNiveau");
-			cacheDiv("choixChanson");
+			afficheDiv("choixChanson");
 			afficheDiv("niveauChanson");
 			chargeInfosStop();
 			break;
@@ -966,8 +966,7 @@
 	
 	function afficheEtLanceChanson() {
 		var theChanson;
-		document.getElementById("infoChanson").innerHTML = nbMotsEnCours + " Mot(s) - " + ptsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
-		coloreDiv(equipeEnCours, "infoChanson");
+		
 		listeChansons.forEach(element => {
 			if (element._id == idChansonEnCours) {
 				idTrackEnCours = element.idDeezer;
@@ -992,6 +991,9 @@
 				document.getElementById("justeAvant").innerHTML = motsAvantStop + "...";	
 			}
 		});
+		document.getElementById("infoChanson").innerHTML = nbMotsEnCours + " Mot(s) - " + ptsEnCours + " pt(s)<br>" + 
+		"Stop à " + Math.round(stopEnCours) + "<br>Equipe "+ nomEquipe[equipeEnCours];
+		coloreDiv(equipeEnCours, "infoChanson");
 		document.getElementById("laChanson").innerHTML = theChanson;
 		modePreEcoute = 0;
 		var tableauD = [idTrackEnCours];
