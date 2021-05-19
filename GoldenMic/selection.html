@@ -301,12 +301,11 @@
 		<div id="laChanson" onclick=""></div>
 	</div>
 	
+	<!-- MOTS JUSTE AVANT -->
+	<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="justeAvant" hidden="hidden"></div>
+	
 	<!-- MENU CHANSON -->
 	<div id="menuChanson" hidden="hidden">
-		<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="justeAvant"></div>
-		<div class="separateur2">
-			&nbsp;
-		</div>
 		<div>
 			<button type="button" onclick="rewind()" class="btn btn-success" style="font-size:xx-large">Rewind 15'</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;
@@ -477,6 +476,7 @@
 			console.log("Menu : chansonSuivante");
 			cacheDiv("verification");
 			cacheDiv("menuChanson");
+			cacheDiv("justeAvant");
 			afficheDiv("chansonSuivante");
 			afficherGagnant();
 			break;
@@ -484,6 +484,7 @@
 			console.log("Menu : prochaineSuivante");
 			cacheDiv("chansonSuivante");
 			cacheDiv("menuChanson");
+			cacheDiv("justeAvant");
 			DZ.player.pause();
 			chansonSuivante();
 			break;
@@ -1217,11 +1218,13 @@
 				console.log("stop strictement egal");
 				DZ.player.pause();
 				afficheDiv("menuChanson");
+				afficheDiv("justeAvant");
 			}
 			if (arguments[1]>=parseInt(stopEnCours)){
 				console.log("stop superieur ou egal");
 				DZ.player.pause();
 				afficheDiv("menuChanson");
+				afficheDiv("justeAvant");
 			}
 		}
 		
