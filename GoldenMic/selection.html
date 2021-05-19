@@ -1043,6 +1043,7 @@
 				menu("choixChanson");
 			}
 		} else {
+			document.getElementById("listeChansons").innerHTML = binome;
 			if (cptNbChanson == 1) { 
 				switchOn = false;
 				var preEcouteId = "preEcoute" + 1;
@@ -1054,7 +1055,6 @@
 				}
 				switchOn = true;
 			}
-			document.getElementById("listeChansons").innerHTML = binome;
 		}
 		
 	}
