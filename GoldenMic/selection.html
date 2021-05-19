@@ -1010,7 +1010,7 @@
 				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
 					"<b>" + element.titre + "</b><BR>" + element.artist + "</div>" +
-					"<div onclick=\"preecouteChanson('" + element._id + "')\"><img src=\"preload.png\"></div></div><div class=\"separateur\">&nbsp;</div>";
+					"</div><div onclick=\"preecouteChanson('" + element._id + "')\"><img style=\"width:200px\" src=\"preload.png\"></div><div class=\"separateur\">&nbsp;</div>";
 				idChansonsManche.push(element._id);
 				coloreDiv(equipeEnCours, "nbMots");
 			}
