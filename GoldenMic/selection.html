@@ -1046,11 +1046,11 @@
 			if (cptNbChanson == 1) { 
 				switchOn = false;
 				var preEcouteId = "preEcoute" + 1;
-				document.getElementById(idDiv).style.display = 'none';
+				document.getElementById(preEcouteId).style.display = 'none';
 			} else { 
 				for(var i = 1; i < cptNbChanson+1; i++) {
 					var preEcouteId = "preEcoute" + i;
-					document.getElementById(idDiv).style.display = 'block';
+					document.getElementById(preEcouteId).style.display = 'block';
 				}
 				switchOn = true;
 			}
