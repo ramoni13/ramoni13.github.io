@@ -996,7 +996,7 @@
 		var secInfo = element.timestop1 - minInfo * 60;
 		secInfo = Math.round(secInfo * 100) / 100;
 		document.getElementById("infoChanson").innerHTML = nbMotsEnCours + " Mot(s) - " + ptsEnCours + " pt(s)<br>" + 
-		"Stop à " + minInfo + ":" + Math.round(secInfo)).slice(-2) + "<br>Equipe "+ nomEquipe[equipeEnCours];
+		"Stop à " + minInfo + ":" + Math.round(secInfo).slice(-2) + "<br>Equipe "+ nomEquipe[equipeEnCours];
 		coloreDiv(equipeEnCours, "infoChanson");
 		document.getElementById("laChanson").innerHTML = theChanson;
 		modePreEcoute = 0;
