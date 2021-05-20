@@ -274,6 +274,7 @@
 	<!-- CHOIX NIVEAU -->
 	<div id="niveauChanson" hidden="hidden">
 		<div class="badge bg-primary" style="font-size: xx-large;" >Choix Niveau Difficulté</div>
+		<div class="badge bg-primary" style="font-size: x-large;" id="infoChansonEncours"></div>
 		<div class="separateur">
 			&nbsp;
 		</div>
@@ -738,6 +739,7 @@
 				idChansonEnCours = idChansonsManche[0];
 			}
 			chansonDejaJouee.push(idChansonEnCours);
+			majNomChanson(idChansonEnCours);
 			bonusSwitch[idEq]=0;
 			if (idEq == 0) {
 				document.getElementById("switch_eq1_btn").classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
@@ -751,7 +753,15 @@
 		}
 		
 	}
-		
+	
+	function majNomChanson(idChanson) {
+		listeChansons.forEach(element => {
+			if (element._id == idChanson) {
+				document.getElementById("infoChansonEncours").innerHTML = "<b>" + element.titre + "</b><BR>" + element.artist;
+			}
+		});
+	}
+	
 	function proposeSwitch() {
 		var theChanson;
 		var theChanson2;
@@ -1085,6 +1095,7 @@
 	function selectionChanson(idChanson) {
 		console.log(idChanson);
 		chansonDejaJouee.push(idChanson);
+		majNomChanson(idChansonEnCours);
 		idChansonEnCours = idChanson;
 		if (equipeEnCours == 0){
 			idEquipeAdv = 1;
