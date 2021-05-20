@@ -757,7 +757,7 @@
 	function majNomChanson(idChanson) {
 		listeChansons.forEach(element => {
 			if (element._id == idChanson) {
-				document.getElementById("infoChansonEncours").innerHTML = "<b>" + element.titre + "</b><BR>" + element.artist;
+				document.getElementById("infoChansonEncours").innerHTML = "Equipe "+ nomEquipe[equipeEnCours] + "<br><b>" + element.titre + "</b><BR>" + element.artist;
 			}
 		});
 	}
