@@ -161,7 +161,7 @@
 		</button>
 		<button type="button" class="btn btn-danger" id="IJ_nom_equipe2" style='font-size:xx-large'>
 		</button>
-		<button type="button" class="w3-btn w3-blue w3-round-xxlarge" id="apeupres_eq2_btn" onclick="apeupres(1)">A peu près</button>
+		<button type="button" class="w3-btn w3-red w3-round-xxlarge" id="apeupres_eq2_btn" onclick="apeupres(1)">A peu près</button>
 		<button type="button" class="w3-btn w3-red w3-round-xxlarge" id="unmot_eq2_btn" onclick="unmot(1)">1er Mot</button>
 		<button type="button" class="w3-btn w3-red w3-round-xxlarge" id="deuxmots_eq2_btn" onclick="deuxMots(1)">2 Mots</button>
 		<button type="button" class="w3-btn w3-red w3-round-xxlarge" id="initiales_eq2_btn" onclick="initiales(1)">INITIALES</button>
@@ -237,7 +237,7 @@
 	<!-- A PEU PRES -->
 	<div id="bonusAPEUPRES" hidden="hidden">
 		<div class="badge bg-primary" style="font-size: xx-large;" id="libelleUnMotInitiales">
-		Ce bonus vous permet d'avoir 1 mot en erreur de la solution.
+		Ce bonus vous permet d'avoir 1 mot en erreur de la solution.<BR>
 		Confirmez l'utilisation du "A peu près" ou Annulez
 		</div>
 		<div >
@@ -958,6 +958,11 @@
 				document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
 				activeBonus=1;
 			}
+			if (bonusApeupres[equipeEnCours] == 1) {
+				nomIdBtn = "apeupres_eq" + (equipeEnCours+1) + "_btn"
+				document.getElementById(nomIdBtn).classList = "w3-btn w3-green";
+				activeBonus=1;
+			}
 			if (activeBonus == 1) {
 				document.getElementById("infoRepChanson").innerHTML += "<BR>Des bonus (en vert) sont disponibles<BR>(1 seul par chanson)";
 			}
@@ -1023,6 +1028,13 @@
 			document.getElementById(nomIdBtn).classList = (idJ == 0) ? "w3-btn w3-blue w3-round-xxlarge" : "w3-btn w3-red w3-round-xxlarge";
 		} else {
 			nomIdBtn = "unmot_eq" + (idJ+1) + "_btn"
+			document.getElementById(nomIdBtn).classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
+		}
+		if (bonusApeupres[idJ] == 1) {
+			nomIdBtn = "apeupres_eq" + (idJ+1) + "_btn"
+			document.getElementById(nomIdBtn).classList = (idJ == 0) ? "w3-btn w3-blue w3-round-xxlarge" : "w3-btn w3-red w3-round-xxlarge";
+		} else {
+			nomIdBtn = "apeupres_eq" + (idJ+1) + "_btn"
 			document.getElementById(nomIdBtn).classList = "w3-btn w3-black w3-round-xxlarge w3-disabled";
 		}
 	}	
