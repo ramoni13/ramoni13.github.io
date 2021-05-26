@@ -543,7 +543,7 @@
 	}
 	
 	function deuxMots(idEq) {
-		if ((activeBonus==1) && (idEq == equipeEnCours) && (nbMotsEnCours > 1)) {
+		if ((activeBonus==1) && (idEq == equipeEnCours) && (nbMotsEnCours > 1) && (bonusDeuxMots[idEq] == 1)) {
 			activeBonus = 0;
 			cacheDiv("reponse");
 			afficheDiv("bonus2Mots");
@@ -638,7 +638,7 @@
 	}
 		
 	function unmot(idEq) {
-		if ((activeBonus==1) && (idEq == equipeEnCours)) {
+		if ((activeBonus==1) && (idEq == equipeEnCours) && (bonusPremierMot[idEq] == 1)) {
 			activeBonus = 0;
 			cacheDiv("reponse");
 			afficheDiv("bonusUNMOTINITIALES");
@@ -650,7 +650,7 @@
 	}
 	
 	function apeupres(idEq) {
-		if ((activeBonus==1) && (idEq == equipeEnCours)) {
+		if ((activeBonus==1) && (idEq == equipeEnCours) && (bonusApeupres[idEq] == 1)) {
 			activeBonus = 0;
 			cacheDiv("reponse");
 			afficheDiv("bonusAPEUPRES");
@@ -658,7 +658,7 @@
 	}
 	
 	function initiales(idEq) {
-	    if ((activeBonus==1) && (idEq == equipeEnCours)) {
+	    if ((activeBonus==1) && (idEq == equipeEnCours) && (bonusInitiales[idEq] == 1)) {
 			activeBonus = 0;
 			cacheDiv("reponse");
 			afficheDiv("bonusUNMOTINITIALES");
@@ -747,7 +747,7 @@
 	}
 	
 	function fois2(idEq) {
-		if ((activeBonus==1) && (idEq == equipeEnCours)) {
+		if ((activeBonus==1) && (idEq == equipeEnCours) && (bonusFoisDeux[idEq] == 1)) {
 			activeBonus = 0;
 			cacheDiv("reponse");
 			afficheDiv("bonusFOIS2");
