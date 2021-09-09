@@ -23,6 +23,7 @@
 </head>
 <script>
     var playlist = [];
+    var playlistStart = [];
 	var idTrackScan = 0;
 	var idPlaylist = 0;
     var idTrackEnCours = 0;
@@ -67,6 +68,17 @@
 	}
     */
 
+    /* Randomize array in-place using Durstenfeld shuffle algorithm */
+    function shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+            playlistStart[i] = Math.floor(Math.random() * 25);
+        }
+    }
+
     function createPlaylist() {
 		playlist = [];
 		document.getElementById("reader").style.display = 'block';
@@ -79,15 +91,17 @@
         idPlaylist = 0;
         document.getElementById("reader").style.display = 'none';
 		document.getElementById("playerDeezer").style.display = 'block';
+        shuffleArray(playlist);
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
+        DZ.player.seek(playlistStart[0]);
     }
 
 </script>
 
 <body width="800px" onload="javascript:init()">
-	<h2>The Good Tracks</h2>
+	<h2>#Intro_The_Mix</h2>
     <!-- LECTEUR DEEZER -->
         <input type="button" value="Débloquer" onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">
         <div id="dz-root"></div>
@@ -119,8 +133,8 @@
 		event_listener_append('player_loaded');
 		DZ.Event.subscribe('current_track', function(arg){
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
-            var pre = document.getElementById('playerDeezer');
-            pre.innerHTML = "--> " + arg.track.title + " -- " + arg.track.artist.name;
+            var info = document.getElementById('playerDeezer');
+            info.innerHTML = "--> " + arg.track.title + " -- " + arg.track.artist.name;
 		});
 		DZ.Event.subscribe('player_position', function(arg){
 			tps= arg[1];
@@ -159,11 +173,12 @@
 		if (arguments[1]>=parseInt(5)) {
 				console.log("stop superieur ou egal à 5 (préécoute)");
 				DZ.player.pause();
-                if (idPlaylist < (playlist.length-1)) {
+                if (idPlaylist < (playlist.length-3)) {
                     idPlaylist++;
                     idTrackEnCours = playlist[idPlaylist];
                     var tableauD = [idTrackEnCours];
 		            DZ.player.playTracks(tableauD);
+                    DZ.player.seek(playlistStart[idPlaylist]);
                 } else {
                     // fin
                 }
