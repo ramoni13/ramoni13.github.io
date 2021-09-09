@@ -150,7 +150,7 @@
 		DZ.Event.subscribe('current_track', function(arg){
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
             var info = document.getElementById('playerDeezer');
-            info.innerHTML += "--> " (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
+            info.innerHTML += "--> " + (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
 		});
 		DZ.Event.subscribe('player_position', function(arg){
 			tps= arg[1];
