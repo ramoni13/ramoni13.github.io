@@ -71,12 +71,17 @@
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
     function shuffleArray(array) {
+        var info = document.getElementById('playerDeezer');
+            
         for (var i = array.length - 1; i > 0; i--) {
             var j = Math.floor(Math.random() * (i + 1));
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
             playlistStart[i] = Math.floor(Math.random() * 25);
+        }
+        for (var i = 0; i < array.length; i++) {
+            info.innerHTML = info.innerHTML + "<BR>--> " + i + " - idTrack = " + array[i] + " - Start = " + playlistStart[i];
         }
     }
 
@@ -137,8 +142,8 @@
 		event_listener_append('player_loaded');
 		DZ.Event.subscribe('current_track', function(arg){
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
-            var info = document.getElementById('playerDeezer');
-            info.innerHTML = "--> " + arg.track.title + " -- " + arg.track.artist.name;
+            //var info = document.getElementById('playerDeezer');
+            //info.innerHTML = "--> " + arg.track.title + " -- " + arg.track.artist.name;
 		});
 		DZ.Event.subscribe('player_position', function(arg){
 			tps= arg[1];
@@ -177,7 +182,7 @@
 		if (arguments[1]>=parseInt(5)) {
 				console.log("stop superieur ou egal à 5 (préécoute)");
 				DZ.player.pause();
-                if (idPlaylist < (playlist.length-3)) {
+                if (idPlaylist < (playlist.length-1)) {
                     idPlaylist++;
                     idTrackEnCours = playlist[idPlaylist];
                     var tableauD = [idTrackEnCours];
