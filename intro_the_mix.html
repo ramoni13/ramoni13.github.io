@@ -27,6 +27,7 @@
 	var idTrackScan = 0;
 	var idPlaylist = 0;
     var idTrackEnCours = 0;
+    var firstEcoute = true;
 
     function init() {
 		document.getElementById("reader").style.display = 'none';
@@ -88,10 +89,13 @@
 	}
 
     function validerPlaylist() {
+        if (firstEcoute) {
+            shuffleArray(playlist);
+            firstEcoute = false;
+        }
         idPlaylist = 0;
         document.getElementById("reader").style.display = 'none';
 		document.getElementById("playerDeezer").style.display = 'block';
-        shuffleArray(playlist);
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
