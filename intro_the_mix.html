@@ -81,15 +81,17 @@
             playlistStart[i] = Math.floor(Math.random() * 25);
         }
         playlistStart[0] = Math.floor(Math.random() * 25);
-        for (var i = 0; i < array.length; i++) {
-            info.innerHTML = info.innerHTML + "<BR>--> " + i + " - idTrack = " + array[i] + " - Start = " + playlistStart[i];
-        }
+        //for (var i = 0; i < array.length; i++) {
+        //    info.innerHTML = info.innerHTML + "<BR>--> " + i + " - idTrack = " + array[i] + " - Start = " + playlistStart[i];
+        //}
     }
 
     function createPlaylist() {
 		playlist = [];
 		document.getElementById("reader").style.display = 'block';
 		document.getElementById("playerDeezer").style.display = 'none';
+        var info = document.getElementById('playerDeezer');
+        info.innerHTML = "";
 		document.getElementById("menu").style.display = 'none';
 		begin();
 	}
@@ -101,11 +103,15 @@
         }
         idPlaylist = 0;
         document.getElementById("reader").style.display = 'none';
-		document.getElementById("playerDeezer").style.display = 'block';
+		//document.getElementById("playerDeezer").style.display = 'block';
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
         //DZ.player.seek(playlistStart[0]);
+    }
+
+    function solution() {
+        document.getElementById("playerDeezer").style.display = 'block';
     }
 
 </script>
@@ -117,15 +123,15 @@
         <div id="dz-root"></div>
         <div id="player" style="width:100%;" align="center"></div>
         <br/>
-        <div id="slider_seek" class="progressbarplay" style="">
-        <div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="timer">0:00</div>
-        <div class="bar" style="width: 0%;"></div>
-        </div>
+        <!--<div id="slider_seek" class="progressbarplay" style="">-->
+        <!--<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="timer">0:00</div>-->
+        <!--<div class="bar" style="width: 0%;"></div>-->
+        <!--</div>-->
     <!-- LECTURE PLAYLIST -->
         <div width="800px" id="playlistDiv" hidden="hidden">
             <div id="nbMorceaux">Nb Tracks=0</div>
-            <button onclick="javascript:validerPlaylist()">Lancez l'écoute</button>
-            <button onclick="javascript:init()">Menu</button>
+            <button onclick="javascript:validerPlaylist()">Play !</button>
+            <button onclick="javascript:solution()">Solution</button>
         </div>
 	
 	<div width="800px" id="menu">
@@ -134,7 +140,7 @@
 	
 	<div width="800px" id="reader"></div>
 	
-	<div width="800px" id="playerDeezer" hidden="hidden"></div>
+	<div width="800px" class="badge bg-primary" id="playerDeezer" hidden="hidden"></div>
 	
 </body>
 <script>
@@ -143,14 +149,14 @@
 		event_listener_append('player_loaded');
 		DZ.Event.subscribe('current_track', function(arg){
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
-            //var info = document.getElementById('playerDeezer');
-            //info.innerHTML = "--> " + arg.track.title + " -- " + arg.track.artist.name;
+            var info = document.getElementById('playerDeezer');
+            info.innerHTML += "--> " (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
 		});
 		DZ.Event.subscribe('player_position', function(arg){
 			tps= arg[1];
 			tpsencours = arg[0]; 
 			event_listener_append('position', arg[0], arg[1]);
-			$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
+			//$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
 		});
 	}
 	
@@ -175,11 +181,13 @@
 	});
 
 	function event_listener_append() {
-		var pre = document.getElementById('timer');
+		/*
+        var pre = document.getElementById('timer');
 		var minutes = Math.floor(arguments[1] / 60);
 		var seconds = arguments[1] - minutes * 60;
 		seconds = Math.round(seconds * 100) / 100;
 		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
+        */
 		if (arguments[1]>=parseInt(5)) {
 				console.log("stop superieur ou egal à 5 (préécoute)");
 				DZ.player.pause();
