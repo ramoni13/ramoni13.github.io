@@ -28,12 +28,25 @@
 	var idPlaylist = 0;
     var idTrackEnCours = 0;
     var firstEcoute = true;
+    var tableauGif = [];
+    tableauGif.push("https://i.giphy.com/XZLfX30e4rafdWQaQQ.gif");
+    tableauGif.push("https://i.giphy.com/eodbjCCxgFoDm.gif");
+    tableauGif.push("https://i.giphy.com/gUrEXjBtEJruo.gif");
+    tableauGif.push("https://i.giphy.com/8memRUWe40Kdy.gif");
+    tableauGif.push("https://i.giphy.com/aCKMaeduKfFXG.gif");
+    tableauGif.push("https://i.giphy.com/2kWQFYzGrlk1k6CG66.gif");
+    tableauGif.push("https://i.giphy.com/3o72EX5QZ9N9d51dqo.gif");
+
+    var rndGif = Math.floor(Math.random() * 7);
+    console.log("rndGif=" + rndGif);
+
 
     function init() {
 		document.getElementById("reader").style.display = 'none';
 		document.getElementById("playerDeezer").style.display = 'none';
 		document.getElementById("menu").style.display = 'block';
 		document.getElementById("playlistDiv").style.display = 'none';
+        document.getElementById("GifImg").innerHTML = "<img style=\"width:200px\" src=\""+ tableauGif[rndGif] + "\">";
 	}
 
     function begin() {
@@ -122,6 +135,7 @@
         <input type="button" value="Débloquer" onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">
         <div id="dz-root"></div>
         <div id="player" style="width:100%;" align="center"></div>
+        <div id="GifImg" style="position: relative;top:-150px;left:-800px">AA</div>
         <br/>
         <!--<div id="slider_seek" class="progressbarplay" style="">-->
         <!--<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="timer">0:00</div>-->
