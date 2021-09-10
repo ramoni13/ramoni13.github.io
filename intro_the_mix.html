@@ -75,6 +75,7 @@
 
     function onScanSuccess(qrCodeMessage) { 
 		console.log(qrCodeMessage);
+        if (qrCodeMessage.length < 12) {
 			var dejaTrouve = false;
 			for (j = 0; j < playlist.length; j++) {
                 if (playlist[j] == qrCodeMessage) {
@@ -88,6 +89,7 @@
                 }
 				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length + "<BR>" + playlist.join() ;
 			}
+        }
 	};
 
     /* 
