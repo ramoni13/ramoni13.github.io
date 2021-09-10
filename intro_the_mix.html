@@ -64,7 +64,6 @@
 		document.getElementById("playerDeezer").style.display = 'none';
 		document.getElementById("menu").style.display = 'block';
 		document.getElementById("playlistDiv").style.display = 'none';
-        document.getElementById("GifImg").innerHTML = "<img style=\"width:800px\" src=\""+ tableauGif[rndGif] + "\">";
 	}
 
     function begin() {
@@ -131,6 +130,7 @@
         if (firstEcoute) {
             shuffleArray(playlist);
             firstEcoute = false;
+            document.getElementById("GifImg").innerHTML = "<img style=\"width:800px\" src=\""+ tableauGif[rndGif] + "\">";
         }
         idPlaylist = 0;
         document.getElementById("reader").style.display = 'none';
