@@ -31,6 +31,7 @@
     var tableauGif = [];
     var modeSolution = false;
     var tempschoisi = 5;
+    var onachangedemusik = false;
 
     tableauGif.push("https://i.giphy.com/XZLfX30e4rafdWQaQQ.gif");
     tableauGif.push("https://i.giphy.com/eodbjCCxgFoDm.gif");
@@ -242,15 +243,18 @@
        //console.log("arguments[1] =" + arguments[1]);
        if (arguments[1]<0.5){
             DZ.player.seek(playlistStart[idPlaylist]);
+            onachangedemusik = false;
        } else {
-       if (((parseInt(arguments[1])/30)*100)>=(playlistStart[idPlaylist]+parseInt(tempschoisi))) {
-				console.log("stop superieur ou egal à 5 (préécoute)");
+       if (((parseInt(arguments[1])/30)*100)>=(playlistStart[idPlaylist]+parseInt(tempschoisi))
+            && !onachangedemusik) {
+				DZ.player.pause();
+                onachangedemusik = true;
+                console.log("stop superieur ou egal à 5 (préécoute)");
                 console.log("idPlaylist:" + idPlaylist);
                 console.log("arguments[1] = " + arguments[1]);
                 console.log("((parseInt(arguments[1])/30)*100) = " + ((parseInt(arguments[1])/30)*100));
 				console.log("playlistStart[idPlaylist] = " + playlistStart[idPlaylist]);
                 console.log("(playlistStart[idPlaylist]+parseInt(tempschoisi)) = " + (playlistStart[idPlaylist]+parseInt(tempschoisi)));
-                DZ.player.pause();
                 if (idPlaylist < (playlist.length-2)) {
                     idPlaylist++;
                     document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
