@@ -30,6 +30,7 @@
     var firstEcoute = true;
     var tableauGif = [];
     var modeSolution = false;
+    var tempschoisi = 5;
 
     tableauGif.push("https://i.giphy.com/XZLfX30e4rafdWQaQQ.gif");
     tableauGif.push("https://i.giphy.com/eodbjCCxgFoDm.gif");
@@ -130,7 +131,8 @@
 		begin();
 	}
 
-    function validerPlaylist() {
+    function validerPlaylist(choix) {
+        tempschoisi = choix;
         if (firstEcoute) {
             shuffleArray(playlist);
             firstEcoute = false;
@@ -171,7 +173,8 @@
     <!-- LECTURE PLAYLIST -->
         <div width="800px" id="playlistDiv" hidden="hidden">
             <div id="nbMorceaux">Nb Tracks=0</div>
-            <button onclick="javascript:validerPlaylist()">Play !</button>
+            <button onclick="javascript:validerPlaylist(5)">Play ! 5s</button>
+            <button onclick="javascript:validerPlaylist(3)">Play ! 3s</button>
             <button onclick="javascript:solution()">Solution</button>
         </div>
 	
@@ -234,7 +237,7 @@
 		seconds = Math.round(seconds * 100) / 100;
 		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
         */
-		if (arguments[1]>=parseInt(5)) {
+		if (arguments[1]>=parseInt(tempschoisi)) {
 				console.log("stop superieur ou egal à 5 (préécoute)");
 				DZ.player.pause();
                 if (idPlaylist < (playlist.length-2)) {
