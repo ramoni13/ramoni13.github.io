@@ -32,6 +32,8 @@
     var modeSolution = false;
     var tempschoisi = 5;
     var onachangedemusik = false;
+    var modeSaccade = false;
+    var muteOn = false;
 
     tableauGif.push("https://i.giphy.com/XZLfX30e4rafdWQaQQ.gif");
     tableauGif.push("https://i.giphy.com/eodbjCCxgFoDm.gif");
@@ -134,7 +136,8 @@
 	}
 
     function validerPlaylist(choix) {
-        tempschoisi = choix;
+        tempschoisi = 17; //choix; bloqué à 5 sec
+        if (choix == 10) {modeSaccade = true;}
         if (firstEcoute) {
             shuffleArray(playlist);
             firstEcoute = false;
@@ -176,7 +179,7 @@
         <div width="800px" id="playlistDiv" hidden="hidden">
             <div id="nbMorceaux">Nb Tracks=0</div>
             <button onclick="javascript:validerPlaylist(17)">Play ! 5s</button>
-            <button onclick="javascript:validerPlaylist(10)">Play ! 3s</button>
+            <button onclick="javascript:validerPlaylist(10)">Saccade !</button>
             <button onclick="javascript:solution()">Solution</button>
         </div>
 	
@@ -266,7 +269,17 @@
                     //var info = document.getElementById('playerDeezer');
                     //info.innerHTML += "<BR>--> Chanson Interdite -- " + arg.track.title + " -- " + arg.track.artist.name;
                 }
-			}
+			} else {
+                if (modeSaccade) {
+                    if (muteOn) {
+                        DZ.player.setVolume(100);
+                        muteOn = false;
+                    } else {
+                        DZ.player.setMute();
+                        muteOn = true;
+                    }
+                }
+            }
         }
     }
 </script>
