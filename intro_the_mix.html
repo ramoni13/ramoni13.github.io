@@ -159,7 +159,7 @@
 </script>
 
 <body width="800px" onload="javascript:init()">
-	<h2>#Intro_The_Mix</h2>
+	<h2>#In_The_Mix</h2>
     <!-- LECTEUR DEEZER -->
         <!--<input type="button" value="Débloquer" onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">-->
         <div id="dz-root"></div>
@@ -237,6 +237,8 @@
 		seconds = Math.round(seconds * 100) / 100;
 		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
         */
+       console.log("arguments[0] =" + arguments[0]);
+       console.log("arguments[1] =" + arguments[1]);
 		if (arguments[1]>=parseInt(tempschoisi)) {
 				console.log("stop superieur ou egal à 5 (préécoute)");
 				DZ.player.pause();
