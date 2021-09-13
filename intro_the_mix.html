@@ -237,9 +237,9 @@
 		seconds = Math.round(seconds * 100) / 100;
 		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
         */
-       console.log("arguments[0] =" + arguments[0]);
-       console.log("arguments[1] =" + arguments[1]);
-       if (arguments[1]<0.2){
+       //console.log("arguments[0] =" + arguments[0]);
+       //console.log("arguments[1] =" + arguments[1]);
+       if (arguments[1]<0.5){
             DZ.player.seek(playlistStart[idPlaylist]);
        } else {
        if (((parseInt(arguments[1])/30)*100)>=(playlistStart[idPlaylist]+parseInt(tempschoisi))) {
