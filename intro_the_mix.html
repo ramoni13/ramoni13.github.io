@@ -137,7 +137,7 @@
 
     function validerPlaylist(choix) {
         tempschoisi = 17; //choix; bloqué à 5 sec
-        if (choix == 10) {modeSaccade = true;}
+        if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
         if (firstEcoute) {
             shuffleArray(playlist);
             firstEcoute = false;
