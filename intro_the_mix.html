@@ -113,9 +113,9 @@
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
-            playlistStart[i] = Math.floor(Math.random() * 25);
+            playlistStart[i] = Math.floor(Math.random() * 80);
         }
-        playlistStart[0] = Math.floor(Math.random() * 25);
+        playlistStart[0] = Math.floor(Math.random() * 80);
         //for (var i = 0; i < array.length; i++) {
         //    info.innerHTML = info.innerHTML + "<BR>--> " + i + " - idTrack = " + array[i] + " - Start = " + playlistStart[i];
         //}
@@ -173,8 +173,8 @@
     <!-- LECTURE PLAYLIST -->
         <div width="800px" id="playlistDiv" hidden="hidden">
             <div id="nbMorceaux">Nb Tracks=0</div>
-            <button onclick="javascript:validerPlaylist(5)">Play ! 5s</button>
-            <button onclick="javascript:validerPlaylist(3)">Play ! 3s</button>
+            <button onclick="javascript:validerPlaylist(17)">Play ! 5s</button>
+            <button onclick="javascript:validerPlaylist(10)">Play ! 3s</button>
             <button onclick="javascript:solution()">Solution</button>
         </div>
 	
@@ -239,7 +239,7 @@
         */
        console.log("arguments[0] =" + arguments[0]);
        console.log("arguments[1] =" + arguments[1]);
-		if (arguments[1]>=(playlistStart[idPlaylist]+parseInt(tempschoisi))) {
+		if (((parseInt(arguments[1])/30)*100)>=(playlistStart[idPlaylist]+parseInt(tempschoisi))) {
 				console.log("stop superieur ou egal à 5 (préécoute)");
 				DZ.player.pause();
                 if (idPlaylist < (playlist.length-2)) {
