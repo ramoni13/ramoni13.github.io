@@ -118,9 +118,9 @@
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
-            playlistStart[i] = Math.floor(Math.random() * 80)+1;
+            playlistStart[i] = Math.floor(Math.random() * 80)+2;
         }
-        playlistStart[0] = Math.floor(Math.random() * 80)+1;
+        playlistStart[0] = Math.floor(Math.random() * 80)+2;
         solutionTab = [];
         for (var i = 0; i < arrayOrigine.length; i++) {
             var positionChanson = array.indexOf(arrayOrigine[i])+1;
@@ -212,9 +212,7 @@
             } else {
                 var positionChanson = array.indexOf(playlist[playlist.length-1])+1;
                 solutionTab.splice(solutionTab.length-1);        
-                info.innerHTML = "--> Chanson Interdite N° " + positionChanson + "<BR>" + 
-                arg.track.title + " -- " + arg.track.artist.name + "<BR><BR>" + 
-                "Solution : " + solutionTab + info.innerHTML + "<BR><BR>" + info.innerHTML;
+                info.innerHTML = "--> Chanson Interdite N° " + positionChanson + "<BR>" + arg.track.title + " -- " + arg.track.artist.name + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
             }
             
 		});
