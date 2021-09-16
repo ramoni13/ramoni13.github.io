@@ -166,8 +166,8 @@
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
         var info = document.getElementById('playerDeezer');
-        solutionTab.splice(solutionTab.length-1, 1);
-        info.innerHTML = "Solution : " + solutionTab;
+        solutionTab.splice(solutionTab.length-1);
+        info.innerHTML = "Solution : " + solutionTab + info.innerHTML;
         document.getElementById("playerDeezer").style.display = 'block';
     }
     
