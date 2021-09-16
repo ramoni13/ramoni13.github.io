@@ -24,6 +24,7 @@
 <script>
     var playlist = [];
     var playlistStart = [];
+    var solutionTab = [];
 	var idTrackScan = 0;
 	var idPlaylist = 0;
     var idTrackEnCours = 0;
@@ -109,6 +110,7 @@
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
     function shuffleArray(array) {
+        var arrayOrigine = array;
         var info = document.getElementById('playerDeezer');
             
         for (var i = array.length - 1; i > 0; i--) {
@@ -116,9 +118,14 @@
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
-            playlistStart[i] = Math.floor(Math.random() * 80);
+            playlistStart[i] = Math.floor(Math.random() * 80)+1;
         }
-        playlistStart[0] = Math.floor(Math.random() * 80);
+        playlistStart[0] = Math.floor(Math.random() * 80)+1;
+        solutionTab = [];
+        for (var i = 0; i < arrayOrigine.length; i++) {
+            var positionChanson = array.indexOf(arrayOrigine[i])+1;
+            solutionTab[i] = (positionChanson) ;
+        }
         console.log("playlistStart : " + playlistStart);
         //for (var i = 0; i < array.length; i++) {
         //    info.innerHTML = info.innerHTML + "<BR>--> " + i + " - idTrack = " + array[i] + " - Start = " + playlistStart[i];
@@ -158,6 +165,9 @@
         idTrackEnCours = playlist[playlist.length-1];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
+        var info = document.getElementById('playerDeezer');
+        solutionTab.splice(solutionTab.length-1, 1);
+        info.innerHTML = "Solution : " + solutionTab;
         document.getElementById("playerDeezer").style.display = 'block';
     }
     
@@ -178,8 +188,8 @@
     <!-- LECTURE PLAYLIST -->
         <div width="800px" id="playlistDiv" hidden="hidden">
             <div id="nbMorceaux">Nb Tracks=0</div>
-            <button onclick="javascript:validerPlaylist(17)">Play ! 5s</button>
-            <button onclick="javascript:validerPlaylist(10)">Saccade !</button>
+            <button onclick="javascript:validerPlaylist(17)">Play !</button>
+            <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
             <button onclick="javascript:solution()">Solution</button>
         </div>
 	
