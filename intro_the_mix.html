@@ -124,7 +124,7 @@
         playlistStart[0] = Math.floor(Math.random() * 80)+2;
         solutionTab = [];
         for (var i = 0; i < arrayOrigine.length; i++) {
-            var positionChanson = array.indexOf(arrayOrigine[i])+1;
+            var positionChanson = arrayOrigine.indexOf(array[i])+1;
             solutionTab[i] = (positionChanson) ;
         }
         console.log("playlistStart : " + playlistStart);
