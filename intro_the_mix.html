@@ -166,8 +166,6 @@
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
         var info = document.getElementById('playerDeezer');
-        solutionTab.splice(solutionTab.length-1);
-        info.innerHTML = "Solution : " + solutionTab + info.innerHTML;
         document.getElementById("playerDeezer").style.display = 'block';
     }
     
@@ -212,7 +210,11 @@
             if (!modeSolution) {
                 info.innerHTML += "<BR>--> " + (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
             } else {
-                info.innerHTML = "--> Chanson Interdite -- " + arg.track.title + " -- " + arg.track.artist.name + "<BR><BR>" + info.innerHTML;
+                var positionChanson = array.indexOf(playlist[playlist.length-1])+1;
+                solutionTab.splice(solutionTab.length-1);        
+                info.innerHTML = "--> Chanson Interdite N° " + positionChanson + "<BR>" + 
+                arg.track.title + " -- " + arg.track.artist.name + "<BR><BR>" + 
+                "Solution : " + solutionTab + info.innerHTML + "<BR><BR>" + info.innerHTML;
             }
             
 		});
