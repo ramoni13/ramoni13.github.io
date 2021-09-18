@@ -119,9 +119,9 @@
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
-            playlistStart[i] = Math.floor(Math.random() * 80)+2;
+            playlistStart[i] = Math.floor(Math.random() * 75)+5;
         }
-        playlistStart[0] = Math.floor(Math.random() * 80)+2;
+        playlistStart[0] = Math.floor(Math.random() * 75)+5;
         solutionTab = [];
         for (var i = 0; i < arrayOrigine.length; i++) {
             var positionChanson = arrayOrigine.indexOf(array[i])+1;
