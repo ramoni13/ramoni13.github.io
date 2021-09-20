@@ -75,8 +75,13 @@
 	}
 
     function begin() {
-		var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
-		html5QrcodeScanner.render(onScanSuccess);
+		//var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
+		//html5QrcodeScanner.render(onScanSuccess);
+        const html5QrCode = new Html5Qrcode("reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            onScanSuccess();
+        }
+        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
 	}
 
     function onScanSuccess(qrCodeMessage) { 
