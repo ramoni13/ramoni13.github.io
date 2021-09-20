@@ -86,6 +86,7 @@
                 html5QrCode.stop().then((ignore) => {
                     // QR Code scanning is stopped.
                     console.log("retour stop ignore=" + ignore);
+                    document.getElementById("qr-shaded-region").style.display = 'none';
                 }).catch((err) => {
                     // Stop failed, handle it.
                     console.log("retour stop erreur=" + err);
@@ -108,17 +109,8 @@
             }
 			if (!dejaTrouve) {
 				playlist.push(qrCodeMessage);
-                if (playlist.length > 0)  {
+                if (playlist.length == 1)  {
                     document.getElementById("playlistDiv").style.display = 'block';
-                    if (playlist.length > 8) {
-                        html5QrCode.stop().then((ignore) => {
-                        // QR Code scanning is stopped.
-                        console.log("retour stop ignore=" + ignore);
-                        }).catch((err) => {
-                        // Stop failed, handle it.
-                        });
-                    }
-
                 }
 				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length; // + "<BR>" + playlist.join() ;
 			}
