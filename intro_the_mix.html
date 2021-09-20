@@ -88,8 +88,7 @@
                     console.log("retour stop ignore=" + ignore);
                     document.getElementById("qr-shaded-region").style.display = 'none';
                     document.getElementById("playlistDiv").style.display = 'block';
-                    //document.getElementById("nbMorceaux").style.color = "black";
-                    document.getElementById("nbMorceaux").style.top = "200 px";
+                    document.getElementById("nbMorceaux").style.display = 'none';
                 }).catch((err) => {
                     // Stop failed, handle it.
                     console.log("retour stop erreur=" + err);
@@ -115,7 +114,7 @@
                 //if (playlist.length == 1)  {
                 //    document.getElementById("playlistDiv").style.display = 'block';
                 //}
-				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
+				document.getElementById("nbTrackPlaying").innerHTML = "Nb Tracks=" + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
 			}
         }
 	};
@@ -182,7 +181,7 @@
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
-        document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+        document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
     }
 
@@ -214,7 +213,8 @@
     <div id="nbMorceaux" style="position: relative;top:550px;left:200px;z-index: 999;color: white;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
     
     <div width="800px" id="playlistDiv" display="none">
-        <B><I>Play the songs</I></B><BR>
+        <B><I>Play the songs</I></B>&nbsp;&nbsp;&nbsp;<div id="nbTrackPlaying" style="color: blue;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
+        <BR>
         <button onclick="javascript:validerPlaylist(17)" style="color: greenyellow;">Easy 5'</button>
         <button onclick="javascript:validerPlaylist(10)" style="color: orange;">Hard 3'</button>
         <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
