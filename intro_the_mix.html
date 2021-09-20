@@ -162,6 +162,7 @@
         var info = document.getElementById('playerDeezer');
         info.innerHTML = "";
 		document.getElementById("menu").style.display = 'none';
+        document.getElementById("nbMorceaux").style.display = 'block';
 		begin();
 	}
 
@@ -215,7 +216,8 @@
         <button onclick="javascript:validerPlaylist(17)" style="color: greenyellow;">Easy 5'</button>
         <button onclick="javascript:validerPlaylist(10)" style="color: orange;">Hard 3'</button>
         <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
-        <BR><BR><button onclick="javascript:solution()"  style="color: yellow;">Solution</button>
+        <BR><BR><BR><BR>
+            <button onclick="javascript:solution()"  style="color: yellow;">Solution</button>
     </div>
 	
 	<div width="800px" id="menu" display="none">
