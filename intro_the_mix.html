@@ -104,6 +104,7 @@
                     if (playlist.length > 8) {
                         html5QrCode.stop().then((ignore) => {
                         // QR Code scanning is stopped.
+                        console.log("retour stop ignore=" + ignore);
                         }).catch((err) => {
                         // Stop failed, handle it.
                         });
@@ -224,7 +225,7 @@
 <script>
     function onPlayerLoaded() {
 		$("#controlers input").attr('disabled', false);
-        DZ.player.setBlindTestMode(true, {title:'InTheMix', artist:'InTheMix', cover:'img/InTheMix.png'})
+        //DZ.player.setBlindTestMode(true, {title:'InTheMix', artist:'InTheMix', cover:'img/InTheMix.png'})
 		event_listener_append('player_loaded');
 		DZ.Event.subscribe('current_track', function(arg){
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
