@@ -81,7 +81,7 @@
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             console.log("decodedText=" + decodedText);
             console.log("decodedResult=" + decodedResult);
-            //onScanSuccess(qr);
+            onScanSuccess(decodedText);
         }
         const config = { fps: 10, qrbox: 500 };
 
@@ -99,8 +99,16 @@
             }
 			if (!dejaTrouve) {
 				playlist.push(qrCodeMessage);
-                if (playlist.length > 0) {
+                if (playlist.length > 0)  {
                     document.getElementById("playlistDiv").style.display = 'block';
+                    if (playlist.length > 8) {
+                        html5QrCode.stop().then((ignore) => {
+                        // QR Code scanning is stopped.
+                        }).catch((err) => {
+                        // Stop failed, handle it.
+                        });
+                    }
+
                 }
 				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length; // + "<BR>" + playlist.join() ;
 			}
