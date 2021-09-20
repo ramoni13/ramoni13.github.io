@@ -114,7 +114,7 @@
                 //if (playlist.length == 1)  {
                 //    document.getElementById("playlistDiv").style.display = 'block';
                 //}
-				document.getElementById("nbTrackPlaying").innerHTML = "Nb Tracks=" + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
+				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
 			}
         }
 	};
@@ -210,7 +210,7 @@
         <!--<div class="bar" style="width: 0%;"></div>-->
         <!--</div>-->
     <!-- LECTURE PLAYLIST -->
-    <div id="nbMorceaux" style="position: relative;top:550px;left:200px;z-index: 999;color: white;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
+    <div id="nbMorceaux" style="position: relative;top:450px;left:200px;z-index: 999;color: white;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
     
     <div width="800px" id="playlistDiv" display="none">
         <B><I>Play the songs</I></B>&nbsp;&nbsp;&nbsp;<div id="nbTrackPlaying" style="color: blue;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
@@ -305,7 +305,7 @@
                 console.log("(playlistStart[idPlaylist]+parseInt(tempschoisi)) = " + (playlistStart[idPlaylist]+parseInt(tempschoisi)));
                 if (idPlaylist < (playlist.length-2)) {
                     idPlaylist++;
-                    document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+                    document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
                     idTrackEnCours = playlist[idPlaylist];
                     var tableauD = [idTrackEnCours];
 		            DZ.player.playTracks(tableauD);
