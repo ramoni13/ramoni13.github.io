@@ -88,6 +88,8 @@
                     console.log("retour stop ignore=" + ignore);
                     document.getElementById("qr-shaded-region").style.display = 'none';
                     document.getElementById("playlistDiv").style.display = 'block';
+                    //document.getElementById("nbMorceaux").style.color = "black";
+                    document.getElementById("nbMorceaux").style.top = "200 px";
                 }).catch((err) => {
                     // Stop failed, handle it.
                     console.log("retour stop erreur=" + err);
@@ -209,7 +211,7 @@
         <!--<div class="bar" style="width: 0%;"></div>-->
         <!--</div>-->
     <!-- LECTURE PLAYLIST -->
-    <div id="nbMorceaux" style="position: relative;top:600px;left:200px;z-index: 999;color: white;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
+    <div id="nbMorceaux" style="position: relative;top:550px;left:200px;z-index: 999;color: white;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
     
     <div width="800px" id="playlistDiv" display="none">
         <B><I>Play the songs</I></B><BR>
