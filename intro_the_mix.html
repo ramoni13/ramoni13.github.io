@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <script src="https://ramoni13.github.io/DJ_Festival/html5-qrcode.min.js"></script>
 <script type="text/javascript" src="//cdns-files.deezer.com/js/min/dz.js"></script>
@@ -68,10 +67,10 @@
 
 
     function init() {
-		document.getElementById("reader").style.display = 'none';
-		document.getElementById("playerDeezer").style.display = 'none';
+		//document.getElementById("reader").style.display = 'none';
+		//document.getElementById("playerDeezer").style.display = 'none';
 		document.getElementById("menu").style.display = 'block';
-		document.getElementById("playlistDiv").style.display = 'none';
+		//document.getElementById("playlistDiv").style.display = 'none';
 	}
 
     function begin() {
@@ -87,6 +86,7 @@
                     // QR Code scanning is stopped.
                     console.log("retour stop ignore=" + ignore);
                     document.getElementById("qr-shaded-region").style.display = 'none';
+                    document.getElementById("playlistDiv").style.display = 'block';
                 }).catch((err) => {
                     // Stop failed, handle it.
                     console.log("retour stop erreur=" + err);
@@ -109,10 +109,10 @@
             }
 			if (!dejaTrouve) {
 				playlist.push(qrCodeMessage);
-                if (playlist.length == 1)  {
-                    document.getElementById("playlistDiv").style.display = 'block';
-                }
-				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length; // + "<BR>" + playlist.join() ;
+                //if (playlist.length == 1)  {
+                //    document.getElementById("playlistDiv").style.display = 'block';
+                //}
+				document.getElementById("nbMorceaux").innerHTML = "Nb Tracks=" + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
 			}
         }
 	};
@@ -194,7 +194,8 @@
 </script>
 
 <body width="800px" onload="javascript:init()">
-	<h2>#In_The_Mix</h2>
+	<!--<h2>#In_The_Mix</h2>-->
+    <img src="img/InTheMix.png">
     <!-- LECTEUR DEEZER -->
         <!--<input type="button" value="Débloquer" onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">-->
         <div id="dz-root"></div>
@@ -206,21 +207,24 @@
         <!--<div class="bar" style="width: 0%;"></div>-->
         <!--</div>-->
     <!-- LECTURE PLAYLIST -->
-        <div width="800px" id="playlistDiv" hidden="hidden">
-            <div id="nbMorceaux" style="position: relative;top:600px;left:200px;z-index: 999;color: white;font-weight: bold;"><h2>Nb Tracks=0</h2></div>
-            <button onclick="javascript:validerPlaylist(17)">><i class="far fa-play-circle"></i>Easy 5'</button>
-            <button onclick="javascript:validerPlaylist(10)"><i class="far fa-play-circle"></i>Hard 3'</button>
-            <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
-            <BR><button onclick="javascript:solution()">Solution</button>
-        </div>
+    <div id="nbMorceaux" style="position: relative;top:600px;left:200px;z-index: 999;color: white;font-weight: bold;"><h2>Nb Tracks=0/9</h2></div>
+    
+    <div width="800px" id="playlistDiv" display="none">
+        <B><I>Play the songs</I></B><BR>
+        <button onclick="javascript:validerPlaylist(17)" style="color: greenyellow;">Easy 5'</button>
+        <button onclick="javascript:validerPlaylist(10)" style="color: orange;">Hard 3'</button>
+        <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
+        <BR><BR><button onclick="javascript:solution()"  style="color: yellow;">Solution</button>
+    </div>
 	
-	<div width="800px" id="menu">
-		<button onclick="javascript:createPlaylist()">Scannez les cartes</button>
+	<div width="800px" id="menu" display="none">
+		<button onclick="javascript:createPlaylist()">Scannez les cartes</button><BR>
+            <I>Rechargez la page si vous ne voyez pas le lecteur deezer</I>
 	</div>
 	
 	<div width="800px" id="reader"></div>
 	
-	<div width="800px" id="playerDeezer" hidden="hidden"></div>
+	<div width="800px" id="playerDeezer"></div>
 	
 </body>
 <script>
@@ -260,6 +264,7 @@
 			onload : onPlayerLoaded
 		}
 	});
+    /*
     $(document).ready(function(){
 		$("#controlers input").attr('disabled', true);
 		$("#slider_seek").click(function(evt,arg){
@@ -267,6 +272,7 @@
 			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
 		});
 	});
+    */
 
 	function event_listener_append() {
 		/*
