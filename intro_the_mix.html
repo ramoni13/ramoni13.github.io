@@ -176,7 +176,6 @@
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
-        DZ.player.setBlindTestMode(true, {title:'InTheMix', artist:'InTheMix', cover:'img/InTheMix.png'})
         document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
     }
@@ -225,6 +224,7 @@
 <script>
     function onPlayerLoaded() {
 		$("#controlers input").attr('disabled', false);
+        DZ.player.setBlindTestMode(true, {title:'InTheMix', artist:'InTheMix', cover:'img/InTheMix.png'})
 		event_listener_append('player_loaded');
 		DZ.Event.subscribe('current_track', function(arg){
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
