@@ -176,6 +176,7 @@
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
+        DZ.player.setBlindTestMode(true, {title:'InTheMix', artist:'InTheMix', cover:'img/InTheMix.png'})
         document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
     }
