@@ -119,9 +119,11 @@
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
-            playlistStart[i] = Math.floor(Math.random() * 75)+5;
+            //playlistStart[i] = Math.floor(Math.random() * 75)+5;
+            playlistStart[i] = 5;
         }
-        playlistStart[0] = Math.floor(Math.random() * 75)+5;
+        //playlistStart[0] = Math.floor(Math.random() * 75)+5;
+        playlistStart[0] = 80;
         solutionTab = [];
         for (var i = 0; i < arrayOrigine.length; i++) {
             var positionChanson = arrayOrigine.indexOf(array[i])+1;
@@ -145,7 +147,7 @@
 
     function validerPlaylist(choix) {
         tempschoisi = 17; //choix; bloqué à 5 sec
-        if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
+        //if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
         if (firstEcoute) {
             shuffleArray(playlist);
             firstEcoute = false;
@@ -187,9 +189,10 @@
     <!-- LECTURE PLAYLIST -->
         <div width="800px" id="playlistDiv" hidden="hidden">
             <div id="nbMorceaux"><h2>Nb Tracks=0</h2></div>
-            <button onclick="javascript:validerPlaylist(17)">Play !</button>
+            <button onclick="javascript:validerPlaylist(17)">Play ! Easy 5'</button>
+            <button onclick="javascript:validerPlaylist(10)">Play ! Hard 3'</button>
             <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
-            <button onclick="javascript:solution()">Solution</button>
+            <BR><button onclick="javascript:solution()">Solution</button>
         </div>
 	
 	<div width="800px" id="menu">
