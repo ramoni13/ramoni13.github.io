@@ -79,7 +79,9 @@
 		//html5QrcodeScanner.render(onScanSuccess);
         const html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-            onScanSuccess();
+            console.log("decodedText=" + decodedText);
+            console.log("decodedResult=" + decodedResult);
+            //onScanSuccess(qr);
         }
         const config = { fps: 10, qrbox: 500 };
 
@@ -87,7 +89,7 @@
 	}
 
     function onScanSuccess(qrCodeMessage) { 
-		console.log(qrCodeMessage);
+		console.log("qrCodeMessage = " + qrCodeMessage);
         if (qrCodeMessage.length < 12) {
 			var dejaTrouve = false;
 			for (j = 0; j < playlist.length; j++) {
