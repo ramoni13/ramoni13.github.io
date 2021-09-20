@@ -81,6 +81,8 @@
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             onScanSuccess();
         }
+        const config = { fps: 10, qrbox: 250 };
+
         html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
 	}
 
