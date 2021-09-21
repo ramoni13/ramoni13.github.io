@@ -1,368 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-<script src="https://ramoni13.github.io/DJ_Festival/html5-qrcode.min.js"></script>
-<script type="text/javascript" src="//cdns-files.deezer.com/js/min/dz.js"></script>
-	<style>
-        	body, span, select {
-			font-size: 40px;
-		}
-		button {
-		  background-color: #008CBA;
-		  border: none;
-		  color: white;
-		  padding: 15px 32px;
-		  text-align: center;
-		  text-decoration: none;
-		  display: inline-block;
-		  font-size: 72px;
-		}
-	</style>
-</head>
-<script>
-    var playlist = [];
-    var playlistStart = [];
-    var solutionTab = [];
-    var arrayOrigine = [];
-	var idTrackScan = 0;
-	var idPlaylist = 0;
-    var idTrackEnCours = 0;
-    var firstEcoute = true;
-    var tableauGif = [];
-    var modeSolution = false;
-    var tempschoisi = 5;
-    var onachangedemusik = false;
-    var modeSaccade = false;
-    var muteOn = false;
-    var modeBug = false;
-    var idTrackBug = 0;
+<HTML>
+<SCRIPT language="javascript">
+async function start() {
+  await document.body.requestFullscreen();
+  //await screen.orientation.lock("landscape");
+  await screen.orientation.lock("portrait");
+}
 
-    tableauGif.push("https://i.giphy.com/XZLfX30e4rafdWQaQQ.gif");
-    tableauGif.push("https://i.giphy.com/eodbjCCxgFoDm.gif");
-    tableauGif.push("https://i.giphy.com/gUrEXjBtEJruo.gif");
-    tableauGif.push("https://i.giphy.com/8memRUWe40Kdy.gif");
-    tableauGif.push("https://i.giphy.com/aCKMaeduKfFXG.gif");
-    tableauGif.push("https://i.giphy.com/2kWQFYzGrlk1k6CG66.gif");
-    tableauGif.push("https://i.giphy.com/3o72EX5QZ9N9d51dqo.gif");
-    tableauGif.push("https://i.giphy.com/XfmHNcuK9eJLa.gif");
-    tableauGif.push("https://i.giphy.com/hpFDzxeKh2emR4ptxA.gif");
-    tableauGif.push("https://i.giphy.com/108I3aT1o4WQ48.gif");
-    tableauGif.push("https://i.giphy.com/wKDCzUzUhiEO4.gif");
-    tableauGif.push("https://i.giphy.com/aRgbbNvoiuzsY.gif");
-    tableauGif.push("https://i.giphy.com/nzi9JWSWFumUU.gif");
-    tableauGif.push("https://i.giphy.com/10SKBRffm1rgJy.gif");
-    tableauGif.push("https://i.giphy.com/w5eFyOHmkS8uc.gif");
-    tableauGif.push("https://i.giphy.com/MF4gHGVeCOXAc.gif");
-    tableauGif.push("https://i.makeagif.com/media/9-01-2016/5E67fA.gif");
-    tableauGif.push("https://i.giphy.com/vbG9mAPS1sDB7CIvly.gif");
-    tableauGif.push("https://i.giphy.com/iO1SXgxGMJnTxCmAKs.gif");
-    tableauGif.push("https://i.giphy.com/UTepmwjHOjMqms6KMg.gif");
-    tableauGif.push("https://i.giphy.com/8gQNbpcIGtbc0lBBx4.gif");
-    tableauGif.push("https://i.giphy.com/fQAf0Iz6r7PbzFYxsY.gif");
-    tableauGif.push("https://i.giphy.com/d2jgyBrp8HmXRkM8.gif");
-    tableauGif.push("https://i.giphy.com/l0HUe9KkWl0FfkQz6.gif");
-    tableauGif.push("https://i.giphy.com/YADXfFVkKYpdS.gif");
+function detecter() {
+  //function getWidth()
+  //{
+    await document.body.requestFullscreen();
+  //await screen.orientation.lock("landscape");
+    await screen.orientation.lock("portrait");
 
-    var rndGif = Math.floor(Math.random() * 25);
-    console.log("rndGif=" + rndGif);
+    var xWidth = null;
+    if(window.screen != null)
+      xWidth = window.screen.availWidth;
 
+    if(window.innerWidth != null)
+      xWidth = window.innerWidth;
 
-    function init() {
-		//document.getElementById("reader").style.display = 'none';
-		//document.getElementById("playerDeezer").style.display = 'none';
-		document.getElementById("menu").style.display = 'block';
-		document.getElementById("playlistDiv").style.display = 'none';
-        document.getElementById("nbMorceaux").style.display = 'none';
-	}
+    if(document.body != null)
+      xWidth = document.body.clientWidth;
 
-    function begin() {
-		//var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
-		//html5QrcodeScanner.render(onScanSuccess);
-        const html5QrCode = new Html5Qrcode("reader");
-        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-            console.log("decodedText=" + decodedText);
-            console.log("decodedResult=" + decodedResult);
-            onScanSuccess(decodedText);
-            if (playlist.length > 8) {
-                html5QrCode.stop().then((ignore) => {
-                    // QR Code scanning is stopped.
-                    console.log("retour stop ignore=" + ignore);
-                    document.getElementById("qr-shaded-region").style.display = 'none';
-                    document.getElementById("playlistDiv").style.display = 'block';
-                    document.getElementById("nbMorceaux").style.display = 'none';
-                }).catch((err) => {
-                    // Stop failed, handle it.
-                    console.log("retour stop erreur=" + err);
-                });
-            }
-        }
-        const config = { fps: 10, qrbox: 500 };
+    //return xWidth;
+  //}
+//function getHeight() {
+  var xHeight = null;
+  if(window.screen != null)
+    xHeight = window.screen.availHeight;
 
-        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
-	}
+  if(window.innerHeight != null)
+    xHeight =   window.innerHeight;
 
-    function onScanSuccess(qrCodeMessage) { 
-		console.log("qrCodeMessage = " + qrCodeMessage);
-        if (qrCodeMessage.length < 12) {
-			var dejaTrouve = false;
-			for (j = 0; j < playlist.length; j++) {
-                if (playlist[j] == qrCodeMessage) {
-                    dejaTrouve = true;
-                }
-            }
-			if (!dejaTrouve) {
-				playlist.push(qrCodeMessage);
-                //if (playlist.length == 1)  {
-                //    document.getElementById("playlistDiv").style.display = 'block';
-                //}
-				document.getElementById("nbMorceaux").innerHTML = "Scan " + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
-			}
-        }
-	};
-
-    /* 
-    function readTrack() {
-		document.getElementById("reader").style.display = 'none';
-		document.getElementById("playerDeezer").style.display = 'block';
-		var divdeez2 = document.getElementById("deezer-player");
-		var srcdeez2 = divdeez2.getAttribute("src");
-		srcdeez2= srcdeez2 + "&type=tracks&id=" + idTrackScan;
-		divdeez2.setAttribute("src", srcdeez2);
-	}
-    */
-
-    /* Randomize array in-place using Durstenfeld shuffle algorithm */
-    function shuffleArray(array) {
-        arrayOrigine = array.slice();
-        var info = document.getElementById('playerDeezer');
-            
-        for (var i = array.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-            //playlistStart[i] = Math.floor(Math.random() * 75)+5;
-            playlistStart[i] = 5;
-        }
-        //playlistStart[0] = Math.floor(Math.random() * 75)+5;
-        playlistStart[0] = 80;
-        solutionTab = [];
-        for (var i = 0; i < arrayOrigine.length; i++) {
-            var positionChanson = arrayOrigine.indexOf(array[i])+1;
-            solutionTab[i] = (positionChanson) ;
-        }
-        console.log("playlistStart : " + playlistStart);
-        //for (var i = 0; i < array.length; i++) {
-        //    info.innerHTML = info.innerHTML + "<BR>--> " + i + " - idTrack = " + array[i] + " - Start = " + playlistStart[i];
-        //}
-    }
-
-    function createPlaylist() {
-		playlist = [];
-		document.getElementById("reader").style.display = 'block';
-		document.getElementById("playerDeezer").style.display = 'none';
-        var info = document.getElementById('playerDeezer');
-        info.innerHTML = "";
-		document.getElementById("menu").style.display = 'none';
-        document.getElementById("nbMorceaux").style.display = 'block';
-		begin();
-	}
-
-    function validerPlaylist(choix) {
-        tempschoisi = choix; // 5 ou 3 sec
-        //if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
-        if (firstEcoute) {
-            shuffleArray(playlist);
-            firstEcoute = false;
-            document.getElementById("GifImg").innerHTML = "<img style=\"width:800px\" src=\""+ tableauGif[rndGif] + "\">";
-        }
-        idPlaylist = 0;
-        document.getElementById("reader").style.display = 'none';
-		//document.getElementById("playerDeezer").style.display = 'block';
-        idTrackEnCours = playlist[0];
-        var tableauD = [idTrackEnCours];
-		DZ.player.playTracks(tableauD);
-        document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
-        //DZ.player.seek(playlistStart[0]);
-    }
-
-    function solution() {
-        modeSolution = true;
-        if (!modeBug) {
-            idTrackEnCours = playlist[playlist.length-1];
-            var tableauD = [idTrackEnCours];
-            DZ.player.playTracks(tableauD);
-            var info = document.getElementById('playerDeezer');
-            document.getElementById("playerDeezer").style.display = 'block';
-        } else {
-            // gerer la chanson interdite
-            idTrackEnCours = playlist[idTrackBug];
-            var tableauD = [idTrackEnCours];
-            DZ.player.playTracks(tableauD);
-            var info = document.getElementById('playerDeezer');
-            document.getElementById("playerDeezer").style.display = 'block';
-        }
-    }
-
-    function bug() {
-        if (!modeBug) {
-            idTrackBug = idPlaylist;
-            idPlaylist++;
-            idTrackEnCours = playlist[idPlaylist];
-            var tableauD = [idTrackEnCours];
-            DZ.player.playTracks(tableauD);
-            document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
-        } else {
-            // afficher les 2 cartes à écarter
-            document.getElementById("nbTrackPlaying").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[idTrackBug] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
-        }
-    }
-    
+  if(document.body != null)
+    xHeight = document.body.clientHeight;
+  console.log=("xHeight=" + xHeight);
+  console.log=("xWidth=" + xWidth);
+  //return xHeight;
+//}
+  document.getElementById(libDiv).style.height = xHeight;
+  document.getElementById(libDiv).style.width = xWidth;
+}
 </script>
 
-<body width="800px" onload="javascript:init()">
-	<!--<h2>#In_The_Mix</h2>-->
-    <img src="img/InTheMix2.png" width="500px">
-    <!-- LECTEUR DEEZER -->
-        <!--<input type="button" value="Débloquer" onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">-->
-        <div id="dz-root"></div>
-        <div id="player" style="width:100%;" align="center"></div>
-        <div id="GifImg" style="position: relative;top:-100px;left:0px"></div>
-        <br/>
-        <!--<div id="slider_seek" class="progressbarplay" style="">-->
-        <!--<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="timer">0:00</div>-->
-        <!--<div class="bar" style="width: 0%;"></div>-->
-        <!--</div>-->
-    <!-- LECTURE PLAYLIST -->
-    <div id="nbMorceaux" style="position: relative;top:400px;left:200px;z-index: 999;color: white;font-weight: bold;font-size: 86px" hidden="hidden"><h2>Scan 0/9</h2></div>
-    
-    <div width="800px" id="playlistDiv" display="none" hidden="hidden">
-        <div id="nbTrackPlaying" style="color: blue;font-weight: bold;font-size: 72px;"><B><I>Lancez l'écoute !</I></B></div>
-        <BR>
-        <button onclick="javascript:validerPlaylist(17)" style="color: greenyellow;">Easy 5'</button>
-        <button onclick="javascript:validerPlaylist(10)" style="color: orange;">Hard 3'</button>
-        <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
-        <BR><BR><BR><BR>
-            <button onclick="javascript:solution()"  style="color: yellow;">Solution</button>&nbsp;&nbsp;<button onclick="javascript:bug()"  style="color: yellow;">Bug</button>
-    </div>
+<body style="background-color:white" onload="javascript:detecter()">
+<!--<div id="portrait" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:100px;vertical-align:middle;display:block">-->
+  <div id="portrait">
+    MODE PORTRAIT
+	<BR><button onclick="start()" style="font-size: 80px !important;">Start
+	</button>
+  </div>
+  <div id="paysage" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:100px;vertical-align:middle;display:none;background-color:white">
+    MODE PAYSAGE
 	
-	<div width="800px" id="menu" display="none">
-		<button onclick="javascript:createPlaylist()">Scannez les cartes</button><BR>
-            <I>Rechargez la page si vous ne voyez pas le lecteur deezer</I>
-	</div>
-	
-	<div width="800px" id="reader"></div>
-	
-	<div width="800px" id="playerDeezer"></div>
-	
+		
+  </div>
 </body>
+
 <script>
-    function onPlayerLoaded() {
-		$("#controlers input").attr('disabled', false);
-        //DZ.player.setBlindTestMode(true, {title:'InTheMix', artist:'InTheMix', cover:'img/InTheMix.png'})
-		event_listener_append('player_loaded');
-		DZ.Event.subscribe('current_track', function(arg){
-			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
-            var info = document.getElementById('playerDeezer');
-            if (!modeSolution) {
-                info.innerHTML += "<BR>--> " + (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
-            } else {
-                var positionChanson = 0;
-                
-                if (modeBug) {
-                    positionChanson = arrayOrigine.indexOf(playlist[idTrackBug])+1;
-                    solutionTab.splice(idTrackBug,1);
-                    if (modeBug) {
-                        document.getElementById("nbTrackPlaying").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[idTrackBug];
-                    }
-                } else {
-                    positionChanson = arrayOrigine.indexOf(playlist[playlist.length-1])+1;
-                    solutionTab.splice(solutionTab.length-1);
-                }
-                        
-                info.innerHTML = "Chanson Interdite N° " + positionChanson + "<BR>" + arg.track.title + "<BR>" + arg.track.artist.name + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
-            }
-            
-		});
-		DZ.Event.subscribe('player_position', function(arg){
-			tps= arg[1];
-			tpsencours = arg[0]; 
-			event_listener_append('position', arg[0], arg[1]);
-			//$("#slider_seek").find('.bar').css('width', (100*arg[0]/arg[1]) + '%');
-		});
-	}
-	
-	DZ.init({
-		appId  : '8',
-		channelUrl : 'http://developers.deezer.com/examples/channel.php',
-		player : {
-			container : 'player',
-			cover : true,
-			playlist : true,
-			width : 650,
-			height : 100,
-			onload : onPlayerLoaded
-		}
-	});
-    /*
-    $(document).ready(function(){
-		$("#controlers input").attr('disabled', true);
-		$("#slider_seek").click(function(evt,arg){
-			var left = evt.offsetX;
-			DZ.player.seek((evt.offsetX/$(this).width()) * 100);
-		});
-	});
-    */
-
-	function event_listener_append() {
-		/*
-        var pre = document.getElementById('timer');
-		var minutes = Math.floor(arguments[1] / 60);
-		var seconds = arguments[1] - minutes * 60;
-		seconds = Math.round(seconds * 100) / 100;
-		pre.innerHTML = minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
-        */
-       //console.log("arguments[0] =" + arguments[0]);
-       //console.log("arguments[1] =" + arguments[1]);
-       if (arguments[1]<0.5){
-            DZ.player.seek(playlistStart[idPlaylist]);
-            onachangedemusik = false;
-       } else {
-       if (((parseInt(arguments[1])/30)*100)>=(playlistStart[idPlaylist]+parseInt(tempschoisi))
-            && !onachangedemusik) {
-				DZ.player.pause();
-                onachangedemusik = true;
-                console.log("stop superieur ou egal à 5 (préécoute)");
-                console.log("idPlaylist:" + idPlaylist);
-                console.log("arguments[1] = " + arguments[1]);
-                console.log("((parseInt(arguments[1])/30)*100) = " + ((parseInt(arguments[1])/30)*100));
-				console.log("playlistStart[idPlaylist] = " + playlistStart[idPlaylist]);
-                console.log("(playlistStart[idPlaylist]+parseInt(tempschoisi)) = " + (playlistStart[idPlaylist]+parseInt(tempschoisi)));
-                if (idPlaylist < (playlist.length-2)) {
-                    idPlaylist++;
-                    document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
-                    idTrackEnCours = playlist[idPlaylist];
-                    var tableauD = [idTrackEnCours];
-		            DZ.player.playTracks(tableauD);
-                } else {
-                    // fin
-                    //var info = document.getElementById('playerDeezer');
-                    //info.innerHTML += "<BR>--> Chanson Interdite -- " + arg.track.title + " -- " + arg.track.artist.name;
-                }
-			} else {
-                if (modeSaccade) {
-                    if (muteOn) {
-                        DZ.player.setVolume(100);
-                        muteOn = false;
-                    } else {
-                        DZ.player.setMute();
-                        muteOn = true;
-                    }
-                }
-            }
-        }
-    }
-</script>
-
-</html> 
+ window.onorientationchange = function() {
+   var portraitOrientation = window.matchMedia("(orientation:portrait)");
+   if ( portraitOrientation.matches ) {
+     document.getElementById("paysage").style.display = "block";
+     document.getElementById("portrait").style.display = "none";
+   } else {
+	 document.getElementById("portrait").style.display = "block";
+     document.getElementById("paysage").style.display = "none";
+     
+   }
+ }
+ </script>
+</HTML>
