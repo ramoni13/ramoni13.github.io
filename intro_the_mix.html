@@ -212,21 +212,21 @@
         if (!modeBug) {
             modeBug = true;
             
-            idTrackBug = idPlaylist+1; // index du tableau solution
-            playlist.splice(idPlaylist+1,1);
-            playlist.unshift(idTrackEnCours);
+            idTrackBug = idPlaylist; // index du tableau solution
+            playlist.splice(idPlaylist,1);
+            playlist.push(idTrackEnCours);
 
-            var soluceBug = solutionTab[idPlaylist+1];
-            solutionTab.splice(idPlaylist+1,1);
+            var soluceBug = solutionTab[idPlaylist];
+            solutionTab.splice(idPlaylist,1);
             // putting the idTrackEnCours string back in the array:
-            solutionTab.unshift(soluceBug);
+            solutionTab.push(soluceBug);
             idTrackEnCours = playlist[idPlaylist];
             var tableauD = [idTrackEnCours];
             DZ.player.playTracks(tableauD);
             //document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         } else {
             // afficher les 2 cartes à écarter
-            document.getElementById("nbTrackPlaying").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[idTrackBug] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
+            document.getElementById("nbTrackPlaying").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[8] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
         }
     }
     
