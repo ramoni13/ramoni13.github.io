@@ -5,10 +5,48 @@ async function start() {
   //await screen.orientation.lock("landscape");
   await screen.orientation.lock("portrait");
 }
+
+function detecter() {
+  //function getWidth()
+  //{
+    await document.body.requestFullscreen();
+  //await screen.orientation.lock("landscape");
+    await screen.orientation.lock("portrait");
+
+    var xWidth = null;
+    if(window.screen != null)
+      xWidth = window.screen.availWidth;
+
+    if(window.innerWidth != null)
+      xWidth = window.innerWidth;
+
+    if(document.body != null)
+      xWidth = document.body.clientWidth;
+
+    //return xWidth;
+  //}
+//function getHeight() {
+  var xHeight = null;
+  if(window.screen != null)
+    xHeight = window.screen.availHeight;
+
+  if(window.innerHeight != null)
+    xHeight =   window.innerHeight;
+
+  if(document.body != null)
+    xHeight = document.body.clientHeight;
+  console.log=("xHeight=" + xHeight);
+  console.log=("xWidth=" + xWidth);
+  //return xHeight;
+//}
+  document.getElementById(libDiv).style.height = xHeight;
+  document.getElementById(libDiv).style.width = xWidth;
+}
 </script>
 
-<body style="background-color:white">
-<div id="portrait" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:100px;vertical-align:middle;display:block">
+<body style="background-color:white" onload="javascript:detecter()">
+<!--<div id="portrait" style="width:600px;height:400px;margin-top:auto;margin-bottom:auto;margin-left:auto;margin-right:auto;border:2px solid #000000;text-align:center;font-size:100px;vertical-align:middle;display:block">-->
+  <div id="portrait">
     MODE PORTRAIT
 	<BR><button onclick="start()" style="font-size: 80px !important;">Start
 	</button>
