@@ -209,11 +209,13 @@
         if (!modeBug) {
             modeBug = true;
             idTrackBug = idPlaylist;
-            idPlaylist++;
+            playlist.splice(idPlaylist,1);
+            // putting the idTrackEnCours string back in the array:
+            data.unshift(idTrackEnCours);
             idTrackEnCours = playlist[idPlaylist];
             var tableauD = [idTrackEnCours];
             DZ.player.playTracks(tableauD);
-            document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+            //document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         } else {
             // afficher les 2 cartes à écarter
             document.getElementById("nbTrackPlaying").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[idTrackBug] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
