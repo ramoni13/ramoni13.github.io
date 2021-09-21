@@ -142,17 +142,20 @@
             var temp = array[i];
             array[i] = array[j];
             array[j] = temp;
-            //playlistStart[i] = Math.floor(Math.random() * 75)+5;
-            playlistStart[i] = 5;
+            playlistStart[i] = Math.floor(Math.random() * 75)+5;
+            //playlistStart[i] = 5;
         }
-        //playlistStart[0] = Math.floor(Math.random() * 75)+5;
-        playlistStart[0] = 80;
+        playlistStart[0] = Math.floor(Math.random() * 75)+5;
+        //playlistStart[0] = 80;
         solutionTab = [];
         for (var i = 0; i < arrayOrigine.length; i++) {
             var positionChanson = arrayOrigine.indexOf(array[i])+1;
             solutionTab[i] = (positionChanson) ;
         }
+        console.log("arrayOrigine : " + arrayOrigine);
+        console.log("playlist : " + playlist);
         console.log("playlistStart : " + playlistStart);
+        console.log("solutionTab : " + solutionTab);
         //for (var i = 0; i < array.length; i++) {
         //    info.innerHTML = info.innerHTML + "<BR>--> " + i + " - idTrack = " + array[i] + " - Start = " + playlistStart[i];
         //}
@@ -208,10 +211,15 @@
     function bug() {
         if (!modeBug) {
             modeBug = true;
-            idTrackBug = idPlaylist;
-            playlist.splice(idPlaylist,1);
-            // putting the idTrackEnCours string back in the array:
+            
+            idTrackBug = idPlaylist+1; // index du tableau solution
+            playlist.splice(idPlaylist+1,1);
             playlist.unshift(idTrackEnCours);
+
+            var soluceBug = solutionTab[idPlaylist+1];
+            solutionTab.splice(idPlaylist+1,1);
+            // putting the idTrackEnCours string back in the array:
+            solutionTab.unshift(soluceBug);
             idTrackEnCours = playlist[idPlaylist];
             var tableauD = [idTrackEnCours];
             DZ.player.playTracks(tableauD);
