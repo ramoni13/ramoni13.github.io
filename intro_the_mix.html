@@ -35,6 +35,8 @@
     var onachangedemusik = false;
     var modeSaccade = false;
     var muteOn = false;
+    var modeBug = false;
+    var idTrackBug = 0;
 
     tableauGif.push("https://i.giphy.com/XZLfX30e4rafdWQaQQ.gif");
     tableauGif.push("https://i.giphy.com/eodbjCCxgFoDm.gif");
@@ -187,11 +189,34 @@
 
     function solution() {
         modeSolution = true;
-        idTrackEnCours = playlist[playlist.length-1];
-        var tableauD = [idTrackEnCours];
-		DZ.player.playTracks(tableauD);
-        var info = document.getElementById('playerDeezer');
-        document.getElementById("playerDeezer").style.display = 'block';
+        if (!modeBug) {
+            idTrackEnCours = playlist[playlist.length-1];
+            var tableauD = [idTrackEnCours];
+            DZ.player.playTracks(tableauD);
+            var info = document.getElementById('playerDeezer');
+            document.getElementById("playerDeezer").style.display = 'block';
+        } else {
+            // gerer la chanson interdite
+            idTrackEnCours = playlist[idTrackBug];
+            var tableauD = [idTrackEnCours];
+            DZ.player.playTracks(tableauD);
+            var info = document.getElementById('playerDeezer');
+            document.getElementById("playerDeezer").style.display = 'block';
+        }
+    }
+
+    function bug() {
+        if (!modeBug) {
+            idTrackBug = idPlaylist;
+            idPlaylist++;
+            idTrackEnCours = playlist[idPlaylist];
+            var tableauD = [idTrackEnCours];
+            DZ.player.playTracks(tableauD);
+            document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+        } else {
+            // afficher les 2 cartes à écarter
+            document.getElementById("nbTrackPlaying").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[idTrackBug] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
+        }
     }
     
 </script>
@@ -219,7 +244,7 @@
         <button onclick="javascript:validerPlaylist(10)" style="color: orange;">Hard 3'</button>
         <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
         <BR><BR><BR><BR>
-            <button onclick="javascript:solution()"  style="color: yellow;">Solution</button>
+            <button onclick="javascript:solution()"  style="color: yellow;">Solution</button>&nbsp;&nbsp;<button onclick="javascript:bug()"  style="color: yellow;">Bug</button>
     </div>
 	
 	<div width="800px" id="menu" display="none">
@@ -243,8 +268,19 @@
             if (!modeSolution) {
                 info.innerHTML += "<BR>--> " + (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
             } else {
-                var positionChanson = arrayOrigine.indexOf(playlist[playlist.length-1])+1;
-                solutionTab.splice(solutionTab.length-1);        
+                var positionChanson = 0;
+                
+                if (modeBug) {
+                    positionChanson = arrayOrigine.indexOf(playlist[idTrackBug])+1;
+                    solutionTab.splice(idTrackBug,1);
+                    if (modeBug) {
+                        document.getElementById("nbTrackPlaying").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[idTrackBug];
+                    }
+                } else {
+                    positionChanson = arrayOrigine.indexOf(playlist[playlist.length-1])+1;
+                    solutionTab.splice(solutionTab.length-1);
+                }
+                        
                 info.innerHTML = "Chanson Interdite N° " + positionChanson + "<BR>" + arg.track.title + "<BR>" + arg.track.artist.name + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
             }
             
