@@ -211,7 +211,7 @@
             idTrackBug = idPlaylist;
             playlist.splice(idPlaylist,1);
             // putting the idTrackEnCours string back in the array:
-            data.unshift(idTrackEnCours);
+            playlist.unshift(idTrackEnCours);
             idTrackEnCours = playlist[idPlaylist];
             var tableauD = [idTrackEnCours];
             DZ.player.playTracks(tableauD);
