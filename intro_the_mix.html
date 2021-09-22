@@ -192,15 +192,16 @@
 
     function solution() {
         modeSolution = true;
+        var info = document.getElementById('playerDeezer');
+        info.innerHTML = "Chanson Interdite N° " + solutionTab[8] + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
         if (!modeBug) {
             idTrackEnCours = playlist[playlist.length-1];
             var tableauD = [idTrackEnCours];
             DZ.player.playTracks(tableauD);
             document.getElementById("playerDeezer").style.display = 'block';
+            
         } else {
             // gerer la chanson interdite
-            var info = document.getElementById('playerDeezer');
-            info.innerHTML = "Chanson Interdite N° " + solutionTab[8] + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
             document.getElementById("nbTrackPlaying").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[8];
             document.getElementById("playerDeezer").style.display = 'block';
         }
