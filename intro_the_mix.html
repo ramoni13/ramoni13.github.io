@@ -196,14 +196,12 @@
             idTrackEnCours = playlist[playlist.length-1];
             var tableauD = [idTrackEnCours];
             DZ.player.playTracks(tableauD);
-            var info = document.getElementById('playerDeezer');
             document.getElementById("playerDeezer").style.display = 'block';
         } else {
             // gerer la chanson interdite
-            idTrackEnCours = playlist[8];
-            var tableauD = [idTrackEnCours];
-            DZ.player.playTracks(tableauD);
             var info = document.getElementById('playerDeezer');
+            info.innerHTML = "Chanson Interdite N° " + solutionTab[8] + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
+            document.getElementById("nbTrackPlaying").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[8];
             document.getElementById("playerDeezer").style.display = 'block';
         }
     }
@@ -279,12 +277,6 @@
             if (!modeSolution) {
                 info.innerHTML += "<BR>--> " + (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
             } else {
-                var positionChanson = solutionTab[8];
-                
-                if (modeBug) {
-                        document.getElementById("nbTrackPlaying").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[idTrackBug];
-                }
-                        
                 info.innerHTML = "Chanson Interdite N° " + positionChanson + "<BR>" + arg.track.title + "<BR>" + arg.track.artist.name + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
             }
             
