@@ -84,13 +84,14 @@
     function begin() {
 		//var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
 		//html5QrcodeScanner.render(onScanSuccess);
-        music.pause();
+        music.play();
         const html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             console.log("decodedText=" + decodedText);
             console.log("decodedResult=" + decodedResult);
             onScanSuccess(decodedText);
             if (playlist.length > 8) {
+                music.pause();
                 html5QrCode.stop().then((ignore) => {
                     // QR Code scanning is stopped.
                     console.log("retour stop ignore=" + ignore);
