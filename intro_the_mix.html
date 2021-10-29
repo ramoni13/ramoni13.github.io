@@ -37,6 +37,8 @@
     var muteOn = false;
     var modeBug = false;
     var idTrackBug = 0;
+    const music = new Audio('souslestropiques.mp3');
+    
 
     tableauGif.push("https://i.giphy.com/XZLfX30e4rafdWQaQQ.gif");
     tableauGif.push("https://i.giphy.com/eodbjCCxgFoDm.gif");
@@ -74,11 +76,15 @@
 		document.getElementById("menu").style.display = 'block';
 		document.getElementById("playlistDiv").style.display = 'none';
         document.getElementById("nbMorceaux").style.display = 'none';
+        music.play();
+        music.loop =true;
+        music.playbackRate = 1;
 	}
 
     function begin() {
 		//var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
 		//html5QrcodeScanner.render(onScanSuccess);
+        music.pause();
         const html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             console.log("decodedText=" + decodedText);
@@ -344,6 +350,8 @@
 		            DZ.player.playTracks(tableauD);
                 } else {
                     // fin
+                    music.play();
+                    
                     //var info = document.getElementById('playerDeezer');
                     //info.innerHTML += "<BR>--> Chanson Interdite -- " + arg.track.title + " -- " + arg.track.artist.name;
                 }
