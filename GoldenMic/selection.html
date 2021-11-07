@@ -303,12 +303,12 @@
 		</div>
 		<div><button type="button" onclick="choixNiveau(1)" id="niv1" class="btn btn-primary" style="font-size:xx-large">Facile (X1)
 		</button></div>
-		<div class="separateur2">
+		<div class="separateurniv2">
 			&nbsp;
 		</div>
 		<div><button type="button" onclick="choixNiveau(2)" id="niv2" class="btn btn-warning" style="font-size:xx-large">Moyen (X2)
 		</button></div>
-		<div class="separateur2">
+		<div class="separateurniv3">
 			&nbsp;
 		</div>
 		<div><button type="button" onclick="choixNiveau(3)" id="niv3" class="btn btn-danger" style="font-size:xx-large">Dur (X3)
@@ -529,18 +529,30 @@
 		var seconds;
 		listeChansons.forEach(element => {
 			if (element._id == idChansonEnCours) {
-				minutes = Math.floor(element.timestop1 / 60);
-				seconds = element.timestop1 - minutes * 60;
-				seconds = Math.round(seconds * 100) / 100;
-				document.getElementById("niv1").innerHTML = "FACILE (X1)<BR>Stop à " + minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
-				minutes = Math.floor(element.timestop2 / 60);
-				seconds = element.timestop2 - minutes * 60;
-				seconds = Math.round(seconds * 100) / 100;
-				document.getElementById("niv2").innerHTML = "MOYEN (X2)<BR>Stop à " + minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
-				minutes = Math.floor(element.timestop3 / 60);
-				seconds = element.timestop3 - minutes * 60;
-				seconds = Math.round(seconds * 100) / 100;
-				document.getElementById("niv3").innerHTML = "DIFFICILE (X3)<BR>Stop à " + minutes + ":" + ("0" + Math.round(seconds)).slice(-2);				
+				// ONE STOP
+				if (element.timestop1 == element.timestop2) {
+					minutes = Math.floor(element.timestop1 / 60);
+					seconds = element.timestop1 - minutes * 60;
+					seconds = Math.round(seconds * 100) / 100;
+					document.getElementById("niv1").innerHTML = "ONE STOP<BR>Stop à " + minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
+					document.getElementById("niv2").style.display = 'none';
+					document.getElementById("niv3").style.display = 'none';
+					document.getElementById("separateurniv2").style.display = 'none';
+					document.getElementById("separateurniv3").style.display = 'none';
+				} else {
+					minutes = Math.floor(element.timestop1 / 60);
+					seconds = element.timestop1 - minutes * 60;
+					seconds = Math.round(seconds * 100) / 100;
+					document.getElementById("niv1").innerHTML = "FACILE (X1)<BR>Stop à " + minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
+					minutes = Math.floor(element.timestop2 / 60);
+					seconds = element.timestop2 - minutes * 60;
+					seconds = Math.round(seconds * 100) / 100;
+					document.getElementById("niv2").innerHTML = "MOYEN (X2)<BR>Stop à " + minutes + ":" + ("0" + Math.round(seconds)).slice(-2);
+					minutes = Math.floor(element.timestop3 / 60);
+					seconds = element.timestop3 - minutes * 60;
+					seconds = Math.round(seconds * 100) / 100;
+					document.getElementById("niv3").innerHTML = "DIFFICILE (X3)<BR>Stop à " + minutes + ":" + ("0" + Math.round(seconds)).slice(-2);	
+				}
 			}
 		});
 	}
