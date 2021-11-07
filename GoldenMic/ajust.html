@@ -275,7 +275,7 @@ function chargePacks() {
 			listePacks += "<button type='button' class='" + nomCouleur + "' onclick=\"choixDuPack('" + allThemes[i] + "')\" style='font-size:xx-large'>" + allThemes[i] + "</button>";
 			
 			idCouleur++;
-			if (i>6) { i = 0;}
+			if (i>6) { idCouleur = 0;}
 		}
 		
 		document.getElementById("listeDesPacks").innerHTML = listePacks;
