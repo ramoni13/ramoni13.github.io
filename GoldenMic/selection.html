@@ -1248,7 +1248,7 @@
 			"<BR>" + (infosPack[i]/2) + " manches</button>";
 			
 			idCouleur++;
-			if (i>6) { i = 0;}
+			if (i>6) { idCouleur = 0;}
 		}
 		
 		document.getElementById("listeDesPacks").innerHTML = listePacks;
@@ -1328,13 +1328,6 @@
 			}
 		}
 		
-		<!-- var pre = document.getElementById('event_listener'); -->
-		<!-- var minutes = Math.floor(arguments[1] / 60); -->
-		<!-- var seconds = arguments[1] - minutes * 60; -->
-		<!-- seconds = Math.round(seconds * 100) / 100 -->
-		<!-- pre.innerHTML = minutes + ":" + seconds; -->
-		<!-- var p1 = document.getElementById('p1'); -->
-		<!-- p1.innerHTML = Math.round(arguments[1] * 100) / 100 -->
 	}
 	function lightning()
 	{
