@@ -107,14 +107,18 @@
                 });
             }
         }
+        const config = { fps: 10, qrbox: 500 };
 
-        function beginFinale() {
-		//var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
-		//html5QrcodeScanner.render(onScanSuccess);
-        //music.play();
-        modeFinale = true;
-        nbTotalScan = "/3";
-        const html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+	}
+
+    function beginFinale() {
+    //var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
+    //html5QrcodeScanner.render(onScanSuccess);
+    //music.play();
+    modeFinale = true;
+    nbTotalScan = "/3";
+    const html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             console.log("decodedText=" + decodedText);
             console.log("decodedResult=" + decodedResult);
