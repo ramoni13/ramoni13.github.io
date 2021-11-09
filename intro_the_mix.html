@@ -201,6 +201,18 @@
         //}
     }
 
+    function shuffleArraySolution(array) {
+        arrayOrigine = array.slice();
+        var info = document.getElementById('playerDeezer');
+            
+        for (var i = array.length - 1; i > 0; i--) {
+            playlistStart[i] = Math.floor(Math.random() * 75)+5;
+            //playlistStart[i] = 5;
+        }
+        playlistStart[0] = Math.floor(Math.random() * 75)+5;
+        console.log("playlistStart : " + playlistStart);
+    }
+
     function createPlaylist() {
 		playlist = [];
 		document.getElementById("reader").style.display = 'block';
@@ -246,7 +258,7 @@
         tempschoisi = 17; // 5 ou 3 sec
         //if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
         if (firstEcoute) {
-            //shuffleArray(playlist);
+            shuffleArraySolution(playlist);
             firstEcoute = false;
             document.getElementById("GifImg").innerHTML = "<img style=\"width:800px\" src=\""+ tableauGif[rndGif] + "\">";
         }
