@@ -37,6 +37,8 @@
     var muteOn = false;
     var modeBug = false;
     var idTrackBug = 0;
+    var nbTotalScan = "";
+    var modeFinale = false;
     const music = new Audio('souslestropiques.mp3');
     
 
@@ -85,6 +87,7 @@
 		//var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
 		//html5QrcodeScanner.render(onScanSuccess);
         //music.play();
+        nbTotalScan = "/9";
         const html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             console.log("decodedText=" + decodedText);
@@ -97,6 +100,32 @@
                     console.log("retour stop ignore=" + ignore);
                     document.getElementById("qr-shaded-region").style.display = 'none';
                     document.getElementById("playlistDiv").style.display = 'block';
+                    document.getElementById("nbMorceaux").style.display = 'none';
+                }).catch((err) => {
+                    // Stop failed, handle it.
+                    console.log("retour stop erreur=" + err);
+                });
+            }
+        }
+
+        function beginFinale() {
+		//var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 400 }); 
+		//html5QrcodeScanner.render(onScanSuccess);
+        //music.play();
+        modeFinale = true;
+        nbTotalScan = "/3";
+        const html5QrCode = new Html5Qrcode("reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            console.log("decodedText=" + decodedText);
+            console.log("decodedResult=" + decodedResult);
+            onScanSuccess(decodedText);
+            if (playlist.length > 2) {
+                //music.pause();
+                html5QrCode.stop().then((ignore) => {
+                    // QR Code scanning is stopped.
+                    console.log("retour stop ignore=" + ignore);
+                    document.getElementById("qr-shaded-region").style.display = 'none';
+                    document.getElementById("playlistDivFinale").style.display = 'block';
                     document.getElementById("nbMorceaux").style.display = 'none';
                 }).catch((err) => {
                     // Stop failed, handle it.
@@ -123,7 +152,7 @@
                 //if (playlist.length == 1)  {
                 //    document.getElementById("playlistDiv").style.display = 'block';
                 //}
-				document.getElementById("nbMorceaux").innerHTML = "Scan " + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
+				document.getElementById("nbMorceaux").innerHTML = "Scan " + playlist.length + nbTotalScan; // + "<BR>" + playlist.join() ;
 			}
         }
 	};
@@ -175,8 +204,20 @@
         var info = document.getElementById('playerDeezer');
         info.innerHTML = "";
 		document.getElementById("menu").style.display = 'none';
+        document.getElementById("menuFinale").style.display = 'none';
         document.getElementById("nbMorceaux").style.display = 'block';
 		begin();
+	}
+    function createPlaylistFinale() {
+		playlist = [];
+		document.getElementById("reader").style.display = 'block';
+		document.getElementById("playerDeezer").style.display = 'none';
+        var info = document.getElementById('playerDeezer');
+        info.innerHTML = "";
+		document.getElementById("menu").style.display = 'none';
+        document.getElementById("menuFinale").style.display = 'none';
+        document.getElementById("nbMorceaux").style.display = 'block';
+		beginFinale();
 	}
 
     function validerPlaylist(choix) {
@@ -191,6 +232,24 @@
         document.getElementById("reader").style.display = 'none';
 		//document.getElementById("playerDeezer").style.display = 'block';
         idTrackEnCours = playlist[0];
+        var tableauD = [idTrackEnCours];
+		DZ.player.playTracks(tableauD);
+        document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+        //DZ.player.seek(playlistStart[0]);
+    }
+
+    function lecture(choix) {
+        tempschoisi = 17; // 5 ou 3 sec
+        //if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
+        if (firstEcoute) {
+            //shuffleArray(playlist);
+            firstEcoute = false;
+            document.getElementById("GifImg").innerHTML = "<img style=\"width:800px\" src=\""+ tableauGif[rndGif] + "\">";
+        }
+        idPlaylist = 0;
+        document.getElementById("reader").style.display = 'none';
+		//document.getElementById("playerDeezer").style.display = 'block';
+        idTrackEnCours = playlist[choix];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
         document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
@@ -262,10 +321,23 @@
         <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
         <BR><BR><BR><BR>
             <button onclick="javascript:solution()"  style="color: yellow;">Solution</button>&nbsp;&nbsp;<button onclick="javascript:bug()"  style="color: yellow;">Bug</button>
+        <BR>
+    </div>
+
+    <div width="800px" id="playlistDivFinale" display="none" hidden="hidden">
+        <div id="nbTrackPlaying" style="color: blue;font-weight: bold;font-size: 72px;"><B><I>Lancez l'écoute !</I></B></div>
+        <BR>
+        <button onclick="javascript:lecture(0)" style="color: greenyellow;">Chanson N°1</button>
+        <button onclick="javascript:lecture(1)" style="color: greenyellow;">Chanson N°2</button>
+        <button onclick="javascript:lecture(2)" style="color: greenyellow;">Chanson N°3</button>
     </div>
 	
 	<div width="800px" id="menu" display="none">
 		<button onclick="javascript:createPlaylist()">Scannez les cartes</button><BR>
+            <I>Rechargez la page si vous ne voyez pas le lecteur deezer</I>
+	</div>
+    <div width="800px" id="menuFinale" display="none">
+		<button onclick="javascript:createPlaylistFinale()">FINALE : 3 cartes</button><BR>
             <I>Rechargez la page si vous ne voyez pas le lecteur deezer</I>
 	</div>
 	
@@ -343,7 +415,7 @@
                 console.log("((parseInt(arguments[1])/30)*100) = " + ((parseInt(arguments[1])/30)*100));
 				console.log("playlistStart[idPlaylist] = " + playlistStart[idPlaylist]);
                 console.log("(playlistStart[idPlaylist]+parseInt(tempschoisi)) = " + (playlistStart[idPlaylist]+parseInt(tempschoisi)));
-                if (idPlaylist < (playlist.length-2)) {
+                if ((idPlaylist < (playlist.length-2)) && (!modeFinale)) {
                     idPlaylist++;
                     document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
                     idTrackEnCours = playlist[idPlaylist];
