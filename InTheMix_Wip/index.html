@@ -13,7 +13,6 @@
         <link rel="stylesheet" href="./style.css">
     </head>
     <body>
-        <div class="hideBack"></div>
         <div class="wallPaper">
             <div id="reader"></div>
         </div>
@@ -27,7 +26,7 @@
                 <div class='block-color'></div>
             </div>
         </div>
-        <button class="scanplay-button">SCANNER</button>
+        <button class="scan-button">SCANNER</button>
 
         <!-- <button class='testBtn'>TestBtn</button> -->
 
@@ -35,16 +34,23 @@
         <!--<input type="button" value="Débloquer" onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">-->
         <div id="dz-root"></div>
         <div id="player" allow="autoplay" style="width:100%;" align="center"></div>
-        <!-- LECTURE PLAYLIST -->
-        <div id="nbMorceaux" style="position: relative;top:400px;left:200px;z-index: 999;color: white;font-weight: bold;font-size: 15px" hidden="hidden"><h2>Scan 0/9</h2></div>
+        <!-- <div id="GifImg" style="position: relative;top:-100px;left:0px"></div> -->
+                <!--<div id="slider_seek" class="progressbarplay" style="">-->
+        <!--<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="timer">0:00</div>-->
+        <!--<div class="bar" style="width: 0%;"></div>-->
+        <!--</div>-->
+
+            <!-- LECTURE PLAYLIST -->
+    <div id="nbMorceaux" style="position: relative;top:400px;left:200px;z-index: 999;color: white;font-weight: bold;font-size: 15px" hidden="hidden"><h2>Scan 0/9</h2></div>
     
     <div width="800px" id="playlistDiv" display="none" hidden="hidden">
-        <button class="scanplay-button easyMode">PLAY</button>
-        <!--<button class="scan-button">Hard 3'</button>-->
+        <div id="nbTrackPlaying" style="color: blue;font-weight: bold;font-size: 72px;"><B><I>Lancez l'écoute !</I></B></div>
+        <BR>
+        <button class='easyMode'>Easy 5'</button>
+        <button class='hardMode'>Hard 3'</button>
         <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
         <BR><BR><BR><BR>
-            <button onclick="javascript:solution()" class="solbug-button" >Solution</button>
-            &nbsp;&nbsp;<button onclick="javascript:bug()" class="solbug-button" >Bug</button>
+            <button onclick="javascript:solution()"  style="color: yellow;">Solution</button>&nbsp;&nbsp;<button onclick="javascript:bug()"  style="color: yellow;">Bug</button>
     </div>
 	
 	<div width="800px" id="playerDeezer"></div>
