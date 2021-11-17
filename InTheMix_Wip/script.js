@@ -1,9 +1,9 @@
 const svgLetter = document.querySelectorAll('path');
 const svgRect = document.querySelector('rect');
 // const reader = document.querySelector('.reader');
-const scanButton = document.querySelector('.scanplay-button');
-const solButton = document.querySelector('.solbug-button');
+const scanButton = document.querySelector('.scan-button');
 const easyMode = document.querySelector('.easyMode');
+const hardMode = document.querySelector('.hardMode')
 
 // const testBtn = document.querySelector('.testBtn')
 // testBtn.addEventListener('click', () => {
@@ -27,7 +27,6 @@ var modeSaccade = false;
 var muteOn = false;
 var modeBug = false;
 var idTrackBug = 0;
-var positionChanson = 0;
 
 /// MANIP SVG
 
@@ -74,7 +73,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         }
     }
 
-    if (playlist.length > 1) {
+    if (playlist.length > 8) {
         html5QrCode.stop().then((ignore) => {
             // QR Code scanning is stopped.
             console.log("retour stop ignore=" + ignore);
@@ -121,7 +120,7 @@ const config = { fps: 10, qrbox: 250 };
         //playlistStart[0] = 80;
         solutionTab = [];
         for (var i = 0; i < arrayOrigine.length; i++) {
-            positionChanson = arrayOrigine.indexOf(array[i])+1;
+            var positionChanson = arrayOrigine.indexOf(array[i])+1;
             solutionTab[i] = (positionChanson) ;
         }
         console.log("arrayOrigine : " + arrayOrigine);
@@ -325,5 +324,13 @@ const config = { fps: 10, qrbox: 250 };
         //     console.log('Playback resumed successfully');
         //   });
         validerPlaylist(17)
-    });
+    })
 
+    hardMode.addEventListener('click', () => {
+        console.log('kjgfhdfgsf')
+        // context.resume().then(() => {
+            
+        //     console.log('Playback resumed successfully');
+        //   });
+        validerPlaylist(10)
+    })
