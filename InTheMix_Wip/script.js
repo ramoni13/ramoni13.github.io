@@ -31,6 +31,9 @@ var idTrackBug = 0;
 var positionChanson = 0;
 const musicHeyDJ = new Audio('JingleHeyDj.mp3');
 const musicLaser = new Audio('LASER.mp3');
+const musicScratch = new Audio('scratch.mp3');
+const musicScratchOut = new Audio('scratchout.mp3');
+scratchout
 /// MANIP SVG
 
 window.setTimeout(changeColorSvg, 1000)
@@ -161,6 +164,7 @@ const config = { fps: 10, qrbox: 250 };
 		//document.getElementById("playerDeezer").style.display = 'block';
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
+        musicScratch.play();
 		DZ.player.playTracks(tableauD);
         document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
@@ -282,8 +286,10 @@ const config = { fps: 10, qrbox: 250 };
                     document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
                     idTrackEnCours = playlist[idPlaylist];
                     var tableauD = [idTrackEnCours];
+                    musicScratch.play();
 		            DZ.player.playTracks(tableauD);
                 } else {
+                    musicScratchOut.play();
                     // fin
                     //var info = document.getElementById('playerDeezer');
                     //info.innerHTML += "<BR>--> Chanson Interdite -- " + arg.track.title + " -- " + arg.track.artist.name;
@@ -329,6 +335,7 @@ const config = { fps: 10, qrbox: 250 };
         // context.resume().then(() => {
         //     console.log('Playback resumed successfully');
         //   });
+        
         validerPlaylist(17)
     });
 
