@@ -1,9 +1,10 @@
 const svgLetter = document.querySelectorAll('path');
 const svgRect = document.querySelector('rect');
 // const reader = document.querySelector('.reader');
+const scanplayButton = document.querySelector('.scanplay-button');
 const scanButton = document.querySelector('.scan-button');
+const solButton = document.querySelector('.solbug-button');
 const easyMode = document.querySelector('.easyMode');
-const hardMode = document.querySelector('.hardMode')
 
 // const testBtn = document.querySelector('.testBtn')
 // testBtn.addEventListener('click', () => {
@@ -27,7 +28,9 @@ var modeSaccade = false;
 var muteOn = false;
 var modeBug = false;
 var idTrackBug = 0;
-
+var positionChanson = 0;
+const musicHeyDJ = new Audio('JingleHeyDj.mp3');
+const musicLaser = new Audio('LASER.mp3');
 /// MANIP SVG
 
 window.setTimeout(changeColorSvg, 1000)
@@ -49,6 +52,7 @@ const html5QrCode = new Html5Qrcode("reader");
 
 scanButton.addEventListener('click', () => {
     console.log('OK')
+    musicHeyDJ.play();
     createPlaylist();
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
 })
@@ -66,6 +70,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         }
         if (!dejaTrouve) {
             playlist.push(decodedText);
+            musicLaser.play();
             //if (playlist.length == 1)  {
             //    document.getElementById("playlistDiv").style.display = 'block';
             //}
@@ -73,13 +78,14 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         }
     }
 
-    if (playlist.length > 8) {
+    if (playlist.length > 4) {
         html5QrCode.stop().then((ignore) => {
             // QR Code scanning is stopped.
             console.log("retour stop ignore=" + ignore);
             document.getElementById("qr-shaded-region").style.display = 'none';
+            document.getElementById("scan-button").style.display = 'none';
             document.getElementById("playlistDiv").style.display = 'block';
-            document.getElementById("nbMorceaux").style.display = 'none';
+            //document.getElementById("nbMorceaux").style.display = 'none';
         }).catch((err) => {
             // Stop failed, handle it.
             console.log("retour stop erreur=" + err);
@@ -120,7 +126,7 @@ const config = { fps: 10, qrbox: 250 };
         //playlistStart[0] = 80;
         solutionTab = [];
         for (var i = 0; i < arrayOrigine.length; i++) {
-            var positionChanson = arrayOrigine.indexOf(array[i])+1;
+            positionChanson = arrayOrigine.indexOf(array[i])+1;
             solutionTab[i] = (positionChanson) ;
         }
         console.log("arrayOrigine : " + arrayOrigine);
@@ -156,7 +162,7 @@ const config = { fps: 10, qrbox: 250 };
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
 		DZ.player.playTracks(tableauD);
-        document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+        document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
     }
 
@@ -172,7 +178,7 @@ const config = { fps: 10, qrbox: 250 };
             
         } else {
             // gerer la chanson interdite
-            document.getElementById("nbTrackPlaying").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[8];
+            document.getElementById("nbMorceaux").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[8];
             document.getElementById("playerDeezer").style.display = 'block';
         }
     }
@@ -195,7 +201,7 @@ const config = { fps: 10, qrbox: 250 };
             //document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         } else {
             // afficher les 2 cartes à écarter
-            document.getElementById("nbTrackPlaying").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[8] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
+            document.getElementById("nbMorceaux").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[8] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
         }
     }
 
@@ -273,7 +279,7 @@ const config = { fps: 10, qrbox: 250 };
                 console.log("(playlistStart[idPlaylist]+parseInt(tempschoisi)) = " + (playlistStart[idPlaylist]+parseInt(tempschoisi)));
                 if (idPlaylist < (playlist.length-2)) {
                     idPlaylist++;
-                    document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+                    document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
                     idTrackEnCours = playlist[idPlaylist];
                     var tableauD = [idTrackEnCours];
 		            DZ.player.playTracks(tableauD);
@@ -324,13 +330,5 @@ const config = { fps: 10, qrbox: 250 };
         //     console.log('Playback resumed successfully');
         //   });
         validerPlaylist(17)
-    })
+    });
 
-    hardMode.addEventListener('click', () => {
-        console.log('kjgfhdfgsf')
-        // context.resume().then(() => {
-            
-        //     console.log('Playback resumed successfully');
-        //   });
-        validerPlaylist(10)
-    })

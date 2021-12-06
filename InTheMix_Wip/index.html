@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="./style.css">
     </head>
     <body>
+        <div class="hideBack"></div>
         <div class="wallPaper">
             <div id="reader"></div>
         </div>
@@ -20,13 +21,20 @@
             <div class="block-wrap">
                 <div class="dynamic-block"></div>
                 <!-- <img class="logo-intro" src="./logo1.svg" alt="logo"> -->
-                <svg class="logo-intro" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112.32 154.256" width="112.32" height="154.256"><rect fill="none" stroke="#2a9d8f" stroke-width="4" width="108.32" height="150.256" x="2" y="2"></rect><path fill="#264653" fill-rule="nonzero" d="M8.84 27.52L0 27.52L0 0L8.84 0L8.84 27.52ZM42.56 27.52L34.84 27.52L23.28 14.16L23.28 27.52L15.16 27.52L15.16 0L22.88 0L34.44 13.56L34.44 0L42.56 0L42.56 27.52Z" transform="translate(12 12) scale(2.076)"></path><path fill="#264653" fill-rule="nonzero" d="M26.88 7.04L17.88 7.04L17.88 27.52L9.04 27.52L9.04 7.04L0 7.04L0 0L26.88 0L26.88 7.04ZM58.32 27.52L49.48 27.52L49.48 17.08L39.76 17.08L39.76 27.52L30.92 27.52L30.92 0L39.76 0L39.76 10.04L49.48 10.04L49.48 0L58.32 0L58.32 27.52ZM64.24 27.52L64.24 0L88.04 0L88.04 6.60L73.08 6.60L73.08 10.40L85.88 10.40L85.88 16.72L73.08 16.72L73.08 20.92L88.32 20.92L88.32 27.52L64.24 27.52Z" transform="translate(12 77.11) scale(1)"></path><path fill="#264653" fill-rule="nonzero" d="M32.96 27.52L24.20 27.52L24.20 17.60Q24.20 15.76 24.34 13.82Q24.48 11.88 24.64 10.56Q24.80 9.24 24.84 8.88L24.84 8.88L24.68 8.88L19.60 27.52L12.68 27.52L7.56 8.92L7.40 8.92Q7.44 9.28 7.62 10.58Q7.80 11.88 7.96 13.82Q8.12 15.76 8.12 17.60L8.12 17.60L8.12 27.52L0 27.52L0 0L12.48 0L16.64 15.88L16.80 15.88L20.92 0L32.96 0L32.96 27.52ZM47.56 27.52L38.72 27.52L38.72 0L47.56 0L47.56 27.52ZM72.20 13L82.04 27.52L71.32 27.52L66.24 18.96L66.08 18.96L61 27.52L51.08 27.52L60.92 12.96L52.04 0L62.72 0L66.88 7.04L67.04 7.04L71.24 0L81.12 0L72.20 13Z" transform="translate(12 112.63) scale(1.077)"></path>
+                <svg class="logo-intro" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112.32 154.256" width="112.32" height="154.256">
+                    <rect fill="none" stroke="#2a9d8f" stroke-width="4" width="108.32" height="150.256" x="2" y="2"></rect>
+                    <path fill="#264653" fill-rule="nonzero" d="M8.84 27.52L0 27.52L0 0L8.84 0L8.84 27.52ZM42.56 27.52L34.84 27.52L23.28 14.16L23.28 27.52L15.16 27.52L15.16 0L22.88 0L34.44 13.56L34.44 0L42.56 0L42.56 27.52Z" transform="translate(12 12) scale(2.076)">
+                    </path>
+                    <path fill="#264653" fill-rule="nonzero" d="M26.88 7.04L17.88 7.04L17.88 27.52L9.04 27.52L9.04 7.04L0 7.04L0 0L26.88 0L26.88 7.04ZM58.32 27.52L49.48 27.52L49.48 17.08L39.76 17.08L39.76 27.52L30.92 27.52L30.92 0L39.76 0L39.76 10.04L49.48 10.04L49.48 0L58.32 0L58.32 27.52ZM64.24 27.52L64.24 0L88.04 0L88.04 6.60L73.08 6.60L73.08 10.40L85.88 10.40L85.88 16.72L73.08 16.72L73.08 20.92L88.32 20.92L88.32 27.52L64.24 27.52Z" transform="translate(12 77.11) scale(1)">
+                    </path>
+                    <path fill="#264653" fill-rule="nonzero" d="M32.96 27.52L24.20 27.52L24.20 17.60Q24.20 15.76 24.34 13.82Q24.48 11.88 24.64 10.56Q24.80 9.24 24.84 8.88L24.84 8.88L24.68 8.88L19.60 27.52L12.68 27.52L7.56 8.92L7.40 8.92Q7.44 9.28 7.62 10.58Q7.80 11.88 7.96 13.82Q8.12 15.76 8.12 17.60L8.12 17.60L8.12 27.52L0 27.52L0 0L12.48 0L16.64 15.88L16.80 15.88L20.92 0L32.96 0L32.96 27.52ZM47.56 27.52L38.72 27.52L38.72 0L47.56 0L47.56 27.52ZM72.20 13L82.04 27.52L71.32 27.52L66.24 18.96L66.08 18.96L61 27.52L51.08 27.52L60.92 12.96L52.04 0L62.72 0L66.88 7.04L67.04 7.04L71.24 0L81.12 0L72.20 13Z" transform="translate(12 112.63) scale(1.077)">
+                    </path>
                     <!-- <rect class="rectColor" fill="none" stroke="#2a9d8f" stroke-width="4" width="108.32" height="150.256" x="2" y="2"></rect> -->
                 </svg>
                 <div class='block-color'></div>
             </div>
         </div>
-        <button class="scan-button">SCANNER</button>
+        <button class="scan-button" id="scan-button">SCANNER</button>
 
         <!-- <button class='testBtn'>TestBtn</button> -->
 
@@ -34,23 +42,16 @@
         <!--<input type="button" value="Débloquer" onclick="window.open('http://cors-anywhere.herokuapp.com/corsdemo', '_blank');">-->
         <div id="dz-root"></div>
         <div id="player" allow="autoplay" style="width:100%;" align="center"></div>
-        <!-- <div id="GifImg" style="position: relative;top:-100px;left:0px"></div> -->
-                <!--<div id="slider_seek" class="progressbarplay" style="">-->
-        <!--<div class="badge bg-primary" onclick="" style="font-size: xx-large;" id="timer">0:00</div>-->
-        <!--<div class="bar" style="width: 0%;"></div>-->
-        <!--</div>-->
-
-            <!-- LECTURE PLAYLIST -->
-    <div id="nbMorceaux" style="position: relative;top:400px;left:200px;z-index: 999;color: white;font-weight: bold;font-size: 15px" hidden="hidden"><h2>Scan 0/9</h2></div>
+        <!-- LECTURE PLAYLIST -->
+        <div id="nbMorceaux" style="position: relative;top:400px;left:200px;z-index: 999;color: white;font-weight: bold;font-size: 15px" hidden="hidden"><h2>Scan 0/9</h2></div>
     
     <div width="800px" id="playlistDiv" display="none" hidden="hidden">
-        <div id="nbTrackPlaying" style="color: blue;font-weight: bold;font-size: 72px;"><B><I>Lancez l'écoute !</I></B></div>
-        <BR>
-        <button class='easyMode'>Easy 5'</button>
-        <button class='hardMode'>Hard 3'</button>
+        <button class="scanplay-button easyMode">PLAY</button>
+        <!--<button class="scan-button">Hard 3'</button>-->
         <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
         <BR><BR><BR><BR>
-            <button onclick="javascript:solution()"  style="color: yellow;">Solution</button>&nbsp;&nbsp;<button onclick="javascript:bug()"  style="color: yellow;">Bug</button>
+            <button onclick="javascript:solution()" class="sol-button" >Solution</button>
+            <button onclick="javascript:bug()" class="bug-button" >Bug</button>
     </div>
 	
 	<div width="800px" id="playerDeezer"></div>

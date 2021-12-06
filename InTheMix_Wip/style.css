@@ -72,6 +72,7 @@ body {
     opacity: 0;
     animation: blockColorAnim 2s 1.5s forwards;  
 }
+
 .scan-button {
     /* z-index: 2; */
     position: absolute;
@@ -89,10 +90,75 @@ body {
     text-decoration: none;
 }
 
+.scanplay-button {
+    /* z-index: 2; */
+    position: absolute;
+    bottom: 160px;
+    width: 100%;
+    height: 0;
+    font-size: 18px;
+    background-color: #264653;
+    color: #FFF;
+    /* opacity: 0.37; */
+    animation: buttonAnim 0.5s 1.5s forwards;
+    outline: none;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+}
+
+.sol-button {
+    /* z-index: 2; */
+    position: absolute;
+    bottom: 80px;
+    width: 100%;
+    height: 0;
+    font-size: 18px;
+    background-color: #2A9D8F;
+    color: #FFF;
+    /* opacity: 0.37; */
+    animation: buttonAnim 0.5s 1.5s forwards;
+    outline: none;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+}
+
+.bug-button {
+    /* z-index: 2; */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0;
+    font-size: 18px;
+    background-color: #f4a261;
+    color: #FFF;
+    /* opacity: 0.37; */
+    animation: buttonAnim 0.5s 1.5s forwards;
+    outline: none;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+}
+
+#player {
+    position: fixed;
+    z-index: -10000;
+}
+.hideBack {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    z-index: -999;
+}
+
 /* MODE DE JEU */
 
 .easyMode {
-    color: purple;
+    color: white;
     position: absolute;
 }
 .hardMode {
