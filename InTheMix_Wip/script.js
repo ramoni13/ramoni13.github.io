@@ -33,7 +33,7 @@ const musicHeyDJ = new Audio('JingleHeyDj.mp3');
 const musicLaser = new Audio('LASER.mp3');
 const musicScratch = new Audio('scratch.mp3');
 const musicScratchOut = new Audio('scratchout.mp3');
-scratchout
+
 /// MANIP SVG
 
 window.setTimeout(changeColorSvg, 1000)
