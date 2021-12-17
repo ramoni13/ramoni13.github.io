@@ -33,11 +33,73 @@ const musicHeyDJ = new Audio('JingleHeyDj.mp3');
 const musicLaser = new Audio('LASER.mp3');
 const musicScratch = new Audio('scratch.mp3');
 const musicScratchOut = new Audio('scratchout.mp3');
-
+//var myTimeout = setTimeout(myGreating, 1000);
+var cpt=0
+var valeurleft=-130;
 /// MANIP SVG
 
 window.setTimeout(changeColorSvg, 1000)
 window.setTimeout(disapRect, 1000)
+
+function myGreating() {
+    var nomInput = "input_" + (7-cpt);
+    var nomCommand = "command" + (7-cpt);
+    if (cpt>0) {
+        var nomCommandprec = "command" + (8-cpt);
+        document.getElementById(nomCommandprec).style.display = 'none';
+    }
+    
+    document.getElementById(nomCommand).style.display = 'block';
+
+    document.getElementById(nomCommand).style = "left:" + valeurleft + "px;"
+    document.getElementById(nomInput).checked = true; 
+    cpt++;
+    switch (cpt) {
+        case 4:
+            valeurleft = valeurleft + 33 + cpt;
+            break;
+        case 5:
+            valeurleft = valeurleft + 33 + cpt;
+            break;
+        case 6:
+            valeurleft = valeurleft + 30 + cpt;
+            break;
+        case 7:
+            valeurleft = valeurleft + 33 + cpt;
+            break;
+        default:
+            valeurleft = valeurleft + 35 + cpt;
+            break;
+    }
+
+    
+    if (cpt<8) {
+        myTimeout = setTimeout(myGreating, 1000);
+    } else {
+        
+        document.getElementById("command0").innerHTML = "5";
+        document.getElementById("command0").style.display = 'block';
+        document.getElementById("command1").innerHTML = "9";
+        document.getElementById("command1").style.display = 'block';
+        document.getElementById("command2").innerHTML = "3";
+        document.getElementById("command2").style.display = 'block';
+        document.getElementById("command3").innerHTML = "1";
+        document.getElementById("command3").style.display = 'block';
+        document.getElementById("command4").innerHTML = "4";
+        document.getElementById("command4").style.display = 'block';
+        document.getElementById("command5").innerHTML = "2";
+        document.getElementById("command5").style.display = 'block';
+        document.getElementById("command6").innerHTML = "6";
+        document.getElementById("command6").style.display = 'block';
+        document.getElementById("command7").innerHTML = "7";
+        document.getElementById("command7").style.display = 'block';
+        for (var i=1; i < 8; i++) {
+            var nomcom = "command"+ i;
+            var val = 80 * i;
+            document.getElementById(nomcom).style = "left:" + document.getElementById(nomcom).style.left + ";top:-" + val + "px;"
+        }
+    }
+}
 
 function changeColorSvg() {
     svgLetter.forEach(x => {
@@ -81,7 +143,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         }
     }
 
-    if (playlist.length > 8) {
+    if (playlist.length > 4) {
         html5QrCode.stop().then((ignore) => {
             // QR Code scanning is stopped.
             console.log("retour stop ignore=" + ignore);
