@@ -228,6 +228,7 @@ const config = { fps: 10, qrbox: 250 };
         var tableauD = [idTrackEnCours];
         musicScratch.play();
 		DZ.player.playTracks(tableauD);
+        document.getElementById("barinfo").style.display = 'block';
         myGreating();
         document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
