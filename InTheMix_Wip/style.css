@@ -1,3 +1,14 @@
+
+.barinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.numero {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
 .bar {
     display: flex;
     flex-direction: row-reverse;
@@ -151,13 +162,13 @@
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0, 0, 0, 1.97);
   }
-
+  
   .command {
     font-family: "Ubuntu Mono", monospace;
     letter-spacing: 1px;
     font-size: 60px;
-    position: relative;
-    margin: 0px auto auto;
+    /* position: relative; */
+    /* margin: 0px auto auto; */
     -webkit-animation: fade 1s ease infinite;
             animation: fade 1s ease infinite;
   }
@@ -219,6 +230,7 @@ body {
     position: relative;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
 }
 
 .wallPaper {
@@ -289,7 +301,7 @@ body {
     background-color: #264653;
     color: #FFF;
     /* opacity: 0.37; */
-    animation: buttonAnim 0.5s 1.5s forwards;
+    animation: buttonAnim2 0.5s 1.5s forwards;
     outline: none;
     border: none;
     text-align: center;
@@ -299,31 +311,39 @@ body {
 .scanplay-button {
     /* z-index: 2; */
     position: absolute;
-    bottom: 160px;
+    bottom: -80px;
     width: 100%;
-    height: 0;
+    height: 70px;
     font-size: 18px;
     background-color: #264653;
     color: #FFF;
     /* opacity: 0.37; */
-    animation: buttonAnim 0.5s 1.5s forwards;
+    /*animation: buttonAnim 0.5s 1.5s forwards;*/
     outline: none;
     border: none;
     text-align: center;
     text-decoration: none;
+    transition-duration: 0.5s;
 }
 
+.moveButton {
+    animation: buttonAnim 0.5s 0.5s forwards;
+}
+
+.moveButtonOut {
+    animation: buttonAnimOut 0.5s 1.5s forwards;
+}
 .sol-button {
     /* z-index: 2; */
     position: absolute;
-    bottom: 80px;
+    bottom: -80px;
     width: 100%;
     height: 0;
     font-size: 18px;
     background-color: #2A9D8F;
     color: #FFF;
     /* opacity: 0.37; */
-    animation: buttonAnim 0.5s 1.5s forwards;
+    /* animation: buttonAnim 0.5s 1.5s forwards; */
     outline: none;
     border: none;
     text-align: center;
@@ -333,14 +353,14 @@ body {
 .bug-button {
     /* z-index: 2; */
     position: absolute;
-    bottom: 0;
+    bottom: -80px;
     width: 100%;
-    height: 0;
+    height: 70px;
     font-size: 18px;
     background-color: #f4a261;
     color: #FFF;
     /* opacity: 0.37; */
-    animation: buttonAnim 0.5s 1.5s forwards;
+    /* animation: buttonAnim 0.5s 1.5s forwards; */
     outline: none;
     border: none;
     text-align: center;
@@ -389,6 +409,19 @@ body {
     }
 }
 @keyframes buttonAnim {
+    to {
+        /*height: 70px;*/
+        bottom: 0px;
+    }
+}
+
+@keyframes buttonAnimOut {
+    to {
+        /*height: 70px;*/
+        bottom: -80px;
+    }
+}
+@keyframes buttonAnim2 {
     to {
         height: 70px;
     }

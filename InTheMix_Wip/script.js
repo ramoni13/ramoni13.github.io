@@ -51,7 +51,8 @@ function myGreating() {
     
     document.getElementById(nomCommand).style.display = 'block';
 
-    document.getElementById(nomCommand).style = "left:" + valeurleft + "px;"
+    // document.getElementById(nomCommand).style = "left:" + valeurleft + "px;"
+    document.getElementById(nomCommand).style = "position: absolute;left:46%;"
     document.getElementById(nomInput).checked = true; 
     cpt++;
     switch (cpt) {
@@ -114,9 +115,13 @@ function disapRect() {
 /// SCAN 
 
 const html5QrCode = new Html5Qrcode("reader");
+scanplayButton.addEventListener('click', () => {
+    validerPlaylist(17);
+})
 
 scanButton.addEventListener('click', () => {
-    console.log('OK')
+    console.log('OK');
+    document.getElementById("scan-button").style.display = 'none';
     musicHeyDJ.play();
     createPlaylist();
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
@@ -150,6 +155,8 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             document.getElementById("qr-shaded-region").style.display = 'none';
             document.getElementById("scan-button").style.display = 'none';
             document.getElementById("playlistDiv").style.display = 'block';
+            document.getElementById("scanplay").classList.add("moveButton");
+            document.getElementById("nbMorceaux").style.display = 'none';
             //document.getElementById("nbMorceaux").style.display = 'none';
         }).catch((err) => {
             // Stop failed, handle it.
@@ -227,10 +234,17 @@ const config = { fps: 10, qrbox: 250 };
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
         musicScratch.play();
-		DZ.player.playTracks(tableauD);
+		document.getElementById("scanplay").classList.add("moveButtonOut");
         document.getElementById("barinfo").style.display = 'block';
+        for (var i=0; i<8;i++) {
+            var nomCommandprec = "command" + (i);
+                document.getElementById(nomCommandprec).style.display = 'none';
+        }
+        document.getElementById("bugbutton").style.display = 'block';
+        document.getElementById("bugbutton").classList.add("moveButton");
         myGreating();
-        document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+        DZ.player.playTracks(tableauD);
+        //document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
     }
 
@@ -401,6 +415,6 @@ const config = { fps: 10, qrbox: 250 };
         //     console.log('Playback resumed successfully');
         //   });
         
-        validerPlaylist(17)
+        validerPlaylist(17);
     });
 

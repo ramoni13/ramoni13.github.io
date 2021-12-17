@@ -46,12 +46,9 @@
         <div id="nbMorceaux" style="position: relative;top:0px;left:0px;z-index: 999;color: white;font-weight: bold;font-size: 50px;font-family: monospace;" hidden="hidden">Scan 0/9</div>
     
     <div width="800px" id="playlistDiv" display="none" hidden="hidden">
-        <button class="scanplay-button easyMode">PLAY</button>
-        <!--<button class="scan-button">Hard 3'</button>-->
-        <!--<button onclick="javascript:validerPlaylist(10)">Saccade !</button>-->
-        <BR><BR><BR><BR>
-            <button onclick="javascript:solution()" class="sol-button" >Solution</button>
-            <button onclick="javascript:bug()" class="bug-button" >Bug</button>
+        <button class="scanplay-button easyMode" id="scanplay">PLAY</button>
+        <button onclick="javascript:solution()" class="sol-button" display="none" hidden="hidden" id="solbutton">Solution</button>
+        <button onclick="javascript:bug()" class="bug-button" display="none" hidden="hidden" id="bugbutton">Bug</button>
     </div>
 	
 	<div width="800px" id="playerDeezer"></div>
@@ -92,14 +89,16 @@
             <label class="bar-button" for="input_7"></label>
             </div>
         </div>
-      <div class="command" id="command0" display="none">8</div>
-      <div class="command" id="command1" display="none">7</div>
-      <div class="command" id="command2" display="none">6</div>
-      <div class="command" id="command3" display="none">5</div>
-      <div class="command" id="command4" display="none">4</div>
-      <div class="command" id="command5" display="none">3</div>
-      <div class="command" id="command6" display="none">2</div>
-      <div class="command" id="command7" display="none">1</div>
+        <div id="numero" >
+            <div class="command" id="command0" >8</div>
+            <div class="command" id="command1" >7</div>
+            <div class="command" id="command2" >6</div>
+            <div class="command" id="command3" >5</div>
+            <div class="command" id="command4" >4</div>
+            <div class="command" id="command5" >3</div>
+            <div class="command" id="command6" >2</div>
+            <div class="command" id="command7" >1</div>
+        </div>
     </div>
         <script src="./script.js" async defer></script>
     </body>
