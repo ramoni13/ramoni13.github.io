@@ -73,32 +73,32 @@ function myGreating() {
     }
 
     
-    if (cpt<8) {
-        myTimeout = setTimeout(myGreating, 1000);
-    } else {
+    // if (cpt<8) {
+    //     myTimeout = setTimeout(myGreating, 1000);
+    // } else {
         
-        document.getElementById("command0").innerHTML = "5";
-        document.getElementById("command0").style.display = 'block';
-        document.getElementById("command1").innerHTML = "9";
-        document.getElementById("command1").style.display = 'block';
-        document.getElementById("command2").innerHTML = "3";
-        document.getElementById("command2").style.display = 'block';
-        document.getElementById("command3").innerHTML = "1";
-        document.getElementById("command3").style.display = 'block';
-        document.getElementById("command4").innerHTML = "4";
-        document.getElementById("command4").style.display = 'block';
-        document.getElementById("command5").innerHTML = "2";
-        document.getElementById("command5").style.display = 'block';
-        document.getElementById("command6").innerHTML = "6";
-        document.getElementById("command6").style.display = 'block';
-        document.getElementById("command7").innerHTML = "7";
-        document.getElementById("command7").style.display = 'block';
-        for (var i=1; i < 8; i++) {
-            var nomcom = "command"+ i;
-            var val = 80 * i;
-            document.getElementById(nomcom).style = "left:" + document.getElementById(nomcom).style.left + ";top:-" + val + "px;"
-        }
-    }
+    //     document.getElementById("command0").innerHTML = "5";
+    //     document.getElementById("command0").style.display = 'block';
+    //     document.getElementById("command1").innerHTML = "9";
+    //     document.getElementById("command1").style.display = 'block';
+    //     document.getElementById("command2").innerHTML = "3";
+    //     document.getElementById("command2").style.display = 'block';
+    //     document.getElementById("command3").innerHTML = "1";
+    //     document.getElementById("command3").style.display = 'block';
+    //     document.getElementById("command4").innerHTML = "4";
+    //     document.getElementById("command4").style.display = 'block';
+    //     document.getElementById("command5").innerHTML = "2";
+    //     document.getElementById("command5").style.display = 'block';
+    //     document.getElementById("command6").innerHTML = "6";
+    //     document.getElementById("command6").style.display = 'block';
+    //     document.getElementById("command7").innerHTML = "7";
+    //     document.getElementById("command7").style.display = 'block';
+    //     for (var i=1; i < 8; i++) {
+    //         var nomcom = "command"+ i;
+    //         var val = 80 * i;
+    //         document.getElementById(nomcom).style = "left:" + document.getElementById(nomcom).style.left + ";top:-" + val + "px;"
+    //     }
+    // }
 }
 
 function changeColorSvg() {
@@ -143,7 +143,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         }
     }
 
-    if (playlist.length > 4) {
+    if (playlist.length > 2) {
         html5QrCode.stop().then((ignore) => {
             // QR Code scanning is stopped.
             console.log("retour stop ignore=" + ignore);
@@ -228,6 +228,7 @@ const config = { fps: 10, qrbox: 250 };
         var tableauD = [idTrackEnCours];
         musicScratch.play();
 		DZ.player.playTracks(tableauD);
+        myGreating();
         document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         //DZ.player.seek(playlistStart[0]);
     }
@@ -349,6 +350,7 @@ const config = { fps: 10, qrbox: 250 };
                     idTrackEnCours = playlist[idPlaylist];
                     var tableauD = [idTrackEnCours];
                     musicScratch.play();
+                    myGreating();
 		            DZ.player.playTracks(tableauD);
                 } else {
                     musicScratchOut.play();
