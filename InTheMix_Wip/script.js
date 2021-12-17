@@ -409,12 +409,12 @@ const config = { fps: 10, qrbox: 250 };
 
 
 
-    easyMode.addEventListener('click', () => {
-        console.log('kjgfhdfgsf')
-        // context.resume().then(() => {
-        //     console.log('Playback resumed successfully');
-        //   });
+    // easyMode.addEventListener('click', () => {
+    //     console.log('kjgfhdfgsf')
+    //     // context.resume().then(() => {
+    //     //     console.log('Playback resumed successfully');
+    //     //   });
         
-        validerPlaylist(17);
-    });
+    //     validerPlaylist(17);
+    // });
 
