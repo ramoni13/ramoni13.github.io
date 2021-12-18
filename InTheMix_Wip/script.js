@@ -397,8 +397,8 @@ const config = { fps: 10, qrbox: 250 };
                         document.getElementById("solbutton").style.display = 'block';
                         document.getElementById("solbutton").classList.toggle("moveButton");
                         firstPlay = true;
-                    } else {
                         cpt=0;
+                    } else {
                         document.getElementById("command0").style.display = 'none';
                         document.getElementById("solbutton").classList.remove("moveButtonOut");
                         document.getElementById("solbutton").classList.toggle("moveButton");
