@@ -20,6 +20,7 @@ var idTrackScan = 0;
 var idPlaylist = 0;
 var idTrackEnCours = 0;
 var firstEcoute = true;
+var firstPlay = false;
 var tableauGif = [];
 var modeSolution = false;
 var tempschoisi = 5;
@@ -72,34 +73,6 @@ function myGreating() {
             valeurleft = valeurleft + 35 + cpt;
             break;
     }
-
-    
-    // if (cpt<8) {
-    //     myTimeout = setTimeout(myGreating, 1000);
-    // } else {
-        
-    //     document.getElementById("command0").innerHTML = "5";
-    //     document.getElementById("command0").style.display = 'block';
-    //     document.getElementById("command1").innerHTML = "9";
-    //     document.getElementById("command1").style.display = 'block';
-    //     document.getElementById("command2").innerHTML = "3";
-    //     document.getElementById("command2").style.display = 'block';
-    //     document.getElementById("command3").innerHTML = "1";
-    //     document.getElementById("command3").style.display = 'block';
-    //     document.getElementById("command4").innerHTML = "4";
-    //     document.getElementById("command4").style.display = 'block';
-    //     document.getElementById("command5").innerHTML = "2";
-    //     document.getElementById("command5").style.display = 'block';
-    //     document.getElementById("command6").innerHTML = "6";
-    //     document.getElementById("command6").style.display = 'block';
-    //     document.getElementById("command7").innerHTML = "7";
-    //     document.getElementById("command7").style.display = 'block';
-    //     for (var i=1; i < 8; i++) {
-    //         var nomcom = "command"+ i;
-    //         var val = 80 * i;
-    //         document.getElementById(nomcom).style = "left:" + document.getElementById(nomcom).style.left + ";top:-" + val + "px;"
-    //     }
-    // }
 }
 
 function changeColorSvg() {
@@ -144,11 +117,12 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             //if (playlist.length == 1)  {
             //    document.getElementById("playlistDiv").style.display = 'block';
             //}
+            document.getElementById("nbMorceaux").style.display = 'block';
             document.getElementById("nbMorceaux").innerHTML = "Scan " + playlist.length + "/9"; // + "<BR>" + playlist.join() ;
         }
     }
 
-    if (playlist.length > 4) {
+    if (playlist.length > 8) {
         html5QrCode.stop().then((ignore) => {
             // QR Code scanning is stopped.
             console.log("retour stop ignore=" + ignore);
@@ -234,14 +208,20 @@ const config = { fps: 10, qrbox: 250 };
         idTrackEnCours = playlist[0];
         var tableauD = [idTrackEnCours];
         musicScratch.play();
-		document.getElementById("scanplay").classList.add("moveButtonOut");
-        document.getElementById("barinfo").style.display = 'block';
-        for (var i=0; i<8;i++) {
-            var nomCommandprec = "command" + (i);
-                document.getElementById(nomCommandprec).style.display = 'none';
+        //document.getElementById("scanplay").classList.remove("moveButton");
+		if (!firstPlay) {
+            document.getElementById("scanplay").classList.toggle("moveButtonOut");
+            document.getElementById("barinfo").style.display = 'block';
+            for (var i=0; i<8;i++) {
+                var nomCommandprec = "command" + (i);
+                    document.getElementById(nomCommandprec).style.display = 'none';
+            }
+            document.getElementById("bugbutton").style.display = 'block';
+            document.getElementById("bugbutton").classList.add("moveButton");
+        } else {
+            document.getElementById("scanplay").classList.toggle("moveButtonOut");
+            document.getElementById("solbutton").classList.toggle("moveButtonOut");
         }
-        document.getElementById("bugbutton").style.display = 'block';
-        document.getElementById("bugbutton").classList.add("moveButton");
         myGreating();
         DZ.player.playTracks(tableauD);
         //document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
@@ -250,19 +230,58 @@ const config = { fps: 10, qrbox: 250 };
 
     function solution() {
         modeSolution = true;
-        var info = document.getElementById('playerDeezer');
-        info.innerHTML = "Chanson Interdite N° " + solutionTab[8] + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
-        if (!modeBug) {
-            idTrackEnCours = playlist[playlist.length-1];
-            var tableauD = [idTrackEnCours];
-            DZ.player.playTracks(tableauD);
-            document.getElementById("playerDeezer").style.display = 'block';
-            
-        } else {
-            // gerer la chanson interdite
-            document.getElementById("nbMorceaux").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[8];
-            document.getElementById("playerDeezer").style.display = 'block';
+        //var info = document.getElementById('playerDeezer');
+        //info.innerHTML = "Chanson Interdite N° " + solutionTab[8] + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
+        //info.innerHTML = solutionTab + "<BR><BR>" + info.innerHTML;
+        document.getElementById("scanplay").classList.toggle("moveButtonOut");
+        document.getElementById("solbutton").classList.toggle("moveButtonOut");
+        document.getElementById("command0").innerHTML = solutionTab;
+        document.getElementById("nextbutton").classList.toggle("moveButton");
+        if (modeBug) {
+            document.getElementById("nbMorceaux").style.display = 'block';
+            document.getElementById("nbMorceaux").innerHTML = "Veuillez écarter la carte N°" + solutionTab[8];
         }
+        // if (!modeBug) {
+        //     idTrackEnCours = playlist[playlist.length-1];
+        //     var tableauD = [idTrackEnCours];
+        //     DZ.player.playTracks(tableauD);
+        //     document.getElementById("playerDeezer").style.display = 'block';
+            
+        // } else {
+        //     // gerer la chanson interdite
+        //     document.getElementById("nbMorceaux").innerHTML = "1 carte bugue.<BR>Veuillez écarter la carte<BR>N°" + solutionTab[8];
+        //     document.getElementById("playerDeezer").style.display = 'block';
+        // }
+    }
+
+    function next(){
+        document.getElementById("nbMorceaux").style.display = 'none';
+        document.getElementById("command0").innerHTML = "8";
+        document.getElementById("command0").style.display = 'none';
+        document.getElementById("barinfo").style.display = 'none';
+        playlist = [];
+        playlistStart = [];
+        solutionTab = [];
+        arrayOrigine = [];
+        idTrackScan = 0;
+        idPlaylist = 0;
+        idTrackEnCours = 0;
+        firstEcoute = true;
+        firstPlay = false;
+        tableauGif = [];
+        modeSolution = false;
+        tempschoisi = 5;
+        onachangedemusik = false;
+        modeSaccade = false;
+        muteOn = false;
+        modeBug = false;
+        idTrackBug = 0;
+        positionChanson = 0;
+        cpt=0
+        document.getElementById("nextbutton").classList.toggle("moveButtonOut");
+        musicHeyDJ.play();
+        createPlaylist();
+        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
     }
 
     function bug() {
@@ -298,11 +317,11 @@ const config = { fps: 10, qrbox: 250 };
 		DZ.Event.subscribe('current_track', function(arg){
 			event_listener_append('current_track', arg.index, arg.track.title, arg.track.album.title);
             var info = document.getElementById('playerDeezer');
-            if (!modeSolution) {
-                info.innerHTML += "<BR>--> " + (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
-            } else {
-                info.innerHTML = "Chanson Interdite N° " + positionChanson + "<BR>" + arg.track.title + "<BR>" + arg.track.artist.name + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
-            }
+            // if (!modeSolution) {
+            //     info.innerHTML += "<BR>--> " + (idPlaylist+1) + " -- " + arg.track.title + " -- " + arg.track.artist.name;
+            // } else {
+            //     info.innerHTML = "Chanson Interdite N° " + positionChanson + "<BR>" + arg.track.title + "<BR>" + arg.track.artist.name + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
+            // }
             
 		});
 		DZ.Event.subscribe('player_position', function(arg){
@@ -369,52 +388,32 @@ const config = { fps: 10, qrbox: 250 };
 		            DZ.player.playTracks(tableauD);
                 } else {
                     musicScratchOut.play();
+                    if (!firstPlay) {
+                        document.getElementById("bugbutton").classList.toggle("moveButtonOut");
+                        document.getElementById("scanplay").innerHTML = "Last PLAY"
+                        document.getElementById("scanplay").classList.toggle("moveButton80");
+                        document.getElementById("solbutton").classList.toggle("moveButton");
+                        firstPlay = true;
+                    } else {
+                        document.getElementById("solbutton").classList.toggle("moveButton");
                     // fin
                     //var info = document.getElementById('playerDeezer');
                     //info.innerHTML += "<BR>--> Chanson Interdite -- " + arg.track.title + " -- " + arg.track.artist.name;
-                }
-			} else {
-                if (modeSaccade) {
-                    if (muteOn) {
-                        DZ.player.setVolume(100);
-                        muteOn = false;
-                    } else {
-                        DZ.player.setMute();
-                        muteOn = true;
                     }
                 }
-            }
+			}
+            //  else {
+            //     if (modeSaccade) {
+            //         if (muteOn) {
+            //             DZ.player.setVolume(100);
+            //             muteOn = false;
+            //         } else {
+            //             DZ.player.setMute();
+            //             muteOn = true;
+            //         }
+            //     }
+            // }
         }
     }
 
-
-    // window.onload = function() {
-    //     var context = new AudioContext();
-    //     easyMode.addEventListener('click', () => {
-    //         console.log('kjgfhdfgsf')
-    //         context.resume().then(() => {
-    //             validerPlaylist(17)
-    //             console.log('Playback resumed successfully');
-    //           });
-    //     })
-    
-    //     hardMode.addEventListener('click', () => {
-    //         console.log('kjgfhdfgsf')
-    //         context.resume().then(() => {
-    //             validerPlaylist(10)
-    //             console.log('Playback resumed successfully');
-    //           });
-    //     })
-    //   }
-
-
-
-    // easyMode.addEventListener('click', () => {
-    //     console.log('kjgfhdfgsf')
-    //     // context.resume().then(() => {
-    //     //     console.log('Playback resumed successfully');
-    //     //   });
-        
-    //     validerPlaylist(17);
-    // });
 

@@ -330,8 +330,13 @@ body {
     animation: buttonAnim 0.5s 0.5s forwards;
 }
 
+.moveButton80 {
+    animation: buttonAnim80 0.5s 0.5s forwards;
+}
+
 .moveButtonOut {
-    animation: buttonAnimOut 0.5s 1.5s forwards;
+    bottom: 0px;
+    animation: buttonAnimOut 1.5s 0s forwards;
 }
 .sol-button {
     /* z-index: 2; */
@@ -412,6 +417,13 @@ body {
     to {
         /*height: 70px;*/
         bottom: 0px;
+    }
+}
+
+@keyframes buttonAnim80 {
+    to {
+        /*height: 70px;*/
+        bottom: 80px;
     }
 }
 
