@@ -167,6 +167,7 @@
     font-family: "Ubuntu Mono", monospace;
     letter-spacing: 1px;
     font-size: 60px;
+    text-align: center;
     /* position: relative; */
     /* margin: 0px auto auto; */
     -webkit-animation: fade 1s ease infinite;

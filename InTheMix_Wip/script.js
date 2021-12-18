@@ -235,7 +235,8 @@ const config = { fps: 10, qrbox: 250 };
         //info.innerHTML = solutionTab + "<BR><BR>" + info.innerHTML;
         document.getElementById("scanplay").classList.toggle("moveButtonOut");
         document.getElementById("solbutton").classList.toggle("moveButtonOut");
-        document.getElementById("command0").innerHTML = solutionTab;
+        document.getElementById("command0").innerHTML = solutionTab[0] + "-" + solutionTab[1] + "-" + solutionTab[2] + "-" + solutionTab[3] ;
+        document.getElementById("command0").innerHTML = document.getElementById("command0").innerHTML + "<BR>" + solutionTab[4] + "-" + solutionTab[5] + "-" + solutionTab[6] + "-" + solutionTab[7] ;
         document.getElementById("nextbutton").classList.toggle("moveButton");
         if (modeBug) {
             document.getElementById("nbMorceaux").style.display = 'block';
@@ -390,11 +391,15 @@ const config = { fps: 10, qrbox: 250 };
                     musicScratchOut.play();
                     if (!firstPlay) {
                         document.getElementById("bugbutton").classList.toggle("moveButtonOut");
-                        document.getElementById("scanplay").innerHTML = "Last PLAY"
+                        document.getElementById("scanplay").innerHTML = "Last PLAY";
+                        document.getElementById("scanplay").classList.remove("moveButtonOut");
                         document.getElementById("scanplay").classList.toggle("moveButton80");
+                        document.getElementById("solbutton").style.display = 'block';
                         document.getElementById("solbutton").classList.toggle("moveButton");
                         firstPlay = true;
                     } else {
+                        document.getElementById("command0").style.display = 'none';
+                        document.getElementById("solbutton").classList.remove("moveButtonOut");
                         document.getElementById("solbutton").classList.toggle("moveButton");
                     // fin
                     //var info = document.getElementById('playerDeezer');
