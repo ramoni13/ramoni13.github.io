@@ -53,7 +53,7 @@ function myGreating() {
     document.getElementById(nomCommand).style.display = 'block';
 
     // document.getElementById(nomCommand).style = "left:" + valeurleft + "px;"
-    document.getElementById(nomCommand).style = "position: absolute;left:46%;"
+    //document.getElementById(nomCommand).style = "position: absolute;left:46%;"
     document.getElementById(nomInput).checked = true; 
     cpt++;
     switch (cpt) {
