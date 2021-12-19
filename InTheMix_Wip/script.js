@@ -191,6 +191,7 @@ const config = { fps: 10, qrbox: 250 };
         var info = document.getElementById('playerDeezer');
         info.innerHTML = "";
 		// document.getElementById("menu").style.display = 'none';
+        document.getElementById("nbMorceaux").innerHTML = "Scan " + playlist.length + "/9";
         document.getElementById("nbMorceaux").style.display = 'block';
 	}
 
@@ -426,5 +427,3 @@ const config = { fps: 10, qrbox: 250 };
             // }
         }
     }
-
-
