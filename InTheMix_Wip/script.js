@@ -237,6 +237,7 @@ const config = { fps: 10, qrbox: 250 };
         document.getElementById("solbutton").classList.toggle("moveButtonOut");
         document.getElementById("command0").innerHTML = solutionTab[0] + "-" + solutionTab[1] + "-" + solutionTab[2] + "-" + solutionTab[3] ;
         document.getElementById("command0").innerHTML = document.getElementById("command0").innerHTML + "<BR>" + solutionTab[4] + "-" + solutionTab[5] + "-" + solutionTab[6] + "-" + solutionTab[7] ;
+        document.getElementById("command0").style.display = 'block';
         document.getElementById("nextbutton").classList.toggle("moveButton");
         if (modeBug) {
             document.getElementById("nbMorceaux").style.display = 'block';
@@ -422,3 +423,5 @@ const config = { fps: 10, qrbox: 250 };
             // }
         }
     }
+
+
