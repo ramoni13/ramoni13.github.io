@@ -402,7 +402,7 @@ const config = { fps: 10, qrbox: 250 };
                     } else {
                         document.getElementById("command0").style.display = 'none';
                         document.getElementById("solbutton").classList.remove("moveButtonOut");
-                        document.getElementById("solbutton").classList.toggle("moveButton");
+                        document.getElementById("solbutton").classList.add("moveButton");
                     // fin
                     //var info = document.getElementById('playerDeezer');
                     //info.innerHTML += "<BR>--> Chanson Interdite -- " + arg.track.title + " -- " + arg.track.artist.name;
@@ -422,5 +422,3 @@ const config = { fps: 10, qrbox: 250 };
             // }
         }
     }
-
-
