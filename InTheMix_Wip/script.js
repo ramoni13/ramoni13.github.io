@@ -390,6 +390,7 @@ const config = { fps: 10, qrbox: 250 };
                 } else {
                     musicScratchOut.play();
                     if (!firstPlay) {
+                        document.getElementById("command0").style.display = 'none';
                         document.getElementById("bugbutton").classList.toggle("moveButtonOut");
                         document.getElementById("scanplay").innerHTML = "Last PLAY";
                         document.getElementById("scanplay").classList.remove("moveButtonOut");
