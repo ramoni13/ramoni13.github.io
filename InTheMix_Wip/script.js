@@ -129,6 +129,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             document.getElementById("qr-shaded-region").style.display = 'none';
             document.getElementById("scan-button").style.display = 'none';
             document.getElementById("playlistDiv").style.display = 'block';
+            document.getElementById("scanplay").style.display = 'block';
             document.getElementById("scanplay").classList.add("moveButton");
             document.getElementById("nbMorceaux").style.display = 'none';
             //document.getElementById("nbMorceaux").style.display = 'none';
@@ -234,10 +235,12 @@ const config = { fps: 10, qrbox: 250 };
         //info.innerHTML = "Chanson Interdite N° " + solutionTab[8] + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
         //info.innerHTML = solutionTab + "<BR><BR>" + info.innerHTML;
         document.getElementById("scanplay").classList.toggle("moveButtonOut");
+        document.getElementById("scanplay").style.display = 'none';
         document.getElementById("solbutton").classList.toggle("moveButtonOut");
         document.getElementById("command0").innerHTML = solutionTab[0] + "-" + solutionTab[1] + "-" + solutionTab[2] + "-" + solutionTab[3] ;
         document.getElementById("command0").innerHTML = document.getElementById("command0").innerHTML + "<BR>" + solutionTab[4] + "-" + solutionTab[5] + "-" + solutionTab[6] + "-" + solutionTab[7] ;
         document.getElementById("command0").style.display = 'block';
+        document.getElementById("nextbutton").style.display = 'block';
         document.getElementById("nextbutton").classList.toggle("moveButton");
         if (modeBug) {
             document.getElementById("nbMorceaux").style.display = 'block';
