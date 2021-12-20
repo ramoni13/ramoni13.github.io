@@ -223,6 +223,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     function validerPlaylist(choix) {
         document.getElementById("logo").style.display = 'none';
         document.getElementById("disc").style.display = 'block';
+        document.getElementById("scanplay").classList.remove("moveButton");
         tempschoisi = choix; // 5 ou 3 sec
         //if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
         if (firstEcoute) {
@@ -447,8 +448,8 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                         cpt=0;
                     } else {
                         document.getElementById("command0").style.display = 'none';
+                        document.getElementById("bugbutton").classList.remove("moveButton");
                         document.getElementById("scanplay").classList.remove("moveButtonOut");
-                        document.getElementById("solbutton").classList.remove("moveButtonOut");
                         document.getElementById("solbutton").classList.remove("moveButtonOut");
                         document.getElementById("solbutton").classList.add("moveButton");
                     // fin
