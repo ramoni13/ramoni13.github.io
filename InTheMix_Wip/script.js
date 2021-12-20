@@ -11,7 +11,7 @@ const easyMode = document.querySelector('.easyMode');
 //     console.log('test OK')
 // })
 
-
+document.getElementById("disc").style.display = 'none';
 var playlist = [];
 var playlistStart = [];
 var solutionTab = [];
@@ -197,6 +197,8 @@ const config = { fps: 10, qrbox: 250 };
 
 
     function validerPlaylist(choix) {
+        document.getElementById("logo").style.display = 'none';
+        document.getElementById("disc").style.display = 'block';
         tempschoisi = choix; // 5 ou 3 sec
         //if (choix == 10) {modeSaccade = true;} else { modeSaccade = false;}
         if (firstEcoute) {
@@ -395,6 +397,8 @@ const config = { fps: 10, qrbox: 250 };
 		            DZ.player.playTracks(tableauD);
                 } else {
                     musicScratchOut.play();
+                    document.getElementById("logo").style.display = 'block';
+                    document.getElementById("disc").style.display = 'none';
                     if (!firstPlay) {
                         document.getElementById("command0").style.display = 'none';
                         document.getElementById("bugbutton").classList.toggle("moveButtonOut");
