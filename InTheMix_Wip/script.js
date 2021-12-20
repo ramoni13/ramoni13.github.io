@@ -450,6 +450,8 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                         document.getElementById("command0").style.display = 'none';
                         document.getElementById("bugbutton").classList.remove("moveButton");
                         document.getElementById("scanplay").classList.remove("moveButtonOut");
+                        document.getElementById("scanplay").classList.remove("moveButton");
+                        document.getElementById("scanplay").classList.remove("moveButton80");
                         document.getElementById("solbutton").classList.remove("moveButtonOut");
                         document.getElementById("solbutton").classList.add("moveButton");
                     // fin
