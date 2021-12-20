@@ -150,7 +150,11 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             document.getElementById("scan-button").style.display = 'none';
             document.getElementById("playlistDiv").style.display = 'block';
             document.getElementById("scanplay").style.display = 'block';
-            document.getElementById("scanplay").classList.add("moveButton");
+            document.getElementById("bugbutton").classList.remove("moveButton");
+            document.getElementById("scanplay").classList.remove("moveButtonOut");
+            document.getElementById("scanplay").classList.remove("moveButton80");
+            document.getElementById("scanplay").classList.toggle("moveButton");
+            document.getElementById("scanplay").innerHTML = "First PLAY";
             document.getElementById("nbMorceaux").style.display = 'none';
             //document.getElementById("nbMorceaux").style.display = 'none';
         }).catch((err) => {
@@ -455,5 +459,3 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             // }
         }
     }
-
-
