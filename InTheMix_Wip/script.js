@@ -278,7 +278,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         document.getElementById("nextbutton").classList.add("moveButton");
         if (modeBug) {
             //document.getElementById("nbMorceaux").style.display = 'block';
-            document.getElementById("nbMorceaux").innerHTML = "Veuillez écarter la carte N°" + solutionTab[8];
+            document.getElementById("nbMorceaux").innerHTML = "BUG carte #" + solutionTab[8];
         }
         // if (!modeBug) {
         //     idTrackEnCours = playlist[playlist.length-1];
