@@ -310,6 +310,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         document.getElementById("nextbutton").classList.toggle("moveButtonOut");
         musicHeyDJ.play();
         createPlaylist();
+        document.getElementById("reader").style.display = 'block';
         html5QrCode = new Html5Qrcode("reader");
         config = { fps: 10, qrbox: 250 };
         html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
