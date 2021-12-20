@@ -37,6 +37,7 @@ const musicScratchOut = new Audio('scratchout.mp3');
 //var myTimeout = setTimeout(myGreating, 1000);
 var cpt=0
 var valeurleft=-130;
+var config = { fps: 10, qrbox: 250 };
 /// MANIP SVG
 
 window.setTimeout(changeColorSvg, 1000)
@@ -158,7 +159,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         });
     }
 };
-const config = { fps: 10, qrbox: 250 };
+
 
 
 ///
@@ -310,6 +311,7 @@ const config = { fps: 10, qrbox: 250 };
         musicHeyDJ.play();
         createPlaylist();
         html5QrCode = new Html5Qrcode("reader");
+        config = { fps: 10, qrbox: 250 };
         html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
     }
 
