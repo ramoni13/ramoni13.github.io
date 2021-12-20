@@ -238,7 +238,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         musicScratch.play();
         //document.getElementById("scanplay").classList.remove("moveButton");
 		if (!firstPlay) {
-            document.getElementById("scanplay").classList.toggle("moveButtonOut");
+            document.getElementById("scanplay").classList.add("moveButtonOut");
             document.getElementById("barinfo").style.display = 'block';
             for (var i=0; i<8;i++) {
                 var nomCommandprec = "command" + (i);
@@ -247,8 +247,8 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             document.getElementById("bugbutton").style.display = 'block';
             document.getElementById("bugbutton").classList.add("moveButton");
         } else {
-            document.getElementById("scanplay").classList.toggle("moveButtonOut");
-            document.getElementById("solbutton").classList.toggle("moveButtonOut");
+            document.getElementById("scanplay").classList.add("moveButtonOut");
+            document.getElementById("solbutton").classList.add("moveButtonOut");
         }
         myGreating();
         DZ.player.playTracks(tableauD);
@@ -261,14 +261,18 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         //var info = document.getElementById('playerDeezer');
         //info.innerHTML = "Chanson Interdite N° " + solutionTab[8] + "<BR><BR>" + "Solution : " + solutionTab + "<BR><BR>" + info.innerHTML;
         //info.innerHTML = solutionTab + "<BR><BR>" + info.innerHTML;
-        document.getElementById("scanplay").classList.toggle("moveButtonOut");
-        document.getElementById("scanplay").style.display = 'none';
-        document.getElementById("solbutton").classList.toggle("moveButtonOut");
+        document.getElementById("bugbutton").classList.remove("moveButtonOut");
+        document.getElementById("scanplay").classList.remove("moveButton80");
+        document.getElementById("solbutton").classList.remove("moveButton");
+        
+        document.getElementById("scanplay").classList.add("moveButtonOut");
+        //----------document.getElementById("scanplay").style.display = 'none';
+        document.getElementById("solbutton").classList.add("moveButtonOut");
         document.getElementById("command0").innerHTML = solutionTab[0] + "-" + solutionTab[1] + "-" + solutionTab[2] + "-" + solutionTab[3] ;
         document.getElementById("command0").innerHTML = document.getElementById("command0").innerHTML + "<BR>" + solutionTab[4] + "-" + solutionTab[5] + "-" + solutionTab[6] + "-" + solutionTab[7] ;
         document.getElementById("command0").style.display = 'block';
         document.getElementById("nextbutton").style.display = 'block';
-        document.getElementById("nextbutton").classList.toggle("moveButton");
+        document.getElementById("nextbutton").classList.add("moveButton");
         if (modeBug) {
             document.getElementById("nbMorceaux").style.display = 'block';
             document.getElementById("nbMorceaux").innerHTML = "Veuillez écarter la carte N°" + solutionTab[8];
@@ -311,7 +315,10 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         idTrackBug = 0;
         positionChanson = 0;
         cpt=0;
-        document.getElementById("nextbutton").classList.toggle("moveButtonOut");
+        document.getElementById("scanplay").classList.remove("moveButtonOut");
+        document.getElementById("solbutton").classList.remove("moveButtonOut");
+        document.getElementById("nextbutton").classList.remove("moveButton");
+        document.getElementById("nextbutton").classList.add("moveButtonOut");
         musicHeyDJ.play();
         createPlaylist();
         document.getElementById("reader").style.display = 'block';
@@ -427,17 +434,21 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                     document.getElementById("logo").style.display = 'block';
                     document.getElementById("disc").style.display = 'none';
                     if (!firstPlay) {
-                        document.getElementById("command0").style.display = 'none';
-                        document.getElementById("bugbutton").classList.toggle("moveButtonOut");
-                        document.getElementById("scanplay").innerHTML = "Last PLAY";
                         document.getElementById("scanplay").classList.remove("moveButtonOut");
-                        document.getElementById("scanplay").classList.toggle("moveButton80");
+                        document.getElementById("solbutton").classList.remove("moveButtonOut");
+                        document.getElementById("bugbutton").classList.remove("moveButton");
+                        document.getElementById("command0").style.display = 'none';
+                        document.getElementById("scanplay").innerHTML = "Last PLAY";
+                        document.getElementById("bugbutton").classList.add("moveButtonOut");
+                        document.getElementById("scanplay").classList.add("moveButton80");
                         document.getElementById("solbutton").style.display = 'block';
-                        document.getElementById("solbutton").classList.toggle("moveButton");
+                        document.getElementById("solbutton").classList.add("moveButton");
                         firstPlay = true;
                         cpt=0;
                     } else {
                         document.getElementById("command0").style.display = 'none';
+                        document.getElementById("scanplay").classList.remove("moveButtonOut");
+                        document.getElementById("solbutton").classList.remove("moveButtonOut");
                         document.getElementById("solbutton").classList.remove("moveButtonOut");
                         document.getElementById("solbutton").classList.add("moveButton");
                     // fin
