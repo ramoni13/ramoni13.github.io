@@ -118,6 +118,7 @@ scanButton.addEventListener('click', () => {
     musicHeyDJ.play();
     createPlaylist();
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+    document.getElementById("nbMorceaux").style.display = 'block';
 })
 
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
@@ -155,7 +156,8 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             document.getElementById("scanplay").classList.remove("moveButton80");
             document.getElementById("scanplay").classList.add("moveButton");
             document.getElementById("scanplay").innerHTML = "First PLAY";
-            document.getElementById("nbMorceaux").style.display = 'none';
+            //document.getElementById("nbMorceaux").style.display = 'none';
+            document.getElementById("nbMorceaux").innerHTML = "&nbsp;";
             //document.getElementById("nbMorceaux").style.display = 'none';
         }).catch((err) => {
             // Stop failed, handle it.
@@ -216,7 +218,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         info.innerHTML = "";
 		// document.getElementById("menu").style.display = 'none';
         document.getElementById("nbMorceaux").innerHTML = "Scan " + playlist.length + "/9";
-        document.getElementById("nbMorceaux").style.display = 'block';
+        //document.getElementById("nbMorceaux").style.display = 'block';
 	}
 
 
@@ -275,7 +277,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         document.getElementById("nextbutton").style.display = 'block';
         document.getElementById("nextbutton").classList.add("moveButton");
         if (modeBug) {
-            document.getElementById("nbMorceaux").style.display = 'block';
+            //document.getElementById("nbMorceaux").style.display = 'block';
             document.getElementById("nbMorceaux").innerHTML = "Veuillez écarter la carte N°" + solutionTab[8];
         }
         // if (!modeBug) {
@@ -292,7 +294,8 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     }
 
     function next(){
-        document.getElementById("nbMorceaux").style.display = 'none';
+        //document.getElementById("nbMorceaux").style.display = 'none';
+        document.getElementById("nbMorceaux").innerHTML = "&nbsp;";
         document.getElementById("command0").innerHTML = "8";
         document.getElementById("command0").style.display = 'none';
         document.getElementById("barinfo").style.display = 'none';
@@ -346,6 +349,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             //document.getElementById("nbTrackPlaying").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
         } else {
             // afficher les 2 cartes à écarter
+            //document.getElementById("nbMorceaux").style.display = 'block';
             document.getElementById("nbMorceaux").innerHTML = "2 cartes buguent.<BR>Veuillez écarter les cartes<BR>N°" + solutionTab[8] + " et N°" + solutionTab[idPlaylist] + "<BR>Puis recommencez la manche.<BR>Merci !";
         }
     }
@@ -424,7 +428,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 console.log("(playlistStart[idPlaylist]+parseInt(tempschoisi)) = " + (playlistStart[idPlaylist]+parseInt(tempschoisi)));
                 if (idPlaylist < (playlist.length-2)) {
                     idPlaylist++;
-                    document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
+                    //document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
                     idTrackEnCours = playlist[idPlaylist];
                     var tableauD = [idTrackEnCours];
                     musicScratch.play();
