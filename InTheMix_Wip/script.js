@@ -265,6 +265,7 @@ const config = { fps: 10, qrbox: 250 };
         document.getElementById("command0").innerHTML = "8";
         document.getElementById("command0").style.display = 'none';
         document.getElementById("barinfo").style.display = 'none';
+        document.getElementById("qr-shaded-region").style.display = 'block';
         playlist = [];
         playlistStart = [];
         solutionTab = [];
@@ -283,7 +284,7 @@ const config = { fps: 10, qrbox: 250 };
         modeBug = false;
         idTrackBug = 0;
         positionChanson = 0;
-        cpt=0
+        cpt=0;
         document.getElementById("nextbutton").classList.toggle("moveButtonOut");
         musicHeyDJ.play();
         createPlaylist();
@@ -427,3 +428,5 @@ const config = { fps: 10, qrbox: 250 };
             // }
         }
     }
+
+
