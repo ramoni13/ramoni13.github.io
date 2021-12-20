@@ -122,7 +122,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         }
     }
 
-    if (playlist.length > 8) {
+    if (playlist.length > 2) {
         html5QrCode.stop().then((ignore) => {
             // QR Code scanning is stopped.
             console.log("retour stop ignore=" + ignore);
