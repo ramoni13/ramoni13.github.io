@@ -106,7 +106,7 @@ function disapRect() {
 
 /// SCAN 
 
-const html5QrCode = new Html5Qrcode("reader");
+var html5QrCode = new Html5Qrcode("reader");
 scanplayButton.addEventListener('click', () => {
     validerPlaylist(17);
 })
@@ -309,6 +309,7 @@ const config = { fps: 10, qrbox: 250 };
         document.getElementById("nextbutton").classList.toggle("moveButtonOut");
         musicHeyDJ.play();
         createPlaylist();
+        html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
     }
 
