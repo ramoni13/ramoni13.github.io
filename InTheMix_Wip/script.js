@@ -41,6 +41,25 @@ var valeurleft=-130;
 
 window.setTimeout(changeColorSvg, 1000)
 window.setTimeout(disapRect, 1000)
+// window.onerror = function (msg, url, noLigne, noColonne, erreur) {
+//     var chaine = msg.toLowerCase();
+//     var souschaine = "script error";
+//     if (chaine.indexOf(souschaine) > -1){
+//         alert('Script Error : voir la Console du Navigateur pour les Détails');
+//     } else {
+//         var message = [
+//             'Message : ' + msg,
+//             'URL : ' + url,
+//             'Ligne : ' + noLigne,
+//             'Colonne : ' + noColonne,
+//             'Objet Error : ' + JSON.stringify(erreur)
+//         ].join(' - ');
+
+//         alert(message);
+//     }
+
+//     return false;
+// };
 
 function myGreating() {
     var nomInput = "input_" + (7-cpt);
