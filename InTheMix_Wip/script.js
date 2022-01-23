@@ -322,7 +322,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         document.getElementById("scanplay").classList.remove("moveButtonOut");
         document.getElementById("solbutton").classList.remove("moveButtonOut");
         document.getElementById("nextbutton").classList.remove("moveButton");
-        document.getElementById("nextbutton").classList.add("moveButtonOut");
+        //document.getElementById("nextbutton").classList.add("moveButtonOut");
         musicHeyDJ.play();
         createPlaylist();
         document.getElementById("reader").style.display = 'block';
