@@ -644,14 +644,14 @@ const qrCodeSuccessCallbackManche2_3 = (decodedText, decodedResult) => {
 				console.log("playlistStart[idPlaylist] = " + playlistStart[idPlaylist]);
                 console.log("(playlistStart[idPlaylist]+parseInt(tempschoisi)) = " + (playlistStart[idPlaylist]+parseInt(tempschoisi)));
                 let finlecture;
-				if num_manche == 1 { finlecture = 7; }
-				if num_manche == 2 { finlecture = 7; }
-				if num_manche == 3 { finlecture = 7; }
+				if (num_manche == 1) { finlecture = 7; }
+				if (num_manche == 2) { finlecture = 7; }
+				if (num_manche == 3) { finlecture = 7; }
 				if (idPlaylist < (finlecture)) {
                     idPlaylist++;
                     //document.getElementById("nbMorceaux").innerHTML = "Track " + (idPlaylist+1) + "/" + playlist.length;
-                    if num_manche == 1 { idTrackEnCours = playlist[idPlaylist];}
-					if num_manche == 2 { idTrackEnCours = playlistManche2_uniquement[idPlaylist]; }
+                    if (num_manche == 1) { idTrackEnCours = playlist[idPlaylist];}
+					if (num_manche == 2) { idTrackEnCours = playlistManche2_uniquement[idPlaylist]; }
                     var tableauD = [idTrackEnCours];
                     musicScratch.play();
                     myGreating();
