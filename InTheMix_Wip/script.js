@@ -113,8 +113,12 @@ scanplayButton.addEventListener('click', () => {
 })
 
 scanButton.addEventListener('click', () => {
-    console.log('OK');
-    document.getElementById("scan-button").style.display = 'none';
+    console.log('event listener');
+	if (!DZ.player.loaded) {
+		console.log('rechargement de la page (DEEZER not loaded)');
+		location.reload();
+	}
+	document.getElementById("scan-button").style.display = 'none';
     musicHeyDJ.play();
     createPlaylist();
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
@@ -322,7 +326,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
         document.getElementById("scanplay").classList.remove("moveButtonOut");
         document.getElementById("solbutton").classList.remove("moveButtonOut");
         document.getElementById("nextbutton").classList.remove("moveButton");
-        //document.getElementById("nextbutton").classList.add("moveButtonOut");
+        document.getElementById("nextbutton").classList.add("moveButtonOut");
         musicHeyDJ.play();
         createPlaylist();
         document.getElementById("reader").style.display = 'block';
