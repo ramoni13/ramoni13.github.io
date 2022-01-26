@@ -171,6 +171,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
 };
 
 function scrollBottom(){
+	document.body.requestFullscreen();
 	var scrollingElement = (document.scrollingElement || document.body);
 	scrollingElement.scrollTop = scrollingElement.scrollHeight;
 }
