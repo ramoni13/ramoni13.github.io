@@ -119,8 +119,7 @@ scanButton.addEventListener('click', () => {
 		location.reload();
 	}
 	document.getElementById("scan-button").style.display = 'none';
-	document.body.requestFullscreen();
-    musicHeyDJ.play();
+	musicHeyDJ.play();
     createPlaylist();
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
     document.getElementById("nbMorceaux").style.display = 'block';
