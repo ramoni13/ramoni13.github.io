@@ -227,6 +227,7 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
 
 
     function validerPlaylist(choix) {
+		document.getElementById("nextbutton").classList.remove("moveButtonOut");
         document.getElementById("logo").style.display = 'none';
         document.getElementById("disc").style.display = 'block';
         document.getElementById("scanplay").classList.remove("moveButton");
