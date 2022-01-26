@@ -170,7 +170,10 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     }
 };
 
-
+function scrollBottom(){
+	var scrollingElement = (document.scrollingElement || document.body);
+	scrollingElement.scrollTop = scrollingElement.scrollHeight;
+}
 
 ///
 
