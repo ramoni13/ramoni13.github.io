@@ -119,6 +119,7 @@ scanButton.addEventListener('click', () => {
 		location.reload();
 	}
 	document.getElementById("scan-button").style.display = 'none';
+	document.body.requestFullscreen();
     musicHeyDJ.play();
     createPlaylist();
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
@@ -171,7 +172,6 @@ const qrCodeSuccessCallback = (decodedText, decodedResult) => {
 };
 
 function scrollBottom(){
-	document.body.requestFullscreen();
 	var scrollingElement = (document.scrollingElement || document.body);
 	scrollingElement.scrollTop = scrollingElement.scrollHeight;
 }
