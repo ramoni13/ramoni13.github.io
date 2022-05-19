@@ -417,7 +417,7 @@
 	var allThemes = [];
 	var infosPack = [];
 	var nbManches = 0;
-	var nbManchesEncours = 0;
+	var nbManchesEncours = 1;
 	var listeChansons = [];
 	var reponses = [];
 	var tps;
@@ -1103,7 +1103,6 @@
 		binome="";
 		var cptNbChanson = 0;
 		idChansonsManche = [];
-		nbManchesEncours++;
 		listeChansons.forEach(element => {
 			console.log(element);
 			var dejaJoue = chansonDejaJouee.find(item => item == element._id);
@@ -1151,7 +1150,8 @@
 				switchOn = false;
 				var preEcouteId = "preEcoute" + 1;
 				document.getElementById(preEcouteId).style.display = 'none';
-			} else { 
+			} else {
+				nbManchesEncours++;
 				for(var i = 1; i < cptNbChanson+1; i++) {
 					var preEcouteId = "preEcoute" + i;
 					document.getElementById(preEcouteId).style.display = 'block';
