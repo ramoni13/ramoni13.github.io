@@ -416,6 +416,8 @@
 	var allRecords = [];
 	var allThemes = [];
 	var infosPack = [];
+	var nbManches = 0;
+	var nbManchesEncours = 0;
 	var listeChansons = [];
 	var reponses = [];
 	var tps;
@@ -866,6 +868,8 @@
 	function bonnereponse(idR) {
 		if (idR == -1) {
 			messageVainqueur = "Pas de vainqueur sur cette chanson";
+			foisDeuxEncours = -1;
+			ApeupresEncours = -1;
 			menu("chansonSuivante");
 		} else {
 			if (foisDeuxEncours == idR) {
@@ -1104,7 +1108,8 @@
 			var dejaJoue = chansonDejaJouee.find(item => item == element._id);
 			if ((parseInt(element.nbMotsStop) === nbMotsEnCours) && (dejaJoue == undefined)) {
 				cptNbChanson++;
-				document.getElementById("nbMots").innerHTML = nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+				nbManchesEncours++;
+				document.getElementById("nbMots").innerHTML = "Manche " + nbManchesEncours + "/" + nbManches + "<BR>nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 				var preEcouteId = "preEcoute" + cptNbChanson;
 				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
@@ -1257,9 +1262,10 @@
 	function choixDuPack(nomPack) {
 		nomPackEnCours = nomPack;
 		allRecords.forEach(element => trierTheme(element));
-		
+		var nbCh = 0;
 		function trierTheme(element){
 			if (element.theme == nomPack){
+				nbCh++;
 				listeChansons.push(element);
 			}
 		}	
@@ -1272,6 +1278,7 @@
 		  if (keyA > keyB) return 1;
 		  return 0;
 		});
+		nbManches = (nbCh/2);
 		console.log ("liste des chansons du pack '" + nomPack + "' = ");
 		console.log (listeChansons);
 		menu("choixChanson");
