@@ -1146,12 +1146,12 @@
 			}
 		} else {
 			document.getElementById("listeChansons").innerHTML = binome;
-			if (cptNbChanson == 1) { 
+			if (cptNbChanson == 1) {
+				nbManchesEncours++;			
 				switchOn = false;
 				var preEcouteId = "preEcoute" + 1;
 				document.getElementById(preEcouteId).style.display = 'none';
 			} else {
-				nbManchesEncours++;
 				for(var i = 1; i < cptNbChanson+1; i++) {
 					var preEcouteId = "preEcoute" + i;
 					document.getElementById(preEcouteId).style.display = 'block';
