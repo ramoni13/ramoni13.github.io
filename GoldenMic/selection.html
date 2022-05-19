@@ -1109,7 +1109,7 @@
 			if ((parseInt(element.nbMotsStop) === nbMotsEnCours) && (dejaJoue == undefined)) {
 				cptNbChanson++;
 				nbManchesEncours++;
-				document.getElementById("nbMots").innerHTML = "Manche " + nbManchesEncours + "/" + nbManches + "<BR>nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
+				document.getElementById("nbMots").innerHTML = "Manche " + nbManchesEncours + "/" + nbManches + "<BR>" + nbMotsEnCours + " Mot(s) - " + nbMotsEnCours + " pt(s)<br>Equipe "+ nomEquipe[equipeEnCours];
 				var preEcouteId = "preEcoute" + cptNbChanson;
 				binome += "<div class=\"w3-tag w3-round w3-darkgray\" style=\"padding:3px\" onclick=\"selectionChanson('" + element._id + "')\">" +
 					"<div class=\"w3-tag w3-round w3-green w3-border w3-border-white\" style=\"font-size:xx-large\">" +
