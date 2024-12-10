@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecteur Deezer avec dz.js</title>
+    <style>
+        .deezer-player {
+            width: 300px;
+            height: 300px;
+            margin: auto;
+        }
+    </style>
+    <script src="https://e-cdns-files.dzcdn.net/js/min/dz.js" onload="dzScriptLoaded()"></script>
+    <script>
+        function dzScriptLoaded() {
+            console.log('Le script dz.js est chargé !');
+
+            // Initialiser le lecteur Deezer
+            DZ.init({
+                appId  : '8',
+				channelUrl : 'http://developers.deezer.com/examples/channel.php',
+                player: {
+                    container: 'deezer-player',
+                    width: 300,
+                    height: 300,
+                    onload: function() {
+                        console.log('Le lecteur est chargé !');
+                    }
+                }
+            });
+
+            // Écouter l'événement onPlayerReady
+            DZ.Event.subscribe('player_ready', function() {
+                console.log('Le lecteur est prêt !');
+            });
+
+            // Écouter les événements de clic sur les boutons
+            document.getElementById('play').onclick = function() {
+                DZ.player.playTracks([5981049]); // Remplacez par l'ID de la piste que vous souhaitez jouer
+            };
+
+            document.getElementById('pause').onclick = function() {
+                DZ.player.pause();
+            };
+
+            document.getElementById('next').onclick = function() {
+                DZ.player.next();
+            };
+        }
+    </script>
+</head>
+<body>
+    <div class="deezer-player" id="deezer-player"></div>
+
+    <button id="play">Play</button>
+    <button id="pause">Pause</button>
+    <button id="next">Next</button>
+</body>
+</html>
