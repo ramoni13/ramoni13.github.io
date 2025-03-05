@@ -232,11 +232,11 @@ function classement()
 	
 	if (score_du_tour==0)
 		{
-			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant &eacute;galit&eacute; parfaite entre les joueurs<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Il n\'y pas de gagnant &eacute;galit&eacute; parfaite entre les joueurs<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours-1] +' d\'&eacute;tablir un nouveau record !';
 		}
 		else
 		{
-			document.getElementById('info_joueur').innerHTML = 'Fin du tour !<BR>' + tableau_noms[(object[0].joueur+1)] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours] +' d\'&eacute;tablir un nouveau record !';
+			document.getElementById('info_joueur').innerHTML = 'Fin du tour !<BR>' + tableau_noms[(object[0].joueur+1)-1] + ' marque ' + score_du_tour + ' point(s)' + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours-1] +' d\'&eacute;tablir un nouveau record !';
 			tableau_score[object[0].joueur] = tableau_score[object[0].joueur] + score_du_tour;
 			nomid= 'score_joueur' + (object[0].joueur+1);
 			document.getElementById(nomid).innerHTML = tableau_score[object[0].joueur];
@@ -262,7 +262,7 @@ function classement()
 				if (tableau_score[position_un] == tableau_score[position_deux]) {
 					document.getElementById('info_joueur').innerHTML = 'EGALITE !!! Il n\'y a pas de gagnant sur cette partie.<BR><BR>Go! pour une nouvelle partie.';
 				} else {
-					document.getElementById('info_joueur').innerHTML = tableau_noms[position_un+1] + ' gagne la partie !!! <BR><BR>Go! pour une nouvelle partie.';
+					document.getElementById('info_joueur').innerHTML = tableau_noms[position_un] + ' gagne la partie !!! <BR><BR>Go! pour une nouvelle partie.';
 				}
 				gagnant=1;
 			}
@@ -360,14 +360,15 @@ function choix_nbjoueur(nb)
 	allerpage(10);
 }
 function attributionNoms() {
-	for (var i=1;i<nbjoueur+1;i++) {
-		nomid= 'saisieJoueur' + i;
+	for (var i=0;i<nbjoueur;i++) {
+		var iBoucle = i+1;
+		nomid= 'saisieJoueur' + iBoucle;
 		if (document.getElementById(nomid).value != "") {
 			tableau_noms[i] = document.getElementById(nomid).value;
 		} else {
-			tableau_noms[i] = "J" + i;
+			tableau_noms[i] = "J" + iBoucle;
 		}
-		nomid= 'info_score_joueur' + i;
+		nomid= 'info_score_joueur' + iBoucle;
 		document.getElementById(nomid).innerHTML = tableau_noms[i];
 	}
 }
@@ -558,12 +559,12 @@ function allerpage(npage)
 			
 			if (joueur_encours != 0) {
 				if (tableau_record[joueur_encours-1] != 0) {
-					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' marque ' + tableau_record[joueur_encours-1] + ' pt(s)';
+					document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours-1] + ' marque ' + tableau_record[joueur_encours-1] + ' pt(s)';
 				}
 			}
 			if (bonus_joueur_encours == 3) {
 				document.getElementById('info_bonus_joueur').innerHTML = 'BONUS Fruits r&eacute;colt&eacute;s >= 30 !';
-				document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours] + ' gagne la partie instantanément !!!<BR><BR>Go! pour une nouvelle partie.';
+				document.getElementById('info_joueur').innerHTML = tableau_noms[joueur_encours-1] + ' gagne la partie instantanément !!!<BR><BR>Go! pour une nouvelle partie.';
 				document.getElementById('suite').style.display = 'none';
 				document.getElementById('go').style.display = 'block';
 				gagnant=1;
@@ -601,7 +602,7 @@ function allerpage(npage)
 					AfficheTemps();
 				}else{
 					active_plus1De=0;
-					document.getElementById('info_joueur').innerHTML = document.getElementById('info_joueur').innerHTML + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours];
+					document.getElementById('info_joueur').innerHTML = document.getElementById('info_joueur').innerHTML + '<BR><BR>C\'est au tour de ' + tableau_noms[joueur_encours-1];
 				}
 				
 				nomid= 'tableJoueur' + joueur_encours;
@@ -704,7 +705,7 @@ function allerpage(npage)
 			
 			if (fin_temps==1)
 			{
-				document.getElementById('score').innerHTML = ' ' + tableau_noms[joueur_encours] + ' ne marque rien !';
+				document.getElementById('score').innerHTML = ' ' + tableau_noms[joueur_encours-1] + ' ne marque rien !';
 				document.getElementById('boutonMoins').style.display = 'none';
 				document.getElementById('boutonPlus').style.display = 'none';
 				document.getElementById('img_retour').style.display = 'none';
@@ -737,7 +738,7 @@ function allerpage(npage)
 			//document.getElementById('img_bonusassocier').src = 'img_smartphone/effet'+ fruit_encours +'.png';
 			document.getElementById('img_fruitdejouerBis').src = 'img/fruit'+ fruit_encours +'.png';
 			//document.getElementById('img_bonusassocierBis').src = 'img_smartphone/effet'+ fruit_encours +'.png';
-			document.getElementById('info_joueur_dejouer').innerHTML = tableau_noms[joueur_encours];
+			document.getElementById('info_joueur_dejouer').innerHTML = tableau_noms[joueur_encours-1];
 			break;
 		case 12:
 			document.getElementById('img_bonus1').style = '';
