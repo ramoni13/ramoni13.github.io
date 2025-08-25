@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Pour éviter le défilement */
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+    padding: 10px;
+}
+
+nav button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    color: white;
+    background-color: #555;
+    border: none;
+    cursor: pointer;
+}
+
+nav button:hover {
+    background-color: #777;
+}
+
+.content {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Prend toute la hauteur de la fenêtre */
+    overflow: hidden;
+}
+
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateX(100%); /* Commence hors de l'écran à droite */
+    border: 20px solid #555; /* Bordure autour de chaque page */
+    box-sizing: border-box; /* Inclut la bordure dans la taille totale de la div */
+    padding: 20px; /* Ajoute un peu d'espace à l'intérieur */
+    background-color: white; /* Fond blanc pour le contraste */
+}
+
+.page.active {
+    opacity: 1;
+    transform: translateX(0); /* Apparaît au centre */
+}
+
+.page.exit {
+    opacity: 0;
+    transform: translateX(-100%); /* Sort de l'écran à gauche */
+}
