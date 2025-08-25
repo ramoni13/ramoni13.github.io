@@ -3,10 +3,14 @@ let html5QrCode; // Variable pour stocker l'instance de Html5Qrcode
 
 function changerDIV(pageNum) {
     const pages = document.querySelectorAll('.page');
+    const buttons = document.querySelectorAll('nav button'); // Sélectionne tous les boutons du menu
 
     // Retrait de la classe active de la page actuelle
     pages[currentPage].classList.remove('active');
     pages[currentPage].classList.add('exit'); // Ajout de classe pour la sortie
+
+    // Retirer la classe active des boutons 
+    buttons[currentPage].classList.remove('active-button');
 
     // Attendre que l'animation de sortie soit terminée avant de changer de page
     setTimeout(() => {
@@ -18,6 +22,9 @@ function changerDIV(pageNum) {
         
         // Ajout de la classe active à la nouvelle page
         pages[currentPage].classList.add('active');
+
+        // Ajouter la classe active au bouton correspondant
+        buttons[currentPage].classList.add('active-button');
 
         // Si la page "Tarifs" est activée, démarrer le scanner QR
         if (currentPage === 1) {
