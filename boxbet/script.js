@@ -10,7 +10,7 @@ function changerDIV(pageNum) {
     pages[currentPage].classList.add('exit'); // Ajout de classe pour la sortie
 
     // Retirer la classe active des boutons 
-    buttons[currentPage].classList.remove('active-button');
+    buttons.forEach(button => button.classList.remove('active-button'));
 
     // Attendre que l'animation de sortie soit terminée avant de changer de page
     setTimeout(() => {
