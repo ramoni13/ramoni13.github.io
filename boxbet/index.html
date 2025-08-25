@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="html5-qrcode.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>Site Web Responsive</title>
+</head>
+<body>
+    <nav>
+        <button onclick="changerDIV(0)">Accueil</button>
+        <button onclick="changerDIV(1)">Tarifs</button>
+        <button onclick="changerDIV(2)">Contact</button>
+        <button onclick="changerDIV(3)">Qui sommes-nous ?</button>
+    </nav>
 
+    <div class="content">
+        <div class="page" id="page-0"> 
+            <h1>Accueil</h1>
+            <p>Bienvenue sur notre site !</p>
+        </div>
+        <div class="page" id="page-1"> 
+            <h1>Tarifs</h1>
+            <p>Voici nos tarifs.</p>
+	    <div id="qr-reader" style="width: 300px;"></div>
+	    <div id="qr-reader-results"></div>
+        </div>
+        <div class="page" id="page-2"> 
+            <h1>Contact</h1>
+            <p>Contactez-nous à info@example.com</p>
+        </div>
+        <div class="page" id="page-3"> 
+            <h1>Qui sommes-nous ?</h1>
+            <p>Nous sommes une entreprise fictive.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
