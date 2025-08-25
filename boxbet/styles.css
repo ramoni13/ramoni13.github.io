@@ -28,8 +28,10 @@ nav button:hover {
 .content {
     position: relative;
     width: 100%;
-    height: 100vh; /* Prend toute la hauteur de la fenêtre */
+    height: 90vh; /* Prend toute la hauteur de la fenêtre */
     overflow: hidden;
+    
+    box-sizing: border-box; /* Inclure la bordure dans la taille totale de l'élément */
 }
 
 .page {
