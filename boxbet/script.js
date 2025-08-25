@@ -10,11 +10,7 @@ function changerDIV(pageNum) {
     pages[currentPage].classList.add('exit'); // Ajout de classe pour la sortie
 
      // Retirer la classe active de tous les boutons
-    buttons.forEach(button => {
-        button.classList.remove('active-button'); // Retire la classe d'activation
-        button.style.backgroundColor = "#555"; // Réinitialiser à la couleur de fond par défaut
-        button.style.color = "white"; // Réinitialiser à la couleur de texte par défaut
-    });
+    buttons[currentPage].classList.remove('active-button'); // Retire la classe d'activation
 
     // Attendre que l'animation de sortie soit terminée avant de changer de page
     setTimeout(() => {
