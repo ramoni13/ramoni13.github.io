@@ -50,6 +50,9 @@ function startQRCodeScanner() {
         (decodedText, decodedResult) => {
             // Code QR décodé ici
             document.getElementById("qr-reader-results").innerText = "QR Code: " + decodedText;
+
+            // Changer de page automatiquement vers "Contact" (page 2)
+            changerDIV(2); // Remplacez 2 par le numéro de la page souhaitée
         },
         (errorMessage) => {
             // Erreur de lecture de QR Code
