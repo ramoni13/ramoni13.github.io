@@ -40,8 +40,9 @@ function startQRCodeScanner() {
         html5QrCode = new Html5Qrcode("qr-reader");
     }
 
+    // Utilisez la caméra avant
     html5QrCode.start(
-        { facingMode: "environment" }, // utiliser la caméra arrière
+        { facingMode: "user" }, // utiliser la caméra avant
         {
             fps: 10,
             qrbox: { width: 250, height: 250 }
