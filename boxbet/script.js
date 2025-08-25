@@ -1,4 +1,5 @@
 let currentPage = 0; // Page actuelle
+let html5QrCode; // Variable pour stocker l'instance de Html5Qrcode
 
 function changerDIV(pageNum) {
     const pages = document.querySelectorAll('.page');
@@ -35,7 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Fonction pour démarrer le scanner QR Code
 function startQRCodeScanner() {
-    const html5QrCode = new Html5Qrcode("qr-reader");
+    if (!html5QrCode) { // Vérifiez si l'instance n'est pas déjà créée
+        html5QrCode = new Html5Qrcode("qr-reader");
+    }
+
     html5QrCode.start(
         { facingMode: "environment" }, // utiliser la caméra arrière
         {
@@ -51,18 +55,20 @@ function startQRCodeScanner() {
             console.warn(`Erreur de lecture du QR Code: ${errorMessage}`);
         })
         .catch(err => {
-            console.error(`Erreur lors du démarrage du QR Code scanner: ${err}`);
+            console.error(`Erreur lors du démarrage du scanner QR Code: ${err}`);
         });
 }
 
 // Fonction pour arrêter le scanner QR Code
 function stopQRCodeScanner() {
-    const html5QrCode = new Html5Qrcode("qr-reader");
-    html5QrCode.stop()
-        .then(ignore => {
-            console.log("Scanner QR Code arrêté.");
-        })
-        .catch(err => {
-            console.error(`Erreur lors de l'arrêt du scanner: ${err}`);
-        });
+    if (html5QrCode) {
+        html5QrCode.stop()
+            .then(ignore => {
+                console.log("Scanner QR Code arrêté.");
+                html5QrCode = null; // Réinitialiser l'instance
+            })
+            .catch(err => {
+                console.error(`Erreur lors de l'arrêt du scanner: ${err}`);
+            });
+    }
 }
