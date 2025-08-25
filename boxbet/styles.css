@@ -47,6 +47,11 @@ nav button:hover {
     background-color: white; /* Fond blanc pour le contraste */
 }
 
+.active-button {
+    background-color: #777; /* Couleur de fond lorsque le bouton est actif */
+    color: white; /* Couleur du texte lorsque le bouton est actif */
+}
+
 .page.active {
     opacity: 1;
     transform: translateX(0); /* Apparaît au centre */
