@@ -270,7 +270,7 @@ function startQRCodeScanner() {
 					if ((action !== "A6") && (action !== "A7")) {
 						stopQRCodeScanner();
 						calculResult();
-						changerDIV(8);
+						changerDIV(9);
 					} else {
 						stopQRCodeScanner();
 						etapeScan++;
@@ -286,7 +286,7 @@ function startQRCodeScanner() {
 					joueur2=decodedText;
 					calculResult();
 					stopQRCodeScanner();
-					changerDIV(8);
+					changerDIV(9);
 					message = "Joueur " + decodedText;
 					document.getElementById("qr-reader-results").innerText = "[" + message + "]";
 				}
