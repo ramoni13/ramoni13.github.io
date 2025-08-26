@@ -186,7 +186,7 @@ function startQRCodeScanner() {
 
     // Utilisez la caméra avant
     html5QrCode.start(
-        { facingMode: "environment" }, // utiliser la caméra avant
+        { facingMode: "user" }, // utiliser la caméra avant
         {
             fps: 10,
             qrbox: { width: 250, height: 250 }
@@ -236,32 +236,40 @@ function startQRCodeScanner() {
   			default:
    				console.log(`Sorry, we are out of ${expr}.`);
 			}
-			stopQRCodeScanner();
-			titreScan("CHOIX JOUEUR");
-			changerDIV(7);
+			if (etapeScan > 0) {
+				stopQRCodeScanner();
+				titreScan("CHOIX JOUEUR");
+				changerDIV(7);
+			}
 		} else {
 			if (etapeScan === 1) {
-				joueur1=decodedText;
-				if ((action !== "A6") && (action !== "A7")) {
+				if (decodeText.length ===1 ) {
+					joueur1=decodedText;
+					if ((action !== "A6") && (action !== "A7")) {
+						stopQRCodeScanner();
+						calculResult();
+						changerDIV(8);
+					} else {
+						stopQRCodeScanner();
+						etapeScan++;
+						titreScan("CHOIX JOUEUR 2");
+						// le startQR est dans changerDIV(7)
+						changerDIV(7);
+					}
+					message = "Joueur " + decodedText;
+					document.getElementById("qr-reader-results").innerText = "[" + message + "]";
+				}
+			} else {
+				if (joueur1 !== decodeText) {
+					joueur2=decodedText;
 					calculResult();
 					stopQRCodeScanner();
 					changerDIV(8);
-				} else {
-					etapeScan++;
-					stopQRCodeScanner();
-					titreScan("CHOIX JOUEUR 2");
-					changerDIV(7);
+					message = "Joueur " + decodedText;
+					document.getElementById("qr-reader-results").innerText = "[" + message + "]";
 				}
-			} else {
-				joueur2=decodedText;
-				calculResult();
-				stopQRCodeScanner();
-				changerDIV(8);
 			}
-			
-			message = "Joueur " + decodedText;
 		}
-            document.getElementById("qr-reader-results").innerText = "[" + message + "]";
         },
         (errorMessage) => {
             // Erreur de lecture de QR Code
@@ -286,27 +294,27 @@ let valeurJ2 = parseInt(joueur2);
     		break;
   	case "A2":
 		if ((valeurDesJoueurs[valeurJ1-1]>1) && (valeurDesJoueurs[valeurJ1-1]<5)) {
-			message="[2-4] OUI";
+			message="[2/3/4] OUI";
 		} else {
-			message="[2-4] NON";
+			message="[2/3/4] NON";
 		}
     		break;
   	case "A3":
 		// Utilisez Math.min pour trouver le plus petit élément du tableau
 		let smallest = Math.min(...valeurDesJoueurs);
 		if (valeurDesJoueurs[valeurJ1-1] === smallest) {
-			message="[Petit] OUI";
+			message="[+ Petit] OUI";
 		} else {
-			message="[Petit] NON";
+			message="[+ Petit] NON";
 		}
     		break;
 	case "A4":
 		// Compte le nombre d'occurrences de l'élément dans le tableau
 		let count = valeurDesJoueurs.filter(item => item === valeurDesJoueurs[valeurJ1-1]).length;
 		if (count === 1) {
-			message="[Unique] OUI";
+			message="[Valeur Unique] OUI";
 		} else {
-			message="[Unique] NON";
+			message="[Valeur Unique] NON";
 		}
     		break;
   	case "A5":
@@ -318,9 +326,9 @@ let valeurJ2 = parseInt(joueur2);
     		break;
   	case "A6":
 		if (valeurDesJoueurs[valeurJ1-1] > valeurDesJoueurs[valeurJ2-1]) {
-			message="[Supérieur] OUI";
+			message="[A Supérieur B] OUI";
 		} else {
-			message="[Supérieur] NON";
+			message="[A Supérieur B] NON";
 		}
     		break;
 	case "A7":
