@@ -168,7 +168,7 @@ function suiteMenu() {
 	currentParticipantIndex++; // Passer au participant suivant
 
         if (currentParticipantIndex < participantCount) {
-            renderParticipantInput(); // Afficher le champ pour le prochain participant
+            renderJoueurInput(); // Afficher le champ pour le prochain participant
 	    changerDIV(5); // Retour à la page d'accueil ou une autre page
         } else {
             //alert("Tous les participants ont été enregistrés !");
