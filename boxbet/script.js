@@ -41,6 +41,27 @@ function changerDIV(pageNum) {
 	    calculVainqueur();
             changerDIV(10);
 	}
+	
+	if (currentPage === 5) {
+		let sortie = false;
+		let n=0;
+		while (!sortie) {
+			n++;
+		  	// le joueur a déjà misé on passe au joueur suivant
+			if (miseJoueur[currentParticipantIndex] !== undefined) {
+				currentParticipantIndex++;
+				if (currentParticipantIndex === participantCount) {
+					currentParticipantIndex = 0;
+				}
+				renderJoueurInput();
+			} else {
+				sortie=true;
+			}
+			if (n>6) {
+				sortie=true;
+			}
+		}
+	}
 
         // Si la page "Tarifs" est activée, démarrer le scanner QR
         if (currentPage === 7) {
@@ -52,6 +73,7 @@ function changerDIV(pageNum) {
 }
 
 function calculVainqueur() {
+	message = "";
 	let valeurUnique = HighUniqe();
 	if (valeurUnique === -1) {
 		message = "Personne - DOUBLONS";
@@ -243,7 +265,7 @@ function startQRCodeScanner() {
 			}
 		} else {
 			if (etapeScan === 1) {
-				if (decodeText.length ===1 ) {
+				if (decodedText.length ===1 ) {
 					joueur1=decodedText;
 					if ((action !== "A6") && (action !== "A7")) {
 						stopQRCodeScanner();
@@ -260,7 +282,7 @@ function startQRCodeScanner() {
 					document.getElementById("qr-reader-results").innerText = "[" + message + "]";
 				}
 			} else {
-				if (joueur1 !== decodeText) {
+				if (joueur1 !== decodedText) {
 					joueur2=decodedText;
 					calculResult();
 					stopQRCodeScanner();
