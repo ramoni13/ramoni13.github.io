@@ -8,58 +8,44 @@
     <title>Site Web Responsive</title>
 </head>
 <body>
-    <!--<nav>
-        <button onclick="changerDIV(0)">Accueil</button>
-        <button onclick="changerDIV(1)">Tarifs</button>
-        <button onclick="changerDIV(2)">Contact</button>
-        <button onclick="changerDIV(3)">Qui sommes-nous ?</button>
-    </nav>-->
-
     <div class="content">
         <div class="page" id="page-0"> 
             <h1>BOXBET</h1>
-            <p>Bienvenue !</p>
-	    <p>Prenez chacun 1 boite et 1 dé</p>
-	    <p>Et 1 carte "Mon N°"</p>
-	    <p>Et 1 paquet de cartes "Joueur"</p>
-	    <p>Formez 8 tas des cartes "Action"</p>
+            <h2>Bienvenue !</h2>
+	    <h2>Prenez chacun 1 boite et 1 dé</h2>
+	    <h2>Et 1 carte "Mon N°"</h2>
+	    <h2>Et 1 paquet de cartes "Joueur"</h2>
+	    <h2>Formez 8 tas des cartes "Action"</h2>
 	    <button onclick="changerDIV(1)">Suite</button>
         </div>
 	<div class="page" id="page-1"> 
             <h1>DEBUT MANCHE [1/2]</h1>
-            <p>Le 1er Joueur choisit les Actions</p>
-	    <p>1 max de chaque type</p>
-	    <p>le nb de joueurs-1</p>
-	    <p>Les autres joueurs prennent les mêmes</p>
+            <h2>Le 1er Joueur choisit les Actions</h2>
+	    <h2>1 max de chaque type</h2>
+	    <h2>le nb de joueurs-1</h2>
+	    <h2>Les autres joueurs prennent les mêmes</h2>
 	    <button onclick="changerDIV(2)">Suite</button>
         </div>
 	<div class="page" id="page-2"> 
             <h1>DEBUT MANCHE [2/2]</h1>
-            <p>Mettez votre dé dans la boite</p>
-	    <p>Secouez !</p>
-	    <p>Regardez la valeur secrètement</p>
-	    <p>Refermez la boite</p>
+            <h2>Mettez votre dé dans la boite</h2>
+	    <h2>Secouez !</h2>
+	    <h2>Regardez la valeur secrètement</h2>
+	    <h2>Refermez la boite</h2>
 	    <button onclick="changerDIV(3)">Suite</button>
         </div>
         <div class="page" id="page-3"> 
 	    <h1>NOMBRE DE JOUEURS</h1>
-            <p>Entrez le nombre de joueurs</p>
+            <h2>Entrez le nombre de joueurs</h2>
 	    <div>
 		<button onclick="nbJoueurs(4)">4</button>
 		<button onclick="nbJoueurs(5)">5</button>
-	    </div>
-	    <div>
-		&nbsp;
-	    </div>
-            <div>
 		<button onclick="nbJoueurs(6)">6</button>
-		<button onclick="nbJoueurs(7)">7</button>
-		<button onclick="nbJoueurs(8)">8</button>
 	    </div>
 	</div>
         <div class="page" id="page-4"> 
             <h1 id="participantTitle"></h1>
-	    <p>Entrez la valeur de votre dé</p>
+	    <h2>Entrez la valeur de votre dé</h2>
             <div>
 		<button onclick="saveValeur(1)">1</button>
 		<button onclick="saveValeur(2)">2</button>
@@ -76,7 +62,7 @@
         </div>
 	<div class="page" id="page-5"> 
             <h1 id="joueurTitle"></h1>
-	    <p>Que voulez-vous faire ?</p>
+	    <h2>Que voulez-vous faire ?</h2>
             <div>
 		<button onclick="choix(1)">Enquêter</button>
 	    </div>
@@ -89,22 +75,20 @@
         </div>
 	<div class="page" id="page-6"> 
 	    <h1>MISER</h1>
-            <p>Qui a le + grand dé ?</p>
-            <p>Entrez le N° du joueur</p>
+            <h2>Qui a le + grand dé ?</h2>
+            <h2>Entrez le N° du joueur</h2>
 	    <div>
 		<button onclick="validerMise(1)">1</button>
 		<button onclick="validerMise(2)">2</button>
 		<button onclick="validerMise(3)">3</button>
-		<button onclick="validerMise(4)">4</button>
 	    </div>
 	    <div>
 		&nbsp;
 	    </div>
             <div>
+		<button onclick="validerMise(4)">4</button>
 		<button onclick="validerMise(5)">5</button>
 		<button onclick="validerMise(6)">6</button>
-		<button onclick="validerMise(7)">7</button>
-		<button onclick="validerMise(8)">8</button>
 	    </div>
 	</div>
 	<div class="page" id="page-7"> 
@@ -114,7 +98,7 @@
 	</div>
 	<div class="page" id="page-8"> 
 	    <h1>RESULTAT PRET</h1>
-            <p>Cachez l'écran !</p>
+            <h2>Cachez l'écran !</h2>
 	    <button onclick="changerDIV(9)">Afficher</button>        
 	</div>
 	<div class="page" id="page-9"> 
@@ -123,13 +107,55 @@
 	</div>
 	<div class="page" id="page-10"> 
 	    <h1>REVELEZ VOS DES</h1>
-            <button onclick="changerDIV(11); ">Résultat</button>        
+            <button onclick="changerDIV(11);">Résultat</button>        
 	</div>
 	<div class="page" id="page-11"> 
 	    <h1 id="resultatVainqueur"></h1>
             <button onclick="location.reload(); ">Rejouer</button>        
 	</div>
+	<div class="page" id="page-12"> 
+	    <h1>Passez le téléphone</h1>
+            <button onclick="changerDIV(4);">Suite</button>        
+	</div>
+	<div class="page" id="page-13"> 
+	    <h1 id="joueurTitleAction"></h1>
+	    <h2>Choisissez les actions de la manche</h2>
+	    <h2><span id="nbChoixActionsRestant">4</span> à choisir</h2>
+            <div>
+		<button id="btn0" onclick="choixBtn('btn0')">Pair</button>
+		<button id="btn1" onclick="choixBtn('btn1')">2/3/4</button>
+	    </div>
+	    <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="btn2" onclick="choixBtn('btn2')">Petit</button>
+		<button id="btn3" onclick="choixBtn('btn3')">Somme</button>
+	    </div>
+            <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="btn4" onclick="choixBtn('btn4')">Unique</button>
+		<button id="btn5" onclick="choixBtn('btn5')">6</button>
+	    </div>
+            <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="btn6" onclick="choixBtn('btn6')">Supérieur</button>
+		<button id="btn7" onclick="choixBtn('btn7')">Regarde</button>
+	    </div>
+	    <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="suite" onclick="suite()">Valider</button>
+	    </div>
+	</div>
     </div>
+
+<!--<span class="badge" id="badge">1</span>-->
 
     <script src="script.js"></script>
 </body>
