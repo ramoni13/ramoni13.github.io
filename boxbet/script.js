@@ -40,6 +40,18 @@ function choixBtn(idBtn) {
 
 function suite() {
 	if (nbChoixActionsRestant === 0) {
+		let nomBtn = "";
+		for (let i = 0; i < participantCount; i++) {
+			listeActionsJoueurs.push(listeActionsChoisies);
+		}
+		for (let i = 0; i < 8; i++) {
+			nomBtn = 'btnA'+i;
+			if (listeActionsChoisies[i] === 0) {
+  				document.getElementById(nomBtn).style.display = "none";
+			} else {
+  				document.getElementById(nomBtn).style.display = "block";
+			}
+		}
 		changerDIV(5);
 	}
 }
