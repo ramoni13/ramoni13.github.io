@@ -6,6 +6,20 @@ body {
     overflow: hidden; /* Pour éviter le défilement */
 }
 
+
+.badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    text-align: center;
+    font-size: 12px;
+    vertical-align: super; /* Pour positionner en exposant */
+    margin-left: 5px; /* Espace entre le texte et la gélule */
+}
+
 nav {
     display: flex;
     justify-content: center;
@@ -24,6 +38,7 @@ button {
     cursor: pointer;
     font-family: Trebuchet MS, sans-serif; /* Appliquez la police Roboto */
     font-weight: bold;
+     font-size: 1.74rem;
 }
 
 
