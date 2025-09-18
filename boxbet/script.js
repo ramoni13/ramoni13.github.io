@@ -9,8 +9,40 @@ let message = "";
 let action = "";
 let joueur1=-1;
 let joueur2=-1;
-let nbMise = 0; 
+let nbMise = 0;
+let listeActionsDefaut = [0, 0, 0, 0, 0, 0, 0, 0]; // 8 actions
+let listeActionsChoisies = [0, 0, 0, 0, 0, 0, 0, 0]; // 8 actions
+let listeActionsJoueurs = []; // Tableau pour stocker les actions dispnibles
+let nbChoixActionsRestant = 0;
 
+function choixBtn(idBtn) {
+	var numBtn = parseInt(idBtn.substr(3,1));
+	if (listeActionsChoisies[numBtn] === 0) {
+		if (nbChoixActionsRestant > 0) {
+			document.getElementById(idBtn).style.background='green';
+			listeActionsChoisies[numBtn] = 1;
+			nbChoixActionsRestant--;
+			document.getElementById("nbChoixActionsRestant").innerText = nbChoixActionsRestant;
+			if (nbChoixActionsRestant === 0) {
+				document.getElementById('suite').style.background='green';
+			}
+		}
+	} else {
+		if (document.getElementById(idBtn).style.background === 'green') {
+			document.getElementById('suite').style.background='#555';
+			document.getElementById(idBtn).style.background='#555';
+			listeActionsChoisies[numBtn] = 0;
+			nbChoixActionsRestant++;
+			document.getElementById("nbChoixActionsRestant").innerText = nbChoixActionsRestant;
+		}
+	}
+}
+
+function suite() {
+	if (nbChoixActionsRestant === 0) {
+		changerDIV(5);
+	}
+}
 
 function changerDIV(pageNum) {
     const pages = document.querySelectorAll('.page');
@@ -107,6 +139,8 @@ function HighUniqe() {
 // nombre de joueurs
 function nbJoueurs(nbJ) {
 	participantCount = nbJ;
+	nbChoixActionsRestant = nbJ-1;
+	document.getElementById("nbChoixActionsRestant").innerText = nbChoixActionsRestant;
 	//valeurDesJoueurs = new Array(participantCount); // Initialiser le tableau
         miseJoueur = new Array(participantCount); // Initialiser le tableau
 	renderParticipantInput();
@@ -128,7 +162,9 @@ function renderParticipantInput() {
 // Fonction pour afficher le champ de saisie pour le nom du participant actuel
 function renderJoueurInput() {
     const joueurTitle = document.getElementById("joueurTitle");
-    joueurTitle.innerText = `Joueur ${currentParticipantIndex + 1}`; // Définit le titre
+    joueurTitle.innerText = `Joueur ${currentParticipantIndex + 1}`; // Définit le titre de la div principale
+    const joueurTitleA = document.getElementById("joueurTitleAction");
+    joueurTitleA.innerText = `Joueur ${currentParticipantIndex + 1}`; // Définit le titre de la div Choix des actions
 }
 
 // Fonction pour afficher le champ de saisie pour le nom du participant actuel
@@ -178,11 +214,13 @@ function saveValeur(saveValeur) {
 
         if (currentParticipantIndex < participantCount) {
             renderParticipantInput(); // Afficher le champ pour le prochain participant
+	    changerDIV(12);
         } else {
             //alert("Tous les participants ont été enregistrés !");
 	    currentParticipantIndex = 0;
 	    renderJoueurInput();
-            changerDIV(5); // Retour à la page d'accueil ou une autre page
+            //changerDIV(5); // Retour à la page d'accueil ou une autre page
+	    changerDIV(13); // Choix des actions
         }
 }
 
