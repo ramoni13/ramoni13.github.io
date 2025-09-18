@@ -64,7 +64,49 @@
             <h1 id="joueurTitle"></h1>
 	    <h2>Que voulez-vous faire ?</h2>
             <div>
-		<button onclick="choix(1)">Enquêter</button>
+		<button id="btnA0" onclick="choixBtn('btn0')">Pair<span class="badge">1</span></button>
+	    </div>
+	    <div>
+		&nbsp;
+	    </div>
+	    <div>
+		<button id="btnA1" onclick="choixBtn('btn1')">2/3/4<span class="badge">1</span></button>
+	    </div>
+	    <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="btnA2" onclick="choixBtn('btn2')">Petit<span class="badge">1</span></button>
+	    </div>
+	    <div>
+		&nbsp;
+	    </div>
+	    <div>
+		<button id="btnA3" onclick="choixBtn('btn3')">Somme<span class="badge">3</span></button>
+	    </div>
+            <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="btnA4" onclick="choixBtn('btn4')">Unique<span class="badge">2</span></button>
+	    </div>
+	    <div>
+		&nbsp;
+	    </div>
+	    <div>
+		<button id="btnA5" onclick="choixBtn('btn5')">6<span class="badge">2</span></button>
+	    </div>
+            <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="btnA6" onclick="choixBtn('btn6')">A > B<span class="badge">2</span></button>
+	    </div>
+	    <div>
+		&nbsp;
+	    </div>
+	    <div>
+		<button id="btnA7" onclick="choixBtn('btn7')">Regarde<span class="badge">3</span></button>
 	    </div>
 	    <div>
 		&nbsp;
@@ -120,43 +162,35 @@
 	<div class="page" id="page-13"> 
 	    <h1 id="joueurTitleAction"></h1>
 	    <h2>Choisissez les actions de la manche</h2>
-	    <h2><span id="nbChoixActionsRestant">4</span> à choisir</h2>
+	    <h2><span id="nbChoixActionsRestant">4</span> à choisir <button id="suite" onclick="suite()">Valider</button></h2>
+		
             <div>
-		<button id="btn0" onclick="choixBtn('btn0')">Pair</button>
-		<button id="btn1" onclick="choixBtn('btn1')">2/3/4</button>
+		<button id="btn0" onclick="choixBtn('btn0')">Pair<span class="badge">1</span></button>
+		<button id="btn1" onclick="choixBtn('btn1')">2/3/4<span class="badge">1</span></button>
 	    </div>
 	    <div>
 		&nbsp;
 	    </div>
             <div>
-		<button id="btn2" onclick="choixBtn('btn2')">Petit</button>
-		<button id="btn3" onclick="choixBtn('btn3')">Somme</button>
+		<button id="btn2" onclick="choixBtn('btn2')">Petit<span class="badge">1</span></button>
+		<button id="btn3" onclick="choixBtn('btn3')">Somme<span class="badge">3</span></button>
 	    </div>
             <div>
 		&nbsp;
 	    </div>
             <div>
-		<button id="btn4" onclick="choixBtn('btn4')">Unique</button>
-		<button id="btn5" onclick="choixBtn('btn5')">6</button>
+		<button id="btn4" onclick="choixBtn('btn4')">Unique<span class="badge">2</span></button>
+		<button id="btn5" onclick="choixBtn('btn5')">6<span class="badge">2</span></button>
 	    </div>
             <div>
 		&nbsp;
 	    </div>
             <div>
-		<button id="btn6" onclick="choixBtn('btn6')">Supérieur</button>
-		<button id="btn7" onclick="choixBtn('btn7')">Regarde</button>
-	    </div>
-	    <div>
-		&nbsp;
-	    </div>
-            <div>
-		<button id="suite" onclick="suite()">Valider</button>
+		<button id="btn6" onclick="choixBtn('btn6')">A > B<span class="badge">2</span></button>
+		<button id="btn7" onclick="choixBtn('btn7')">Regarde<span class="badge">3</span></button>
 	    </div>
 	</div>
     </div>
-
-<!--<span class="badge" id="badge">1</span>-->
-
     <script src="script.js"></script>
 </body>
 </html>
