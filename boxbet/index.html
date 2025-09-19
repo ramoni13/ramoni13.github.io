@@ -64,61 +64,47 @@
             <h1 id="joueurTitle"></h1>
 	    <h2>Que voulez-vous faire ?</h2>
             <div>
-		<button id="btnA0" onclick="choixBtn('btn0')">Pair<span class="badge">1</span></button>
+		<button id="btnA0" onclick="choix(0)">Pair<span class="badge">1</span></button>
+		<br>
 	    </div>
+	    
 	    <div>
-		&nbsp;
-	    </div>
-	    <div>
-		<button id="btnA1" onclick="choixBtn('btn1')">2/3/4<span class="badge">1</span></button>
-	    </div>
-	    <div>
-		&nbsp;
+		<button id="btnA1" onclick="choix(1)">2/3/4<span class="badge">1</span></button>
+		<br>
 	    </div>
             <div>
-		<button id="btnA2" onclick="choixBtn('btn2')">Petit<span class="badge">1</span></button>
+		<button id="btnA2" onclick="choix(2)">Petit<span class="badge">1</span></button>
+		<br>
 	    </div>
 	    <div>
-		&nbsp;
-	    </div>
-	    <div>
-		<button id="btnA3" onclick="choixBtn('btn3')">Somme<span class="badge">3</span></button>
+		<button id="btnA3" onclick="choix(3)">Somme<span class="badge">3</span></button>
+		<br>
 	    </div>
             <div>
-		&nbsp;
+		<button id="btnA4" onclick="choix(4)">Unique<span class="badge">2</span></button>
+		<br>
+	    </div>
+	    <div>
+		<button id="btnA5" onclick="choix(5)">6<span class="badge">2</span></button>
+		<br>
 	    </div>
             <div>
-		<button id="btnA4" onclick="choixBtn('btn4')">Unique<span class="badge">2</span></button>
+		<button id="btnA6" onclick="choix(6)">A > B<span class="badge">2</span></button>
+		<br>
 	    </div>
 	    <div>
-		&nbsp;
-	    </div>
-	    <div>
-		<button id="btnA5" onclick="choixBtn('btn5')">6<span class="badge">2</span></button>
+		<button id="btnA7" onclick="choix(7)">Regarde<span class="badge">3</span></button>
+		<br>
 	    </div>
             <div>
-		&nbsp;
-	    </div>
-            <div>
-		<button id="btnA6" onclick="choixBtn('btn6')">A > B<span class="badge">2</span></button>
-	    </div>
-	    <div>
-		&nbsp;
-	    </div>
-	    <div>
-		<button id="btnA7" onclick="choixBtn('btn7')">Regarde<span class="badge">3</span></button>
-	    </div>
-	    <div>
-		&nbsp;
-	    </div>
-            <div>
-		<button onclick="choix(2)">Miser</button>
+		<button onclick="choix(-1)">Miser</button><div id="infoBonus1" style="color:green;"><h2>1er à miser - Bonus +1 pt</h2></div>
 	    </div>
         </div>
 	<div class="page" id="page-6"> 
-	    <h1>MISER</h1>
+	    <h1>MISER (prenez le tél)</h1>
             <h2>Qui a le + grand dé ?</h2>
             <h2>Entrez le N° du joueur</h2>
+	    <div id="infoBonus2" style="color:green;"><h2>1er à miser - Bonus +1 pt</h2></div>
 	    <div>
 		<button onclick="validerMise(1)">1</button>
 		<button onclick="validerMise(2)">2</button>
@@ -132,6 +118,12 @@
 		<button onclick="validerMise(5)">5</button>
 		<button onclick="validerMise(6)">6</button>
 	    </div>
+            <div>
+		&nbsp;
+	    </div>
+            <div>
+		<button id="btnRetour" onclick="changerDIV(5);">Annuler</button>
+	    </div>
 	</div>
 	<div class="page" id="page-7"> 
 	    <h1 id="scanTitle"></h1>
@@ -143,7 +135,8 @@
             <h2>Cachez l'écran !</h2>
 	    <button onclick="changerDIV(9)">Afficher</button>        
 	</div>
-	<div class="page" id="page-9"> 
+	<div class="page" id="page-9">
+	    <h1>RESULTAT</h1> 
 	    <h1 id="resultatTitle"></h1>
             <button onclick="suiteMenu()">Suite</button>        
 	</div>
@@ -190,6 +183,11 @@
 		<button id="btn7" onclick="choixBtn('btn7')">Regarde<span class="badge">3</span></button>
 	    </div>
 	</div>
+	<div class="page" id="page-14"> 
+	    <h1>Reposez le téléphone</h1>
+            <button onclick="changerDIV(5);">Suite</button>        
+	</div>
+
     </div>
     <script src="script.js"></script>
 </body>
