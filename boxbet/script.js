@@ -14,6 +14,17 @@ let listeActionsDefaut = [0, 0, 0, 0, 0, 0, 0, 0]; // 8 actions
 let listeActionsChoisies = [0, 0, 0, 0, 0, 0, 0, 0]; // 8 actions
 let listeActionsJoueurs = []; // Tableau pour stocker les actions dispnibles
 let nbChoixActionsRestant = 0;
+let bonusMise = 1;
+let score = [0,0,0,0,0,0];
+
+
+		if (bonusMise === 0) {
+			document.getElementById('infoBonus1').style.display = "none";
+			document.getElementById('infoBonus2').style.display = "none";
+		} else {
+			document.getElementById('infoBonus1').style.display = "block";
+			document.getElementById('infoBonus2').style.display = "block";
+		}
 
 function choixBtn(idBtn) {
 	var numBtn = parseInt(idBtn.substr(3,1));
@@ -42,7 +53,7 @@ function suite() {
 	if (nbChoixActionsRestant === 0) {
 		let nomBtn = "";
 		for (let i = 0; i < participantCount; i++) {
-			listeActionsJoueurs.push(listeActionsChoisies);
+			listeActionsJoueurs.push([...listeActionsChoisies]);
 		}
 		for (let i = 0; i < 8; i++) {
 			nomBtn = 'btnA'+i;
@@ -174,10 +185,26 @@ function renderParticipantInput() {
 // Fonction pour afficher le champ de saisie pour le nom du participant actuel
 function renderJoueurInput() {
     const joueurTitle = document.getElementById("joueurTitle");
-    joueurTitle.innerText = `Joueur ${currentParticipantIndex + 1}`; // Définit le titre de la div principale
+    joueurTitle.innerText = `Joueur ${currentParticipantIndex + 1} - Score ${score[currentParticipantIndex]}`; // Définit le titre de la div principale
     const joueurTitleA = document.getElementById("joueurTitleAction");
-    joueurTitleA.innerText = `Joueur ${currentParticipantIndex + 1}`; // Définit le titre de la div Choix des actions
+    joueurTitleA.innerText = `Joueur ${currentParticipantIndex + 1} - Score ${score[currentParticipantIndex]}`; // Définit le titre de la div Choix des actions
 }
+
+// Fonction pour afficher ou pas les boutons actions disponibles
+function EnableButtonsJoueurActif() {
+	for (let i = 0; i < 8; i++) {
+			nomBtn = 'btnA'+i;
+			if (listeActionsChoisies[i] === 1) {
+				if (listeActionsJoueurs[currentParticipantIndex][i]===1) {
+  					document.getElementById(nomBtn).style.display = "block";
+				} else {
+  					document.getElementById(nomBtn).style.display = "none";
+				}
+			}
+		}
+    
+}
+
 
 // Fonction pour afficher le champ de saisie pour le nom du participant actuel
 function titreScan(texte) {
@@ -188,15 +215,28 @@ function titreScan(texte) {
 
 // Fonction pour le choix du menu
 function choix(valeur) {
-    if (valeur === 1) {
-		etapeScan=0;
-		message = "";
-		action = "";
-		joueur1=-1;
-		joueur2=-1;
-		titreScan("CHOIX ACTION");
-		changerDIV(7);
+	action = valeur;
+	listeActionsJoueurs[currentParticipantIndex][action]=0;
+    if (action !== -1) {
+		if (action === 7) {
+			calculResult();
+			changerDIV(9);
+		} else {
+			etapeScan=0;
+			message = "";
+			joueur1=-1;
+			joueur2=-1;
+			titreScan("SCAN CARTE JOUEUR");
+			changerDIV(7);
+		}
 	} else {
+		if (bonusMise === 0) {
+			document.getElementById('infoBonus1').style.display = "none";
+			document.getElementById('infoBonus2').style.display = "none";
+		} else {
+			document.getElementById('infoBonus1').style.display = "block";
+			document.getElementById('infoBonus2').style.display = "block";
+		}
 		changerDIV(6);	
 	}
 }
@@ -204,16 +244,23 @@ function choix(valeur) {
 
 // Fonction pour enregister la mise du joueur
 function validerMise(numJ) {
+    if (bonusMise === 1) {
+		score[currentParticipantIndex]++;
+		bonusMise = 0;
+		document.getElementById('infoBonus1').style.display = "none";
+		document.getElementById('infoBonus2').style.display = "none";
+
+	}
     miseJoueur[currentParticipantIndex] = numJ;
     nbMise++;
     currentParticipantIndex++;
     if (currentParticipantIndex < participantCount) {
 		renderJoueurInput();
-	    	changerDIV(5);
+	    	changerDIV(14);
 	} else {
 		currentParticipantIndex = 0;
 	    	renderJoueurInput();
-            	changerDIV(5); // Retour à la page d'accueil ou une autre page
+            	changerDIV(14); // Retour à la page d'accueil ou une autre page
 	}	
 }
 
@@ -240,11 +287,13 @@ function suiteMenu() {
 	currentParticipantIndex++; // Passer au participant suivant
 
         if (currentParticipantIndex < participantCount) {
+	    EnableButtonsJoueurActif();
             renderJoueurInput(); // Afficher le champ pour le prochain participant
 	    changerDIV(5); // Retour à la page d'accueil ou une autre page
         } else {
             //alert("Tous les participants ont été enregistrés !");
 	    currentParticipantIndex = 0;
+	    EnableButtonsJoueurActif();
 	    renderJoueurInput();
             changerDIV(5); // Retour à la page d'accueil ou une autre page
         }
@@ -252,6 +301,7 @@ function suiteMenu() {
 
 // Fonction pour démarrer le scanner QR Code
 function startQRCodeScanner() {
+	document.getElementById("qr-reader-results").innerText = ""
     if (!html5QrCode) { // Vérifiez si l'instance n'est pas déjà créée
         html5QrCode = new Html5Qrcode("qr-reader");
     }
@@ -265,71 +315,26 @@ function startQRCodeScanner() {
         },
         (decodedText, decodedResult) => {
             // Code QR décodé ici
-		// lecture Action
-	    if (etapeScan === 0) {
-		action=decodedText;
-		switch (action) {
-  			case "A1":
-    				message="[Pair]";
-				etapeScan++;	
-    				break;
-  			case "A2":
-				etapeScan++;
-				message="[2-4]";
-    				break;
-  			case "A3":
-				etapeScan++;
-    				message="[Petit]";
-    				break;
-			case "A4":
-				etapeScan++;
-    				message="[Unique]";
-    				break;
-  			case "A5":
-				etapeScan++;
-				message="[6]";
-    				break;
-  			case "A6":
-				etapeScan++;
-    				message="[Supérieur]";
-    				break;
-			case "A7":
-				etapeScan++;
-    				message="[Somme]";
-    				break;
-  			case "A8":
-				etapeScan++;
-				message="[Regarde]";
-    				break;
-  			case "A9":
-				etapeScan++;
-    				message="";
-    				break;
-  			default:
-   				console.log(`Sorry, we are out of ${expr}.`);
-			}
-			if (etapeScan > 0) {
-				stopQRCodeScanner();
-				titreScan("CHOIX JOUEUR");
-				changerDIV(7);
-			}
-		} else {
-			if (etapeScan === 1) {
+			if (((decodedText-1) === currentParticipantIndex) && (action !== -1)) {
+				message = "Vous-même INTERDIT !";
+				document.getElementById("qr-reader-results").innerText = "[" + message + "]";
+			} else {
+			if (etapeScan === 0) {
 				if (decodedText.length ===1 ) {
 					joueur1=decodedText;
-					if ((action !== "A6") && (action !== "A7")) {
+					if ((action !== 3) && (action !== 6)) {
 						stopQRCodeScanner();
 						calculResult();
 						changerDIV(9);
 					} else {
 						stopQRCodeScanner();
 						etapeScan++;
-						titreScan("CHOIX JOUEUR 2");
+						titreScan("SCAN JOUEUR 2");
 						// le startQR est dans changerDIV(7)
 						changerDIV(7);
 					}
-					message = "Joueur " + decodedText;
-					document.getElementById("qr-reader-results").innerText = "[" + message + "]";
+					//message = "Joueur " + decodedText;
+					//document.getElementById("qr-reader-results").innerText = "[" + message + "]";
 				}
 			} else {
 				if (joueur1 !== decodedText) {
@@ -337,11 +342,11 @@ function startQRCodeScanner() {
 					calculResult();
 					stopQRCodeScanner();
 					changerDIV(9);
-					message = "Joueur " + decodedText;
-					document.getElementById("qr-reader-results").innerText = "[" + message + "]";
+					//message = "Joueur " + decodedText;
+					//document.getElementById("qr-reader-results").innerText = "[" + message + "]";
 				}
 			}
-		}
+			}
         },
         (errorMessage) => {
             // Erreur de lecture de QR Code
@@ -357,21 +362,21 @@ document.getElementById("resultatTitle").innerText = "";
 let valeurJ1 = parseInt(joueur1);
 let valeurJ2 = parseInt(joueur2);
 	switch (action) {
-  	case "A1":
+  	case 0:
 		if (valeurDesJoueurs[valeurJ1-1]%2 == 0) {
 			message="[Pair] OUI";
 		} else {
 			message="[Pair] NON";
 		}
     		break;
-  	case "A2":
+  	case 1:
 		if ((valeurDesJoueurs[valeurJ1-1]>1) && (valeurDesJoueurs[valeurJ1-1]<5)) {
 			message="[2/3/4] OUI";
 		} else {
 			message="[2/3/4] NON";
 		}
     		break;
-  	case "A3":
+  	case 2:
 		// Utilisez Math.min pour trouver le plus petit élément du tableau
 		let smallest = Math.min(...valeurDesJoueurs);
 		if (valeurDesJoueurs[valeurJ1-1] === smallest) {
@@ -380,7 +385,7 @@ let valeurJ2 = parseInt(joueur2);
 			message="[+ Petit] NON";
 		}
     		break;
-	case "A4":
+	case 4:
 		// Compte le nombre d'occurrences de l'élément dans le tableau
 		let count = valeurDesJoueurs.filter(item => item === valeurDesJoueurs[valeurJ1-1]).length;
 		if (count === 1) {
@@ -389,29 +394,26 @@ let valeurJ2 = parseInt(joueur2);
 			message="[Valeur Unique] NON";
 		}
     		break;
-  	case "A5":
+  	case 5:
 		if (valeurDesJoueurs[valeurJ1-1] === 6) {
 			message="[6] OUI";
 		} else {
 			message="[6] NON";
 		}
     		break;
-  	case "A6":
+  	case 6:
 		if (valeurDesJoueurs[valeurJ1-1] > valeurDesJoueurs[valeurJ2-1]) {
 			message="[A Supérieur B] OUI";
 		} else {
 			message="[A Supérieur B] NON";
 		}
     		break;
-	case "A7":
+	case 3:
 		let somme = valeurDesJoueurs[valeurJ1-1] + valeurDesJoueurs[valeurJ2-1];
 		message="[Somme] = " + somme;
     		break;
-  	case "A8":
+  	case 7:
 		message="[Regarde]";
-    		break;
-  	case "A9":
-		message="";
     		break;
   	default:
    		console.log(`Sorry, we are out of ${expr}.`);
