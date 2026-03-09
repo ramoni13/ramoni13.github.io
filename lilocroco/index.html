@@ -3,44 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V8 Alpha-Num</title>
+    <title>Lilocroco TV - V9 Écosystème</title>
     <style>
-        :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; --bg: #121212; }
+        :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; margin: 0; padding: 5px; display: flex; justify-content: center; }
 
         .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 95vh; display: flex; flex-direction: column; }
         
-        /* Header Joueur */
-        .player-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 2px solid transparent; }
+        .player-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 2px solid transparent; }
         .active-0 { background: rgba(52, 152, 219, 0.2); border-color: var(--blue); }
         .active-1 { background: rgba(231, 76, 60, 0.2); border-color: var(--red); }
         .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
         .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        /* Grille Radar */
         .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; position: relative; border: 1px solid #2c3e50; }
-        .cell-hidden { visibility: hidden; } /* Cache totalement les cases hors map */
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; }
+        .cell-hidden { visibility: hidden; }
 
-        /* Pions */
-        .pion { width: 75%; height: 75%; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .pion { width: 70%; height: 70%; border-radius: 50%; border: 2px solid white; z-index: 5; }
         .p-0 { background: var(--blue); } .p-1 { background: var(--red); }
         .p-2 { background: var(--yellow); } .p-3 { background: var(--green); }
-        .cell-player { border: 2px solid white; box-shadow: inset 0 0 10px rgba(255,255,255,0.2); }
+        .cell-player { border: 2px solid white; background: #234d20 !important; }
 
-        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.5rem; color: #566573; font-weight: bold; }
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.45rem; color: #566573; }
 
-        /* Actions Menu */
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
-        button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; }
+        button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
         .btn-fouille { background: #8e44ad; } .btn-cache { background: #d35400; }
         .btn-repos { background: #2c3e50; } .btn-don { background: #27ae60; }
 
-        .log-section { flex-grow: 1; background: #000; border-radius: 8px; padding: 10px; border: 1px solid #333; font-family: monospace; font-size: 0.7rem; overflow-y: auto; max-height: 120px; margin-top: 10px; color: #bbb; }
+        .log-section { flex-grow: 1; background: #000; border-radius: 8px; padding: 8px; border: 1px solid #333; font-family: monospace; font-size: 0.65rem; overflow-y: auto; max-height: 100px; margin-top: 8px; color: #999; }
         
-        #loot-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; box-shadow: 0 0 100px black; }
+        /* Modals */
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; box-shadow: 0 0 100px black; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 90; }
     </style>
 </head>
@@ -48,12 +45,12 @@
 
 <div class="app-container">
     <div id="p-header" class="player-bar active-0">
-        <div id="p-name" style="font-weight:bold; letter-spacing:1px;">JOUEUR BLEU</div>
+        <div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div>
         <div id="p-votes" style="color:var(--gold); font-weight:bold;">0 PTS</div>
     </div>
 
-    <div style="text-align:center; font-size:0.75rem; margin-bottom:8px; color:#f1c40f;" id="instruction">
-        👉 Touchez votre case d'arrivée (Radar 7x7)
+    <div style="text-align:center; font-size:0.7rem; margin-bottom:5px; color:#f1c40f;" id="instruction">
+        🌊 TOUR DU JOUEUR : Déplacez votre pion
     </div>
 
     <div class="grid-container">
@@ -68,20 +65,26 @@
     </div>
 
     <div class="log-section" id="action-history">
-        <div>[SYSTÈME] Émission lancée. Bonne chance !</div>
+        <div>[SYSTÈME] Les Crocos dorment... pour l'instant.</div>
     </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="loot-box">
-    <h3 style="margin:0">OBJET TROUVÉ !</h3>
-    <div id="loot-icon" style="font-size:60px; margin:15px 0;">🥥</div>
-    <div id="loot-name" style="font-weight:bold; font-size:1.2rem;">NOIX DE COCO</div>
-    <button onclick="confirmLoot()" style="margin-top:20px; background:black; color:white; width:100%; padding:15px; border-radius:10px; border:none; font-weight:bold;">PRENDRE ET FINIR TOUR</button>
+<div id="loot-box" class="modal">
+    <h3 style="margin:0">BUTIN !</h3>
+    <div id="loot-icon" style="font-size:60px; margin:10px 0;">🥥</div>
+    <div id="loot-name" style="font-weight:bold;">NOM</div>
+    <button onclick="confirmTurn('Objet récupéré')" style="margin-top:20px; background:black; color:white; width:100%; padding:12px; border-radius:10px; border:none;">PRENDRE</button>
+</div>
+<div id="empty-box" class="modal">
+    <h3 style="margin:0">DOMMAGE...</h3>
+    <div style="font-size:50px; margin:10px 0;">💨</div>
+    <p>Il n'y a rien ici à part du sable.</p>
+    <button onclick="confirmTurn('Fouille vide')" style="margin-top:15px; background:#555; color:white; width:100%; padding:10px; border-radius:10px; border:none;">CONTINUER</button>
 </div>
 
 <script>
-    const alphabet = "ABCDEFGHIJKL"; // Pour l'ordonnée (Y)
+    const alphabet = "ABCDEFGHIJKL";
     var players = [
         { id: 0, name: "BLEU", x: 1, y: 1, votes: 0 },
         { id: 1, name: "ROUGE", x: 16, y: 1, votes: 0 },
@@ -91,15 +94,27 @@
     var currentPlayer = 0;
     var turnStep = 0; 
     var worldSize = { w: 16, h: 12 };
-    var crocos = [{x: 8, y: 6}, {x: 4, y: 4}, {x: 12, y: 10}, {x: 2, y: 2}, {x: 15, y: 11}];
-    var items = [
-        {x: 2, y: 1, type: '🥥', name: 'Noix de Coco'},
-        {x: 15, y: 2, type: '🍌', name: 'Banane'},
-        {x: 8, y: 6, type: '💎', name: 'Cristal'}
-    ];
+    var crocos = [];
+    var scenery = []; // Bananiers et Cocotiers
+    var items = [];
 
-    function getCoord(x, y) {
-        return alphabet[y-1] + x; // Exemple : A1, L16
+    // Génération Initiale de l'île
+    function initIsland() {
+        for(let x=1; x<=16; x++) {
+            for(let y=1; y<=12; y++) {
+                let rand = Math.random();
+                // 33% Crocos
+                if(rand < 0.33) { crocos.push({x:x, y:y}); }
+                // 15% Décors (visibles)
+                else if(rand < 0.48) { 
+                    scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿'}); 
+                    // 20% de chances qu'un décor cache un item
+                    if(Math.random() > 0.8) {
+                        items.push({x:x, y:y, type: Math.random() > 0.5 ? '🥥' : '🍌', name: 'Fruit'});
+                    }
+                }
+            }
+        }
     }
 
     function renderGrid() {
@@ -110,19 +125,19 @@
         for (var y = p.y - 3; y <= p.y + 3; y++) {
             for (var x = p.x - 3; x <= p.x + 3; x++) {
                 var cell = document.createElement('div');
-                
-                // Masquage strict si hors limites
                 if (x < 1 || x > worldSize.w || y < 1 || y > worldSize.h) {
                     cell.className = 'cell cell-hidden';
                 } else {
                     cell.className = 'cell';
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
-                    // Crocos
-                    for(var i=0; i<crocos.length; i++) {
-                        if(crocos[i].x === x && crocos[i].y === y) cell.innerHTML = '🐊';
-                    }
-                    // Joueurs
+                    // Affichage Crocos (Visibles)
+                    if(crocos.some(c => c.x === x && c.y === y)) cell.innerHTML = '🐊';
+                    // Affichage Décors (Visibles)
+                    let tree = scenery.find(s => s.x === x && s.y === y);
+                    if(tree) cell.innerHTML = tree.icon;
+                    
+                    // Affichage Joueurs
                     for(var j=0; j<players.length; j++) {
                         if(players[j].x === x && players[j].y === y) {
                             var pion = document.createElement('div');
@@ -130,9 +145,7 @@
                             cell.appendChild(pion);
                         }
                     }
-                    
-                    cell.innerHTML += `<span class="cell-coord">${getCoord(x, y)}</span>`;
-                    
+                    cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
                     if(turnStep === 0) {
                         (function(cx, cy) { cell.onclick = function() { moveTo(cx, cy); }; })(x, y);
                     }
@@ -146,79 +159,75 @@
         players[currentPlayer].x = x;
         players[currentPlayer].y = y;
         turnStep = 1;
-        document.getElementById('instruction').innerText = "👉 Choisissez une action";
         document.getElementById('menu-actions').style.display = 'grid';
-        
-        var canGive = false;
-        for(var i=0; i<players.length; i++) {
-            if(i !== currentPlayer && players[i].x === x && players[i].y === y) canGive = true;
-        }
-        document.getElementById('btn-don').style.opacity = canGive ? "1" : "0.3";
-        document.getElementById('btn-don').disabled = !canGive;
-        
         renderGrid();
     }
 
     function doAction(type) {
         var p = players[currentPlayer];
-        var log = "";
-        
         if(type === 'fouille') {
-            var itemIndex = -1;
-            for(var i=0; i<items.length; i++) {
-                if(items[i].x === p.x && items[i].y === p.y) itemIndex = i;
-            }
-            if(itemIndex !== -1) {
-                showLoot(items[itemIndex], itemIndex);
-                return;
+            var itemIdx = items.findIndex(i => i.x === p.x && i.y === p.y);
+            document.getElementById('overlay').style.display = 'block';
+            if(itemIdx !== -1) {
+                var itm = items[itemIdx];
+                document.getElementById('loot-icon').innerText = itm.type;
+                document.getElementById('loot-name').innerText = itm.name.toUpperCase();
+                document.getElementById('loot-box').style.display = 'block';
+                items.splice(itemIdx, 1);
             } else {
-                log = "Fouille à vide en " + getCoord(p.x, p.y);
-                p.votes += 10;
+                document.getElementById('empty-box').style.display = 'block';
             }
-        } else if(type === 'cache') { log = "Se cache en " + getCoord(p.x, p.y); p.votes += 20; }
-        else if(type === 'repos') { log = "Se repose"; p.votes += 5; }
-        else if(type === 'don') { log = "Fait un don !"; p.votes += 100; }
-
-        nextTurn(log);
+        } else {
+            confirmTurn(type === 'cache' ? "Se cache" : type === 'repos' ? "Se repose" : "Donne objet");
+        }
     }
 
-    function showLoot(item, idx) {
-        document.getElementById('loot-icon').innerText = item.type;
-        document.getElementById('loot-name').innerText = item.name.toUpperCase();
-        document.getElementById('loot-box').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-        window.currentLootIdx = idx;
-    }
-
-    function confirmLoot() {
-        var p = players[currentPlayer];
-        var item = items[window.currentLootIdx];
-        items.splice(window.currentLootIdx, 1);
-        p.votes += 150;
+    function confirmTurn(msg) {
         document.getElementById('loot-box').style.display = 'none';
+        document.getElementById('empty-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
-        nextTurn("A trouvé " + item.name + " en " + getCoord(p.x, p.y));
-    }
-
-    function nextTurn(msg) {
+        
         var p = players[currentPlayer];
         var history = document.getElementById('action-history');
         history.innerHTML = "<div>[" + p.name + "] " + msg + "</div>" + history.innerHTML;
 
         document.getElementById('menu-actions').style.display = 'none';
-        currentPlayer = (currentPlayer + 1) % 4;
-        turnStep = 0;
+        currentPlayer++;
 
-        var head = document.getElementById('p-header');
-        head.className = "player-bar active-" + currentPlayer;
-        document.getElementById('p-name').innerText = "JOUEUR " + players[currentPlayer].name;
-        document.getElementById('p-votes').innerText = players[currentPlayer].votes + " PTS";
-        document.getElementById('instruction').innerText = "👉 Touchez votre case d'arrivée";
-
+        if(currentPlayer >= 4) {
+            currentPlayer = 0;
+            moveCrocos();
+        }
+        updateUI();
         renderGrid();
     }
 
-    window.onload = renderGrid;
+    function moveCrocos() {
+        crocos.forEach(c => {
+            // IA simple : se rapproche du joueur le plus proche
+            let target = players[0];
+            let minDist = 1000;
+            players.forEach(p => {
+                let d = Math.abs(c.x - p.x) + Math.abs(c.y - p.y);
+                if(d < minDist) { minDist = d; target = p; }
+            });
+            if(c.x < target.x) c.x++; else if(c.x > target.x) c.x--;
+            else if(c.y < target.y) c.y++; else if(c.y > target.y) c.y--;
+        });
+        var history = document.getElementById('action-history');
+        history.innerHTML = "<div style='color:var(--red)'>⚠️ L'ÎLE VIBRE : Les Crocos ont bougé !</div>" + history.innerHTML;
+    }
+
+    function updateUI() {
+        turnStep = 0;
+        var p = players[currentPlayer];
+        var head = document.getElementById('p-header');
+        head.className = "player-bar active-" + currentPlayer;
+        document.getElementById('p-name').innerText = "JOUEUR " + p.name;
+        document.getElementById('p-votes').innerText = p.votes + " PTS";
+    }
+
+    window.onload = function() { initIsland(); renderGrid(); };
 </script>
 </body>
 </html>
