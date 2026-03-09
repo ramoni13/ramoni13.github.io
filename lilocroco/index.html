@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V14 Mystery</title>
+    <title>Lilocroco TV - V15 Stealth Fix</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -11,22 +11,22 @@
 
         .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 98vh; display: flex; flex-direction: column; }
         
-        .player-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; border: 2px solid transparent; }
+        .player-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 2px solid transparent; }
         .active-0 { background: rgba(52, 152, 219, 0.2); border-color: var(--blue); }
         .active-1 { background: rgba(231, 76, 60, 0.2); border-color: var(--red); }
         .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
         .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        .inventory-bar { display: flex; justify-content: center; gap: 8px; margin: 5px 0; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 5px; font-size: 0.8rem; min-height: 30px;}
+        .inventory-bar { display: flex; justify-content: center; gap: 8px; margin: 5px 0; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 5px; font-size: 0.8rem; min-height: 30px; border: 1px dashed #444;}
 
         .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 5px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1rem; position: relative; border: 1px solid #2c3e50; padding: 1px; }
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; }
         .cell-hidden { visibility: hidden; }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
 
-        .pion { font-size: 1.2rem; z-index: 10; }
-        .case-element { margin: 1px; display: inline-block; }
+        .pion { font-size: 1.3rem; z-index: 10; transition: 0.3s; }
+        .is-stealth { opacity: 0.3; filter: grayscale(1); transform: scale(0.8); }
 
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
         button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
@@ -43,7 +43,7 @@
 <div class="app-container">
     <div id="p-header" class="player-bar active-0">
         <div>
-            <div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div>
+            <div id="p-name" style="font-weight:bold; letter-spacing:1px;">JOUEUR BLEU</div>
             <div id="p-hp">❤️❤️❤️</div>
         </div>
         <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
@@ -65,8 +65,8 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Un croco vous a mordu au réveil. -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
-<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;">🥥</div><p id="loot-name" style="font-weight:bold"></p><p id="loot-info" style="font-size:0.8rem"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">AJOUTER AU SAC</button></div>
+<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Un croco vous a mordu ! -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;">🥥</div><p id="loot-name" style="font-weight:bold"></p><p id="loot-info" style="font-size:0.8rem"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
 
 <script>
     const alphabet = "ABCDEFGHIJKL";
@@ -84,21 +84,14 @@
     let hiddenItems = [];
 
     function initIsland() {
-        const missions = ['🗿 Totem', '📦 Caisse', '🍶 Rhum', '🏺 Vase', '🔧 Outil', '🗺️ Carte'];
+        const missions = ['🗿 Totem', '📦 Caisse', '🍶 Rhum', '🏺 Vase'];
         for(let x=1; x<=16; x++) {
             for(let y=1; y<=12; y++) {
                 if((x==1 && y==1) || (x==16 && y==1) || (x==1 && y==12) || (x==16 && y==12)) continue;
                 let rand = Math.random();
-                // Crocos
-                if(rand < 0.20) crocos.push({x:x, y:y});
-                // Arbres
-                else if(rand < 0.35) {
-                    scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: Math.floor(Math.random()*3)+1, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
-                }
-                // Objets de mission (33% des cases restantes environ)
-                else if(rand < 0.68) {
-                    hiddenItems.push({x:x, y:y, name: missions[Math.floor(Math.random()*missions.length)]});
-                }
+                if(rand < 0.25) crocos.push({x:x, y:y});
+                else if(rand < 0.40) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: Math.floor(Math.random()*3)+1, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
+                else if(rand < 0.60) hiddenItems.push({x:x, y:y, name: missions[Math.floor(Math.random()*missions.length)]});
             }
         }
     }
@@ -117,12 +110,6 @@
                     cell.className = 'cell';
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
-                    let s = scenery.find(s => s.x === x && s.y === y);
-                    if (s) {
-                        let tree = document.createElement('span');
-                        tree.className = 'case-element'; tree.innerHTML = s.stock > 0 ? s.icon : '🍂';
-                        cell.appendChild(tree);
-                    }
                     if (crocos.some(c => c.x === x && c.y === y)) {
                         let cIcon = document.createElement('span');
                         cIcon.className = 'case-element'; cIcon.innerHTML = '🐊';
@@ -131,11 +118,17 @@
                     players.forEach(pl => {
                         if (pl.x === x && pl.y === y) {
                             let pion = document.createElement('span');
-                            pion.className = `pion case-element ${pl.stealth ? 'is-stealth' : ''}`;
+                            pion.className = `pion ${pl.stealth ? 'is-stealth' : ''}`;
                             pion.innerHTML = pl.picto;
                             cell.appendChild(pion);
                         }
                     });
+                    let s = scenery.find(s => s.x === x && s.y === y);
+                    if (s) {
+                        let tree = document.createElement('span');
+                        tree.className = 'case-element'; tree.innerHTML = s.stock > 0 ? s.icon : '🍂';
+                        cell.appendChild(tree);
+                    }
 
                     cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
                     if(turnStep === 0) {
@@ -149,8 +142,8 @@
 
     function moveTo(nx, ny) {
         players[currentPlayer].x = nx;
-        players[currentPlayer].stealth = false;
         players[currentPlayer].y = ny;
+        players[currentPlayer].stealth = false; // On redevient visible en bougeant
         turnStep = 1;
         document.getElementById('menu-actions').style.display = 'grid';
         renderGrid();
@@ -158,32 +151,31 @@
 
     function doAction(type) {
         let p = players[currentPlayer];
-        if (type === 'fouille') {
+        if (type === 'cache') {
+            p.stealth = true;
+            confirmTurn('S\'est caché');
+        } else if (type === 'fouille') {
             document.getElementById('overlay').style.display = 'block';
             let tree = scenery.find(s => s.x === p.x && s.y === p.y);
             let item = hiddenItems.find(i => i.x === p.x && i.y === p.y);
 
             if (tree && tree.stock > 0) {
                 tree.stock--;
-                let res = tree.fruit;
-                p.inv.push(res);
-                showLoot(res, (tree.fruit === '🥥' ? 'Noix de Coco' : 'Banane'), "Stock de l'arbre : " + tree.stock);
+                p.inv.push(tree.fruit);
+                showLoot(tree.fruit, (tree.fruit === '🥥' ? 'Noix de Coco' : 'Banane'), "Stock de l'arbre : " + tree.stock);
             } else if (item) {
                 p.inv.push(item.name);
-                showLoot('🎁', item.name, "Objet de mission trouvé dans le sol !");
+                showLoot('🎁', item.name, "Trouvé dans le sol !");
                 hiddenItems = hiddenItems.filter(i => i !== item);
             } else {
-                document.getElementById('loot-icon').innerText = '💨';
-                document.getElementById('loot-name').innerText = 'VIDE';
-                document.getElementById('loot-info').innerText = 'Rien ici, essayez ailleurs.';
-                document.getElementById('loot-box').style.display = 'block';
+                showLoot('💨', 'VIDE', 'Rien ici...');
             }
         } else { confirmTurn(type); }
     }
 
     function showLoot(icon, name, info) {
         document.getElementById('loot-icon').innerText = icon;
-        document.getElementById('loot-name').innerText = name.toUpperCase();
+        document.getElementById('loot-name').innerText = name;
         document.getElementById('loot-info').innerText = info;
         document.getElementById('loot-box').style.display = 'block';
     }
@@ -194,6 +186,7 @@
         let p = players[currentPlayer];
         document.getElementById('action-history').innerHTML = `<div>[${p.name}] ${msg}</div>` + document.getElementById('action-history').innerHTML;
         document.getElementById('menu-actions').style.display = 'none';
+        
         currentPlayer = (currentPlayer + 1) % 4;
         if(currentPlayer === 0) moveCrocos();
         startTurn();
@@ -202,6 +195,7 @@
     function startTurn() {
         turnStep = 0;
         let p = players[currentPlayer];
+        // RÈGLE : Pas de morsure si furtif
         if(crocos.some(c => c.x === p.x && c.y === p.y) && !p.stealth) {
             p.hp--;
             document.getElementById('overlay').style.display = 'block';
@@ -213,17 +207,24 @@
 
     function moveCrocos() {
         crocos.forEach(c => {
-            let vis = players.filter(p => !p.stealth);
-            if(vis.length === 0) return;
-            let target = vis.reduce((prev, curr) => {
+            let targets = players.filter(p => !p.stealth);
+            if(targets.length === 0) return;
+
+            let target = targets.reduce((prev, curr) => {
                 let dP = Math.abs(c.x - prev.x) + Math.abs(c.y - prev.y);
                 let dC = Math.abs(c.x - curr.x) + Math.abs(c.y - curr.y);
                 return dC < dP ? curr : prev;
             });
+
             let nX = c.x, nY = c.y;
             if (c.x < target.x) nX++; else if (c.x > target.x) nX--;
             else if (c.y < target.y) nY++; else if (c.y > target.y) nY--;
-            if (!crocos.some(o => o !== c && o.x === nX && o.y === nY) && !players.some(p => p.stealth && p.x === nX && p.y === nY)) {
+
+            // RÈGLE : Les crocos n'entrent pas sur la case d'un joueur caché
+            let isPlayerHiddenThere = players.some(p => p.stealth && p.x === nX && p.y === nY);
+            let isCrocoThere = crocos.some(other => other !== c && other.x === nX && other.y === nY);
+
+            if (!isPlayerHiddenThere && !isCrocoThere) {
                 c.x = nX; c.y = nY;
             }
         });
