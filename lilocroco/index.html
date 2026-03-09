@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lilocroco TV - POC V4</title>
+    <style>
+        :root { --gold: #f1c40f; --dark: #121212; --danger: #e74c3c; --safe: #2ecc71; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Roboto', sans-serif; background: #000; color: white; margin: 0; padding: 5px; }
+
+        /* Frame principale */
+        .tv-app { width: 100%; max-width: 450px; margin: auto; border: 3px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; overflow: hidden; }
+
+        /* Header Audimat */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: #000; border-radius: 8px; margin-bottom: 10px; }
+        .audimat { color: var(--gold); font-weight: bold; font-size: 1.1rem; }
+
+        /* Journal des Événements */
+        .event-banner { background: #2c3e50; border-left: 4px solid var(--gold); padding: 8px; margin-bottom: 10px; font-size: 0.85rem; height: 50px; overflow: hidden; display: flex; align-items: center; }
+        .event-text { animation: slideUp 0.5s ease-out; color: #ecf0f1; font-style: italic; }
+
+        /* Inventaire */
+        .inventory { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
+        .inv-slot { background: #333; padding: 5px 15px; border-radius: 20px; border: 1px solid #555; font-size: 0.9rem; }
+
+        /* Radar 4x4 */
+        .radar { background: #000; padding: 8px; border-radius: 10px; border: 1px solid #444; margin-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+        .cell { aspect-ratio: 1/1; background: #222; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; position: relative; border: 1px solid #333; }
+        .cell-player { border: 2px solid var(--gold); background: #1e3d23; box-shadow: inset 0 0 10px var(--gold); }
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.5rem; color: #666; }
+
+        /* Contrôles */
+        .controls { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 5px; margin-bottom: 10px; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.1rem; font-weight: bold; }
+        button { border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-scan { background: var(--gold); color: #000; }
+        .btn-fouille { width: 100%; padding: 15px; background: var(--safe); color: white; font-size: 1rem; }
+
+        /* Animations */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Modal Butin */
+        #loot-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 20px; border-radius: 15px; text-align: center; z-index: 100; box-shadow: 0 0 50px rgba(0,0,0,0.9); width: 250px; }
+    </style>
+</head>
+<body>
+
+<div class="tv-app">
+    <div class="header">
+        <div class="audimat">🌟 <span id="votes">0</span> VOTES</div>
+        <div style="color:var(--danger)">⏳ <span id="clock">45:00</span></div>
+    </div>
+
+    <div class="event-banner">
+        <div id="event-log" class="event-text">📢 Bienvenue sur Lilocroco TV ! Émission en direct...</div>
+    </div>
+
+    <div class="inventory">
+        <div class="inv-slot">🥥 <span id="count-coco">0</span></div>
+        <div class="inv-slot">🍌 <span id="count-banane">0</span></div>
+    </div>
+
+    <div class="controls">
+        <input type="number" id="coordX" value="8" placeholder="X">
+        <input type="number" id="coordY" value="6" placeholder="Y">
+        <button class="btn-scan" onclick="scan()">SCAN</button>
+    </div>
+
+    <div class="radar">
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <button class="btn-fouille" onclick="fouiller()">🔍 FOUILLER LA CASE</button>
+</div>
+
+<div id="loot-box">
+    <h3 id="loot-title">OBJET TROUVÉ</h3>
+    <div id="loot-icon" style="font-size:50px; margin:10px 0;">🥥</div>
+    <div id="loot-name" style="font-weight:bold;">NOIX DE COCO</div>
+    <button onclick="closeLoot()" style="margin-top:15px; background:#000; color:#fff; padding:10px 20px; border-radius:5px; border:none; width:100%;">OK</button>
+</div>
+
+<script>
+    let votes = 0;
+    let inv = { coco: 0, banane: 0 };
+    
+    // Base de données : CROCOS (Visibles) et ITEMS (Cachés)
+    const crocos = [{x: 9, y: 6}, {x: 7, y: 5}, {x: 8, y: 7}, {x: 10, y: 12}];
+    const items = [
+        {x: 8, y: 6, type: 'coco', name: 'Noix de Coco'},
+        {x: 7, y: 6, type: 'banane', name: 'Banane'},
+        {x: 9, y: 7, type: 'coco', name: 'Noix de Coco'},
+        {x: 14, y: 4, type: 'banane', name: 'Banane de Luxe'}
+    ];
+
+    const islandEvents = [
+        "🌊 La marée monte... les plages sont glissantes.",
+        "🐊 Alerte : Un crocodile a été aperçu vers le Nord !",
+        "☀️ Soleil de plomb : la fatigue augmente plus vite.",
+        "🎥 Public : 'On veut voir du danger !'",
+        "💨 Vent fort : les objets légers peuvent bouger."
+    ];
+
+    function addEvent(text) {
+        const el = document.getElementById('event-log');
+        el.style.animation = 'none';
+        setTimeout(() => { el.style.animation = ''; }, 10);
+        el.innerText = text;
+    }
+
+    // Simulation d'événements aléatoires
+    setInterval(() => {
+        if(Math.random() > 0.7) {
+            const rand = islandEvents[Math.floor(Math.random() * islandEvents.length)];
+            addEvent(rand);
+        }
+    }, 8000);
+
+    function scan() {
+        const pX = parseInt(document.getElementById('coordX').value) || 1;
+        const pY = parseInt(document.getElementById('coordY').value) || 1;
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+
+        // Génère le radar 4x4
+        for (let y = pY - 1; y < pY + 3; y++) {
+            for (let x = pX - 1; x < pX + 3; x++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                if (x === pX && y === pY) cell.classList.add('cell-player');
+
+                // SEULS LES CROCOS SONT AFFICHÉS
+                const croco = crocos.find(c => c.x === x && c.y === y);
+                if (croco) cell.innerHTML = '🐊';
+
+                cell.innerHTML += `<span class="cell-coord">${x},${y}</span>`;
+                grid.appendChild(cell);
+            }
+        }
+        addEvent(`📺 Scan secteur ${pX}:${pY} terminé.`);
+    }
+
+    function fouiller() {
+        const pX = parseInt(document.getElementById('coordX').value);
+        const pY = parseInt(document.getElementById('coordY').value);
+        
+        // Vérifie si un croco est là
+        if (crocos.find(c => c.x === pX && c.y === pY)) {
+            addEvent("😱 MORSURE ! Un crocodile vous a attaqué !");
+            votes -= 50;
+            document.getElementById('votes').innerText = votes;
+            alert("Morsure ! Vous perdez 1 PV.");
+            return;
+        }
+
+        // Cherche l'objet caché
+        const foundIndex = items.findIndex(i => i.x === pX && i.y === pY);
+        
+        if (foundIndex !== -1) {
+            const item = items[foundIndex];
+            document.getElementById('loot-icon').innerText = item.type === 'coco' ? '🥥' : '🍌';
+            document.getElementById('loot-name').innerText = item.name.toUpperCase();
+            document.getElementById('loot-box').style.display = 'block';
+            
+            // Mise à jour inventaire
+            inv[item.type]++;
+            document.getElementById(`count-${item.type}`).innerText = inv[item.type];
+            
+            // On retire l'objet du monde (il est ramassé)
+            items.splice(foundIndex, 1);
+            votes += 150;
+        } else {
+            addEvent("🏜️ Rien ici... Le public s'ennuie.");
+            votes += 5;
+        }
+        document.getElementById('votes').innerText = votes;
+    }
+
+    function closeLoot() { document.getElementById('loot-box').style.display = 'none'; }
+
+    // Timer 45min
+    let time = 2700;
+    setInterval(() => {
+        time--;
+        let m = Math.floor(time / 60);
+        let s = time % 60;
+        document.getElementById('clock').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    }, 1000);
+
+    // Scan initial
+    scan();
+</script>
+</body>
+</html>
