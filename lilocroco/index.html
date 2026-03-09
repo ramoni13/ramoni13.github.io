@@ -156,4 +156,33 @@
                 addToHistory("RÉCOLTE", item.name + " (" + playerPos.x + ":" + playerPos.y + ")");
                 items.splice(itemIndex, 1);
                 votes += 150;
-            } else
+            } else {
+                addToHistory("FOUILLE", "Rien en " + playerPos.x + ":" + playerPos.y);
+                document.getElementById('event-log').innerText = "Rien ici... continuez !";
+            }
+        }
+        document.getElementById('votes').innerText = votes;
+    }
+
+    // Attachement propre des événements
+    window.onload = function() {
+        document.getElementById('fouilleBtn').onclick = fouiller;
+        document.getElementById('closeLootBtn').onclick = function() {
+            document.getElementById('loot-box').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            renderGrid();
+        };
+        renderGrid();
+        
+        // Timer
+        var time = 2700;
+        setInterval(function() {
+            time--;
+            var m = Math.floor(time / 60);
+            var s = time % 60;
+            document.getElementById('clock').innerText = m + ':' + (s < 10 ? '0' : '') + s;
+        }, 1000);
+    };
+</script>
+</body>
+</html>
