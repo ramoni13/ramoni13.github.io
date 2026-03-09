@@ -3,43 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V6 Contrôle</title>
+    <title>Lilocroco TV - V6.1 Stable</title>
     <style>
         :root { --gold: #f1c40f; --bg: #121212; --danger: #e74c3c; --safe: #2ecc71; --cell-bg: #1c2833; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: #000; color: white; margin: 0; padding: 5px; display: flex; justify-content: center; }
+        body { font-family: sans-serif; background: #000; color: white; margin: 0; padding: 5px; display: flex; justify-content: center; }
 
-        .app-container { width: 100%; max-width: 450px; border: 3px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; display: flex; flex-direction: column; min-height: 95vh; }
+        .app-container { width: 100%; max-width: 450px; border: 3px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; display: flex; flex-direction: column; min-height: 98vh; }
 
-        /* Header & Chrono */
         .header { display: flex; justify-content: space-between; padding: 12px; background: #000; border-radius: 8px; margin-bottom: 8px; font-weight: bold; border: 1px solid #333; }
         
-        /* Bannière Événements */
-        .event-banner { background: #2c3e50; border-left: 4px solid var(--gold); padding: 12px; margin-bottom: 10px; font-size: 0.85rem; min-height: 50px; display: flex; align-items: center; border-radius: 4px; color: #ecf0f1; }
+        .event-banner { background: #2c3e50; border-left: 4px solid var(--gold); padding: 10px; margin-bottom: 10px; font-size: 0.85rem; min-height: 50px; display: flex; align-items: center; border-radius: 4px; color: #ecf0f1; }
 
-        /* Grille Tactile 7x7 */
         .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #444; margin-bottom: 12px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { 
-            aspect-ratio: 1/1; background: var(--cell-bg); border-radius: 3px; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 1.3rem; position: relative; border: 1px solid #2c3e50;
-        }
+        .cell { aspect-ratio: 1/1; background: var(--cell-bg); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; position: relative; border: 1px solid #2c3e50; }
         .cell-player { border: 2px solid var(--gold); background: #1e3d23 !important; box-shadow: inset 0 0 8px var(--gold); z-index: 2; }
         .cell-coord { position: absolute; bottom: 1px; right: 1px; font-size: 0.45rem; color: #566573; }
         .cell-empty { background: transparent; border: none; }
 
-        /* Bouton Fouille */
-        .btn-fouille { width: 100%; padding: 20px; background: var(--safe); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 0 #27ae60; }
-        .btn-fouille:active { transform: translateY(2px); box-shadow: 0 2px 0 #27ae60; }
+        .btn-fouille { width: 100%; padding: 20px; background: var(--safe); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; margin-bottom: 15px; }
 
-        /* Journal de Bord (Contrôle) */
-        .log-section { flex-grow: 1; background: #000; border-radius: 8px; padding: 10px; border: 1px solid #333; font-family: monospace; font-size: 0.75rem; overflow-y: auto; max-height: 150px; }
-        .log-title { color: var(--gold); margin-bottom: 5px; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
+        .log-section { flex-grow: 1; background: #000; border-radius: 8px; padding: 10px; border: 1px solid #333; font-family: monospace; font-size: 0.75rem; overflow-y: auto; max-height: 140px; }
+        .log-title { color: var(--gold); margin-bottom: 5px; text-transform: uppercase; font-size: 0.7rem; }
         .log-entry { border-bottom: 1px solid #222; padding: 3px 0; display: flex; justify-content: space-between; }
-        .log-time { color: #555; margin-right: 5px; }
 
-        /* Modal Butin */
         #loot-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; box-shadow: 0 0 60px rgba(0,0,0,0.9); width: 280px; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 90; }
     </style>
@@ -48,35 +36,124 @@
 
 <div class="app-container">
     <div class="header">
-        <div style="color:var(--gold)">🌟 <span id="votes">0</span> VOTES</div>
+        <div style="color:var(--gold)">🌟 <span id="votes">0</span></div>
         <div style="color:var(--danger)">⏳ <span id="clock">45:00</span></div>
     </div>
 
     <div class="event-banner">
-        <div id="event-log">📢 Session de direct lancée. En attente de scan...</div>
+        <div id="event-log">Système prêt. Bonne émission !</div>
     </div>
 
     <div class="grid-container">
         <div class="grid" id="grid"></div>
     </div>
 
-    <button class="btn-fouille" onclick="fouiller()">🔍 FOUILLER [ <span id="curr-pos">8:6</span> ]</button>
+    <button class="btn-fouille" id="fouilleBtn">🔍 FOUILLER [ <span id="curr-pos">8:6</span> ]</button>
 
     <div class="log-section">
-        <div class="log-title">📜 Journal de l'Émission (Contrôle)</div>
-        <div id="action-history">
-            </div>
+        <div class="log-title">📜 Historique de l'émission</div>
+        <div id="action-history"></div>
     </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
 <div id="loot-box">
-    <h3 style="margin:0">ÉLÉMENT DÉCOUVERT</h3>
+    <h3 style="margin:0">OBJET TROUVÉ</h3>
     <div id="loot-icon" style="font-size:60px; margin:15px 0;">🥥</div>
-    <div id="loot-name" style="font-weight:bold; font-size:1.2rem;">NOIX DE COCO</div>
-    <p style="font-size: 0.8rem; color: #666;">Notez cet objet sur votre fiche de perso.</p>
-    <button onclick="closeLoot()" style="margin-top:20px; background:#000; color:#fff; padding:12px; border-radius:8px; border:none; width:100%;">VALIDER</button>
+    <div id="loot-name" style="font-weight:bold;">NOM</div>
+    <button id="closeLootBtn" style="margin-top:20px; background:#000; color:#fff; padding:12px; border-radius:8px; border:none; width:100%;">OK</button>
 </div>
 
 <script>
-    let playerPos = { x:
+    // Variables globales
+    var playerPos = { x: 8, y: 6 };
+    var votes = 0;
+    var worldSize = { w: 16, h: 12 };
+    var crocos = [{x: 9, y: 6}, {x: 7, y: 5}, {x: 8, y: 7}, {x: 11, y: 6}, {x: 5, y: 5}];
+    var items = [
+        {x: 8, y: 6, type: '🥥', name: 'Noix de Coco'},
+        {x: 10, y: 6, type: '🍌', name: 'Banane'},
+        {x: 7, y: 6, type: '🥥', name: 'Noix de Coco'},
+        {x: 9, y: 4, type: '💎', name: 'Cristal Sacré'}
+    ];
+
+    // Fonctions
+    function addToHistory(action, detail) {
+        var history = document.getElementById('action-history');
+        var now = document.getElementById('clock').innerText;
+        var entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = '<span>[' + now + '] ' + action + '</span> <span style="color:var(--gold)">' + detail + '</span>';
+        if (history.firstChild) {
+            history.insertBefore(entry, history.firstChild);
+        } else {
+            history.appendChild(entry);
+        }
+    }
+
+    function renderGrid() {
+        var grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        document.getElementById('curr-pos').innerText = playerPos.x + ':' + playerPos.y;
+
+        for (var y = playerPos.y - 3; y <= playerPos.y + 3; y++) {
+            for (var x = playerPos.x - 3; x <= playerPos.x + 3; x++) {
+                var cell = document.createElement('div');
+                if (x < 1 || x > worldSize.w || y < 1 || y > worldSize.h) {
+                    cell.className = 'cell cell-empty';
+                } else {
+                    cell.className = 'cell';
+                    if (x === playerPos.x && y === playerPos.y) cell.classList.add('cell-player');
+                    
+                    var hasCroco = false;
+                    for (var i=0; i < crocos.length; i++) {
+                        if (crocos[i].x === x && crocos[i].y === y) hasCroco = true;
+                    }
+                    if (hasCroco) cell.innerHTML = '🐊';
+                    
+                    cell.innerHTML += '<span class="cell-coord">' + x + ',' + y + '</span>';
+                    
+                    (function(cx, cy) {
+                        cell.onclick = function() { moveTo(cx, cy); };
+                    })(x, y);
+                }
+                grid.appendChild(cell);
+            }
+        }
+    }
+
+    function moveTo(x, y) {
+        playerPos = { x: x, y: y };
+        votes += 5;
+        document.getElementById('votes').innerText = votes;
+        document.getElementById('event-log').innerText = 'Déplacement : Scan zone ' + x + ':' + y;
+        renderGrid();
+    }
+
+    function fouiller() {
+        var isCroco = false;
+        for (var i=0; i < crocos.length; i++) {
+            if (crocos[i].x === playerPos.x && crocos[i].y === playerPos.y) isCroco = true;
+        }
+
+        if (isCroco) {
+            alert("🐊 MORSURE ! -1 PV !");
+            addToHistory("DOMMAGE", "Morsure en " + playerPos.x + ":" + playerPos.y);
+            votes -= 50;
+        } else {
+            var itemIndex = -1;
+            for (var j=0; j < items.length; j++) {
+                if (items[j].x === playerPos.x && items[j].y === playerPos.y) itemIndex = j;
+            }
+
+            if (itemIndex !== -1) {
+                var item = items[itemIndex];
+                document.getElementById('loot-icon').innerText = item.type;
+                document.getElementById('loot-name').innerText = item.name.toUpperCase();
+                document.getElementById('loot-box').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+                
+                addToHistory("RÉCOLTE", item.name + " (" + playerPos.x + ":" + playerPos.y + ")");
+                items.splice(itemIndex, 1);
+                votes += 150;
+            } else
