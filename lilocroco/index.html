@@ -142,4 +142,83 @@
         }
     }
 
-    function moveTo(x,
+    function moveTo(x, y) {
+        players[currentPlayer].x = x;
+        players[currentPlayer].y = y;
+        turnStep = 1;
+        document.getElementById('instruction').innerText = "👉 Choisissez une action";
+        document.getElementById('menu-actions').style.display = 'grid';
+        
+        var canGive = false;
+        for(var i=0; i<players.length; i++) {
+            if(i !== currentPlayer && players[i].x === x && players[i].y === y) canGive = true;
+        }
+        document.getElementById('btn-don').style.opacity = canGive ? "1" : "0.3";
+        document.getElementById('btn-don').disabled = !canGive;
+        
+        renderGrid();
+    }
+
+    function doAction(type) {
+        var p = players[currentPlayer];
+        var log = "";
+        
+        if(type === 'fouille') {
+            var itemIndex = -1;
+            for(var i=0; i<items.length; i++) {
+                if(items[i].x === p.x && items[i].y === p.y) itemIndex = i;
+            }
+            if(itemIndex !== -1) {
+                showLoot(items[itemIndex], itemIndex);
+                return;
+            } else {
+                log = "Fouille à vide en " + getCoord(p.x, p.y);
+                p.votes += 10;
+            }
+        } else if(type === 'cache') { log = "Se cache en " + getCoord(p.x, p.y); p.votes += 20; }
+        else if(type === 'repos') { log = "Se repose"; p.votes += 5; }
+        else if(type === 'don') { log = "Fait un don !"; p.votes += 100; }
+
+        nextTurn(log);
+    }
+
+    function showLoot(item, idx) {
+        document.getElementById('loot-icon').innerText = item.type;
+        document.getElementById('loot-name').innerText = item.name.toUpperCase();
+        document.getElementById('loot-box').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        window.currentLootIdx = idx;
+    }
+
+    function confirmLoot() {
+        var p = players[currentPlayer];
+        var item = items[window.currentLootIdx];
+        items.splice(window.currentLootIdx, 1);
+        p.votes += 150;
+        document.getElementById('loot-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        nextTurn("A trouvé " + item.name + " en " + getCoord(p.x, p.y));
+    }
+
+    function nextTurn(msg) {
+        var p = players[currentPlayer];
+        var history = document.getElementById('action-history');
+        history.innerHTML = "<div>[" + p.name + "] " + msg + "</div>" + history.innerHTML;
+
+        document.getElementById('menu-actions').style.display = 'none';
+        currentPlayer = (currentPlayer + 1) % 4;
+        turnStep = 0;
+
+        var head = document.getElementById('p-header');
+        head.className = "player-bar active-" + currentPlayer;
+        document.getElementById('p-name').innerText = "JOUEUR " + players[currentPlayer].name;
+        document.getElementById('p-votes').innerText = players[currentPlayer].votes + " PTS";
+        document.getElementById('instruction').innerText = "👉 Touchez votre case d'arrivée";
+
+        renderGrid();
+    }
+
+    window.onload = renderGrid;
+</script>
+</body>
+</html>
