@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V12 Cohabitation</title>
+    <title>Lilocroco TV - V13 Fix</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -17,19 +17,15 @@
         .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
         .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        .status-tag { font-size: 0.7rem; background: #444; padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: inline-block; }
-
         .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; padding: 2px; }
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; padding: 2px; overflow: hidden;}
         .cell-hidden { visibility: hidden; }
-
-        .pion { font-size: 1.5rem; z-index: 10; transition: all 0.3s; }
-        .is-stealth { opacity: 0.4; transform: scale(0.8); }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
 
-        /* Pour que joueur et croco rentrent sur la même case */
-        .case-element { font-size: 1.2rem; margin: 0; padding: 0; }
+        .pion { font-size: 1.3rem; z-index: 10; }
+        .is-stealth { opacity: 0.4; filter: grayscale(1); }
+        .case-element { font-size: 1.1rem; margin: 1px; }
 
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
         button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
@@ -38,6 +34,7 @@
 
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; box-shadow: 0 0 100px black; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: #555; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -47,7 +44,6 @@
         <div>
             <div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div>
             <div id="p-hp">❤️❤️❤️</div>
-            <div id="p-status" class="status-tag">VISIBLE</div>
         </div>
         <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
     </div>
@@ -64,100 +60,93 @@
         <button class="btn-repos" onclick="doAction('repos')">💤 Se Reposer</button>
         <button class="btn-don" id="btn-don" onclick="doAction('don')">🤝 Donner</button>
     </div>
-    <div class="log-section" id="action-history" style="font-size: 0.6rem; color: #666; margin-top: 10px; height: 60px; overflow-y: scroll; background: #000; padding: 5px;"></div>
+    <div class="log-section" id="action-history" style="font-size: 0.6rem; color: #666; margin-top: 10px; height: 50px; overflow-y: auto; background: #000; padding: 5px;"></div>
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="bite-box" class="modal">
-    <h3 style="color:var(--red)">MORSURE !</h3>
-    <div style="font-size:60px; margin:10px 0;">🐊</div>
-    <p>Vous êtes sur la même case qu'un crocodile. -1 PV.</p>
-    <button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">AÏE !</button>
-</div>
-
-<div id="loot-box" class="modal">
-    <h3 style="margin:0">BUTIN !</h3>
-    <div id="loot-icon" style="font-size:60px; margin:10px 0;">🥥</div>
-    <button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button>
-</div>
+<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Un crocodile attaque ! -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;">🥥</div><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">PRENDRE</button></div>
 
 <script>
     const alphabet = "ABCDEFGHIJKL";
-    var players = [
+    let players = [
         { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, hp: 3, stealth: false },
         { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, hp: 3, stealth: false },
         { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, hp: 3, stealth: false },
         { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, hp: 3, stealth: false }
     ];
-    var currentPlayer = 0;
-    var turnStep = 0; 
-    var worldSize = { w: 16, h: 12 };
-    var crocos = [];
-    var scenery = [];
+    let currentPlayer = 0;
+    let turnStep = 0; 
+    let worldSize = { w: 16, h: 12 };
+    let crocos = [];
+    let scenery = [];
 
     function initIsland() {
         for(let x=1; x<=16; x++) {
             for(let y=1; y<=12; y++) {
                 if((x==1 && y==1) || (x==16 && y==1) || (x==1 && y==12) || (x==16 && y==12)) continue;
                 let rand = Math.random();
-                if(rand < 0.25) crocos.push({x:x, y:y});
-                else if(rand < 0.40) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: 2, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
+                if(rand < 0.20) crocos.push({x:x, y:y});
+                else if(rand < 0.35) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: 2, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
             }
         }
     }
 
     function renderGrid() {
-        var grid = document.getElementById('grid');
+        const grid = document.getElementById('grid');
         grid.innerHTML = '';
-        var p = players[currentPlayer];
+        const p = players[currentPlayer];
 
-        for (var y = p.y - 3; y <= p.y + 3; y++) {
-            for (var x = p.x - 3; x <= p.x + 3; x++) {
-                var cell = document.createElement('div');
+        for (let y = p.y - 3; y <= p.y + 3; y++) {
+            for (let x = p.x - 3; x <= p.x + 3; x++) {
+                const cell = document.createElement('div');
+                
                 if (x < 1 || x > worldSize.w || y < 1 || y > worldSize.h) {
                     cell.className = 'cell cell-hidden';
                 } else {
                     cell.className = 'cell';
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
-                    // Cohabitation : On affiche Croco ET Joueurs
-                    let cOnCell = crocos.some(c => c.x === x && c.y === y);
-                    let pOnCell = players.filter(pl => pl.x === x && pl.y === y);
-                    let sOnCell = scenery.find(s => s.x === x && s.y === y);
-
-                    if (cOnCell) {
+                    // Contenu de la case
+                    if (crocos.some(c => c.x === x && c.y === y)) {
                         let cIcon = document.createElement('span');
-                        cIcon.className = 'case-element';
-                        cIcon.innerHTML = '🐊';
+                        cIcon.className = 'case-element'; cIcon.innerHTML = '🐊';
                         cell.appendChild(cIcon);
                     }
-                    if (pOnCell.length > 0) {
-                        pOnCell.forEach(pl => {
+                    players.forEach(pl => {
+                        if (pl.x === x && pl.y === y) {
                             let pion = document.createElement('span');
                             pion.className = `pion case-element ${pl.stealth ? 'is-stealth' : ''}`;
                             pion.innerHTML = pl.picto;
                             cell.appendChild(pion);
-                        });
-                    } else if (!cOnCell && sOnCell) {
-                        // Si pas de croco ni joueur, on affiche le décor
-                        let treeIcon = document.createElement('span');
-                        treeIcon.className = 'case-element';
-                        treeIcon.innerHTML = sOnCell.stock > 0 ? sOnCell.icon : '🍂';
-                        cell.appendChild(treeIcon);
+                        }
+                    });
+                    let s = scenery.find(s => s.x === x && s.y === y);
+                    if (s && !players.some(pl => pl.x === x && pl.y === y) && !crocos.some(c => c.x === x && c.y === y)) {
+                        let tree = document.createElement('span');
+                        tree.className = 'case-element'; tree.innerHTML = s.stock > 0 ? s.icon : '🍂';
+                        cell.appendChild(tree);
                     }
 
-                    cell.innerHTML += `<span style="position:absolute; bottom:1px; right:2px; font-size:0.4rem; color:#555;">${alphabet[y-1]}${x}</span>`;
-                    if(turnStep === 0) cell.onclick = () => moveTo(x, y);
+                    cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
+                    
+                    // FIX : Utilisation d'une fonction fléchée pour capturer x et y correctement
+                    if(turnStep === 0) {
+                        cell.style.cursor = "pointer";
+                        cell.onclick = ((targetX, targetY) => {
+                            return () => moveTo(targetX, targetY);
+                        })(x, y);
+                    }
                 }
                 grid.appendChild(cell);
             }
         }
     }
 
-    function moveTo(x, y) {
-        players[currentPlayer].x = x;
-        players[currentPlayer].y = y;
-        players[currentPlayer].stealth = false; // Sort de furtivité dès qu'il bouge
+    function moveTo(newX, newY) {
+        players[currentPlayer].x = newX;
+        players[currentPlayer].y = newY;
+        players[currentPlayer].stealth = false;
         turnStep = 1;
         document.getElementById('menu-actions').style.display = 'grid';
         renderGrid();
@@ -185,13 +174,11 @@
     function confirmTurn(msg) {
         document.getElementById('loot-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
-        
         let p = players[currentPlayer];
         document.getElementById('action-history').innerHTML = `<div>[${p.name}] ${msg}</div>` + document.getElementById('action-history').innerHTML;
-        
         document.getElementById('menu-actions').style.display = 'none';
-        currentPlayer = (currentPlayer + 1) % 4;
         
+        currentPlayer = (currentPlayer + 1) % 4;
         if(currentPlayer === 0) moveCrocos();
         startTurn();
     }
@@ -200,7 +187,6 @@
         turnStep = 0;
         let p = players[currentPlayer];
         let hasCroco = crocos.some(c => c.x === p.x && c.y === p.y);
-
         if(hasCroco && !p.stealth) {
             p.hp--;
             document.getElementById('overlay').style.display = 'block';
@@ -217,26 +203,18 @@
 
     function moveCrocos() {
         crocos.forEach(c => {
-            // IA : Cible le joueur visible le plus proche
             let visiblePlayers = players.filter(p => !p.stealth);
-            if(visiblePlayers.length === 0) return; // Tout le monde est caché
-
+            if(visiblePlayers.length === 0) return;
             let target = visiblePlayers.reduce((prev, curr) => {
                 let dPrev = Math.abs(c.x - prev.x) + Math.abs(c.y - prev.y);
                 let dCurr = Math.abs(c.x - curr.x) + Math.abs(c.y - curr.y);
                 return dCurr < dPrev ? curr : prev;
             });
-
-            let nextX = c.x, nextY = c.y;
-            if (c.x < target.x) nextX++; else if (c.x > target.x) nextX--;
-            else if (c.y < target.y) nextY++; else if (c.y > target.y) nextY--;
-
-            // Collision Crocos ET respect des zones de joueurs cachés
-            let cellOccupiedByCroco = crocos.some(other => other !== c && other.x === nextX && other.y === nextY);
-            let cellHasHiddenPlayer = players.some(p => p.stealth && p.x === nextX && p.y === nextY);
-
-            if (!cellOccupiedByCroco && !cellHasHiddenPlayer) {
-                c.x = nextX; c.y = nextY;
+            let nX = c.x, nY = c.y;
+            if (c.x < target.x) nX++; else if (c.x > target.x) nX--;
+            else if (c.y < target.y) nY++; else if (c.y > target.y) nY--;
+            if (!crocos.some(o => o !== c && o.x === nX && o.y === nY) && !players.some(p => p.stealth && p.x === nX && p.y === nY)) {
+                c.x = nX; c.y = nY;
             }
         });
     }
@@ -246,8 +224,7 @@
         document.getElementById('p-header').className = `player-bar active-${currentPlayer}`;
         document.getElementById('p-name').innerText = `JOUEUR ${p.name}`;
         document.getElementById('p-hp').innerText = "❤️".repeat(Math.max(0, p.hp)) + "🖤".repeat(Math.max(0, 3-p.hp));
-        document.getElementById('p-status').innerText = p.stealth ? "CACHÉ (FURTIF)" : "VISIBLE";
-        document.getElementById('p-votes').innerText = p.votes;
+        document.getElementById('p-votes').innerText = p.votes + " PTS";
     }
 
     window.onload = () => { initIsland(); renderGrid(); };
