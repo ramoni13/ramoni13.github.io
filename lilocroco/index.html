@@ -3,53 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V7 Multijoueur</title>
+    <title>Lilocroco TV - V8 Alpha-Num</title>
     <style>
-        :root { --gold: #f1c40f; --danger: #e74c3c; --safe: #2ecc71; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
+        :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; --bg: #121212; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: sans-serif; background: #000; color: white; margin: 0; padding: 5px; display: flex; justify-content: center; }
+        body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; margin: 0; padding: 5px; display: flex; justify-content: center; }
 
-        .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 98vh; display: flex; flex-direction: column; }
+        .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 95vh; display: flex; flex-direction: column; }
         
-        /* Player Header */
-        .player-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 10px; transition: all 0.3s; border: 2px solid transparent; }
-        .active-0 { background: rgba(52, 152, 219, 0.3); border-color: var(--blue); }
-        .active-1 { background: rgba(231, 76, 60, 0.3); border-color: var(--red); }
-        .active-2 { background: rgba(241, 196, 15, 0.3); border-color: var(--yellow); }
-        .active-3 { background: rgba(46, 204, 113, 0.3); border-color: var(--green); }
+        /* Header Joueur */
+        .player-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 2px solid transparent; }
+        .active-0 { background: rgba(52, 152, 219, 0.2); border-color: var(--blue); }
+        .active-1 { background: rgba(231, 76, 60, 0.2); border-color: var(--red); }
+        .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
+        .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #444; margin-bottom: 10px; }
+        /* Grille Radar */
+        .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; position: relative; border: 1px solid #2c3e50; }
-        
-        /* Couleurs des pions */
-        .pion { width: 80%; height: 80%; border-radius: 50%; border: 2px solid white; }
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; position: relative; border: 1px solid #2c3e50; }
+        .cell-hidden { visibility: hidden; } /* Cache totalement les cases hors map */
+
+        /* Pions */
+        .pion { width: 75%; height: 75%; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .p-0 { background: var(--blue); } .p-1 { background: var(--red); }
         .p-2 { background: var(--yellow); } .p-3 { background: var(--green); }
-        .cell-player { border: 2px solid white; box-shadow: 0 0 10px white; }
+        .cell-player { border: 2px solid white; box-shadow: inset 0 0 10px rgba(255,255,255,0.2); }
+
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.5rem; color: #566573; font-weight: bold; }
 
         /* Actions Menu */
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
-        button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
+        button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; }
         .btn-fouille { background: #8e44ad; } .btn-cache { background: #d35400; }
         .btn-repos { background: #2c3e50; } .btn-don { background: #27ae60; }
 
-        .log-section { flex-grow: 1; background: #000; border-radius: 8px; padding: 8px; border: 1px solid #333; font-family: monospace; font-size: 0.7rem; overflow-y: auto; max-height: 100px; margin-top: 10px; }
+        .log-section { flex-grow: 1; background: #000; border-radius: 8px; padding: 10px; border: 1px solid #333; font-family: monospace; font-size: 0.7rem; overflow-y: auto; max-height: 120px; margin-top: 10px; color: #bbb; }
         
-        #loot-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 20px; border-radius: 15px; text-align: center; z-index: 100; width: 260px; }
-        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 90; }
+        #loot-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; box-shadow: 0 0 100px black; }
+        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 90; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div id="p-header" class="player-bar active-0">
-        <div>JOUEUR : <span id="p-name">BLEU</span></div>
-        <div id="p-votes" style="color:var(--gold)">0 pts</div>
+        <div id="p-name" style="font-weight:bold; letter-spacing:1px;">JOUEUR BLEU</div>
+        <div id="p-votes" style="color:var(--gold); font-weight:bold;">0 PTS</div>
     </div>
 
-    <div style="text-align:center; font-size:0.7rem; margin-bottom:5px; color:#999;" id="instruction">
-        ÉTAPE 1 : Touchez la case d'arrivée sur le plateau
+    <div style="text-align:center; font-size:0.75rem; margin-bottom:8px; color:#f1c40f;" id="instruction">
+        👉 Touchez votre case d'arrivée (Radar 7x7)
     </div>
 
     <div class="grid-container">
@@ -63,26 +67,29 @@
         <button class="btn-don" id="btn-don" onclick="doAction('don')">🤝 Donner</button>
     </div>
 
-    <div class="log-section" id="action-history"></div>
+    <div class="log-section" id="action-history">
+        <div>[SYSTÈME] Émission lancée. Bonne chance !</div>
+    </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
 <div id="loot-box">
-    <h3 id="loot-title">OBJET TROUVÉ</h3>
-    <div id="loot-icon" style="font-size:50px; margin:10px 0;">🥥</div>
-    <div id="loot-name" style="font-weight:bold;">NOM</div>
-    <button onclick="confirmLoot()" style="margin-top:15px; background:black; color:white; width:100%; padding:10px; border-radius:8px;">PRENDRE & FINIR TOUR</button>
+    <h3 style="margin:0">OBJET TROUVÉ !</h3>
+    <div id="loot-icon" style="font-size:60px; margin:15px 0;">🥥</div>
+    <div id="loot-name" style="font-weight:bold; font-size:1.2rem;">NOIX DE COCO</div>
+    <button onclick="confirmLoot()" style="margin-top:20px; background:black; color:white; width:100%; padding:15px; border-radius:10px; border:none; font-weight:bold;">PRENDRE ET FINIR TOUR</button>
 </div>
 
 <script>
+    const alphabet = "ABCDEFGHIJKL"; // Pour l'ordonnée (Y)
     var players = [
-        { id: 0, name: "BLEU", color: "var(--blue)", x: 1, y: 1, votes: 0 },
-        { id: 1, name: "ROUGE", color: "var(--red)", x: 16, y: 1, votes: 0 },
-        { id: 2, name: "JAUNE", color: "var(--yellow)", x: 1, y: 12, votes: 0 },
-        { id: 3, name: "VERT", color: "var(--green)", x: 16, y: 12, votes: 0 }
+        { id: 0, name: "BLEU", x: 1, y: 1, votes: 0 },
+        { id: 1, name: "ROUGE", x: 16, y: 1, votes: 0 },
+        { id: 2, name: "JAUNE", x: 1, y: 12, votes: 0 },
+        { id: 3, name: "VERT", x: 16, y: 12, votes: 0 }
     ];
     var currentPlayer = 0;
-    var turnStep = 0; // 0: Move, 1: Action
+    var turnStep = 0; 
     var worldSize = { w: 16, h: 12 };
     var crocos = [{x: 8, y: 6}, {x: 4, y: 4}, {x: 12, y: 10}, {x: 2, y: 2}, {x: 15, y: 11}];
     var items = [
@@ -90,6 +97,10 @@
         {x: 15, y: 2, type: '🍌', name: 'Banane'},
         {x: 8, y: 6, type: '💎', name: 'Cristal'}
     ];
+
+    function getCoord(x, y) {
+        return alphabet[y-1] + x; // Exemple : A1, L16
+    }
 
     function renderGrid() {
         var grid = document.getElementById('grid');
@@ -99,23 +110,29 @@
         for (var y = p.y - 3; y <= p.y + 3; y++) {
             for (var x = p.x - 3; x <= p.x + 3; x++) {
                 var cell = document.createElement('div');
+                
+                // Masquage strict si hors limites
                 if (x < 1 || x > worldSize.w || y < 1 || y > worldSize.h) {
-                    cell.className = 'cell cell-empty';
+                    cell.className = 'cell cell-hidden';
                 } else {
                     cell.className = 'cell';
-                    // Affichage Crocos
+                    if (x === p.x && y === p.y) cell.classList.add('cell-player');
+                    
+                    // Crocos
                     for(var i=0; i<crocos.length; i++) {
                         if(crocos[i].x === x && crocos[i].y === y) cell.innerHTML = '🐊';
                     }
-                    // Affichage Joueurs
+                    // Joueurs
                     for(var j=0; j<players.length; j++) {
                         if(players[j].x === x && players[j].y === y) {
                             var pion = document.createElement('div');
                             pion.className = 'pion p-' + j;
-                            if(j === currentPlayer) cell.classList.add('cell-player');
                             cell.appendChild(pion);
                         }
                     }
+                    
+                    cell.innerHTML += `<span class="cell-coord">${getCoord(x, y)}</span>`;
+                    
                     if(turnStep === 0) {
                         (function(cx, cy) { cell.onclick = function() { moveTo(cx, cy); }; })(x, y);
                     }
@@ -125,83 +142,4 @@
         }
     }
 
-    function moveTo(x, y) {
-        players[currentPlayer].x = x;
-        players[currentPlayer].y = y;
-        turnStep = 1;
-        document.getElementById('instruction').innerText = "ÉTAPE 2 : Choisissez votre action";
-        document.getElementById('menu-actions').style.display = 'grid';
-        
-        // Verif si "Donner" est possible (autre joueur sur case)
-        var canGive = false;
-        for(var i=0; i<players.length; i++) {
-            if(i !== currentPlayer && players[i].x === x && players[i].y === y) canGive = true;
-        }
-        document.getElementById('btn-don').style.opacity = canGive ? "1" : "0.3";
-        
-        renderGrid();
-    }
-
-    function doAction(type) {
-        var p = players[currentPlayer];
-        var log = "";
-        
-        if(type === 'fouille') {
-            var itemIndex = -1;
-            for(var i=0; i<items.length; i++) {
-                if(items[i].x === p.x && items[i].y === p.y) itemIndex = i;
-            }
-            if(itemIndex !== -1) {
-                showLoot(items[itemIndex], itemIndex);
-                return; // On attend la confirmation
-            } else {
-                log = "Fouille vide.";
-                p.votes += 10;
-            }
-        } else if(type === 'cache') { log = "Se cache."; p.votes += 20; }
-        else if(type === 'repos') { log = "Se repose."; p.votes += 5; }
-        else if(type === 'don') { log = "Donne un objet."; p.votes += 100; }
-
-        nextTurn(log);
-    }
-
-    function showLoot(item, idx) {
-        document.getElementById('loot-icon').innerText = item.type;
-        document.getElementById('loot-name').innerText = item.name.toUpperCase();
-        document.getElementById('loot-box').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-        window.currentLootIdx = idx;
-    }
-
-    function confirmLoot() {
-        items.splice(window.currentLootIdx, 1);
-        players[currentPlayer].votes += 150;
-        document.getElementById('loot-box').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
-        nextTurn("A trouvé un objet !");
-    }
-
-    function nextTurn(msg) {
-        var p = players[currentPlayer];
-        var history = document.getElementById('action-history');
-        history.innerHTML = "<div>[" + p.name + "] " + msg + "</div>" + history.innerHTML;
-
-        // Reset pour joueur suivant
-        document.getElementById('menu-actions').style.display = 'none';
-        currentPlayer = (currentPlayer + 1) % 4;
-        turnStep = 0;
-
-        // Update UI
-        var head = document.getElementById('p-header');
-        head.className = "player-bar active-" + currentPlayer;
-        document.getElementById('p-name').innerText = players[currentPlayer].name;
-        document.getElementById('p-votes').innerText = players[currentPlayer].votes + " pts";
-        document.getElementById('instruction').innerText = "ÉTAPE 1 : Touchez la case d'arrivée";
-
-        renderGrid();
-    }
-
-    window.onload = renderGrid;
-</script>
-</body>
-</html>
+    function moveTo(x,
