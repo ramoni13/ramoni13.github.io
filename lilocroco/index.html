@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V10 Survie</title>
+    <title>Lilocroco TV - V12 Cohabitation</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -17,27 +17,25 @@
         .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
         .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        .hp-bar { font-size: 0.9rem; letter-spacing: 2px; }
+        .status-tag { font-size: 0.7rem; background: #444; padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: inline-block; }
 
         .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; }
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; padding: 2px; }
         .cell-hidden { visibility: hidden; }
 
-        .pion { width: 65%; height: 65%; border-radius: 50%; border: 2px solid white; z-index: 5; position: absolute; }
-        .p-0 { background: var(--blue); } .p-1 { background: var(--red); }
-        .p-2 { background: var(--yellow); } .p-3 { background: var(--green); }
+        .pion { font-size: 1.5rem; z-index: 10; transition: all 0.3s; }
+        .is-stealth { opacity: 0.4; transform: scale(0.8); }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
 
-        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.45rem; color: #566573; z-index: 1; }
+        /* Pour que joueur et croco rentrent sur la même case */
+        .case-element { font-size: 1.2rem; margin: 0; padding: 0; }
 
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
         button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
         .btn-fouille { background: #8e44ad; } .btn-cache { background: #d35400; }
         .btn-repos { background: #2c3e50; } .btn-don { background: #27ae60; }
 
-        .log-section { flex-grow: 1; background: #000; border-radius: 8px; padding: 8px; border: 1px solid #333; font-family: monospace; font-size: 0.65rem; overflow-y: auto; max-height: 80px; margin-top: 8px; color: #999; }
-        
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; box-shadow: 0 0 100px black; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
     </style>
@@ -48,14 +46,13 @@
     <div id="p-header" class="player-bar active-0">
         <div>
             <div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div>
-            <div id="p-hp" class="hp-bar">❤️❤️❤️</div>
+            <div id="p-hp">❤️❤️❤️</div>
+            <div id="p-status" class="status-tag">VISIBLE</div>
         </div>
         <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
     </div>
 
-    <div style="text-align:center; font-size:0.7rem; margin-bottom:5px; color:#f1c40f;" id="instruction">
-        🌊 DÉPLACEZ VOTRE PION
-    </div>
+    <div style="text-align:center; font-size:0.7rem; margin-bottom:5px; color:#f1c40f;" id="instruction">DÉPLACEZ VOTRE PERSONNAGE</div>
 
     <div class="grid-container">
         <div class="grid" id="grid"></div>
@@ -67,63 +64,44 @@
         <button class="btn-repos" onclick="doAction('repos')">💤 Se Reposer</button>
         <button class="btn-don" id="btn-don" onclick="doAction('don')">🤝 Donner</button>
     </div>
-
-    <div class="log-section" id="action-history"></div>
+    <div class="log-section" id="action-history" style="font-size: 0.6rem; color: #666; margin-top: 10px; height: 60px; overflow-y: scroll; background: #000; padding: 5px;"></div>
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="loot-box" class="modal">
-    <h3 style="margin:0">OBJET TROUVÉ !</h3>
-    <div id="loot-icon" style="font-size:60px; margin:10px 0;">🥥</div>
-    <div id="loot-name" style="font-weight:bold;">NOIX DE COCO</div>
-    <p id="loot-stock" style="font-size:0.8rem; color:#666;">Il en reste encore sur l'arbre.</p>
-    <button onclick="confirmTurn('Objet récolté')" style="margin-top:20px; background:black; color:white; width:100%; padding:12px; border-radius:10px; border:none;">PRENDRE</button>
-</div>
-<div id="empty-box" class="modal">
-    <h3 style="margin:0">RIEN ICI...</h3>
-    <div style="font-size:50px; margin:10px 0;">💨</div>
-    <p id="empty-msg">Cette zone est vide ou épuisée.</p>
-    <button onclick="confirmTurn('Fouille vide')" style="margin-top:15px; background:#555; color:white; width:100%; padding:10px; border-radius:10px; border:none;">CONTINUER</button>
-</div>
-<div id="bite-box" class="modal" style="border: 4px solid var(--red);">
+<div id="bite-box" class="modal">
     <h3 style="color:var(--red)">MORSURE !</h3>
     <div style="font-size:60px; margin:10px 0;">🐊</div>
-    <p>Un crocodile est sur votre case. Vous perdez 1 point de vie !</p>
-    <button onclick="closeBite()" style="margin-top:15px; background:var(--red); color:white; width:100%; padding:10px; border-radius:10px; border:none;">AÏE !</button>
+    <p>Vous êtes sur la même case qu'un crocodile. -1 PV.</p>
+    <button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">AÏE !</button>
+</div>
+
+<div id="loot-box" class="modal">
+    <h3 style="margin:0">BUTIN !</h3>
+    <div id="loot-icon" style="font-size:60px; margin:10px 0;">🥥</div>
+    <button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button>
 </div>
 
 <script>
     const alphabet = "ABCDEFGHIJKL";
     var players = [
-        { id: 0, name: "BLEU", x: 1, y: 1, votes: 0, hp: 3, pendingBite: false },
-        { id: 1, name: "ROUGE", x: 16, y: 1, votes: 0, hp: 3, pendingBite: false },
-        { id: 2, name: "JAUNE", x: 1, y: 12, votes: 0, hp: 3, pendingBite: false },
-        { id: 3, name: "VERT", x: 16, y: 12, votes: 0, hp: 3, pendingBite: false }
+        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, hp: 3, stealth: false },
+        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, hp: 3, stealth: false },
+        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, hp: 3, stealth: false },
+        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, hp: 3, stealth: false }
     ];
     var currentPlayer = 0;
     var turnStep = 0; 
     var worldSize = { w: 16, h: 12 };
     var crocos = [];
-    var scenery = []; // Bananiers/Cocotiers avec stock
+    var scenery = [];
 
     function initIsland() {
         for(let x=1; x<=16; x++) {
             for(let y=1; y<=12; y++) {
-                // Ne pas mettre de crocos/arbres sur les spawns des joueurs
                 if((x==1 && y==1) || (x==16 && y==1) || (x==1 && y==12) || (x==16 && y==12)) continue;
-
                 let rand = Math.random();
-                if(rand < 0.30) { 
-                    crocos.push({x:x, y:y}); 
-                } else if(rand < 0.45) { 
-                    let type = Math.random() > 0.5 ? 'palm' : 'banana';
-                    scenery.push({
-                        x:x, y:y, 
-                        icon: type === 'palm' ? '🌴' : '🌿',
-                        fruit: type === 'palm' ? '🥥' : '🍌',
-                        stock: Math.floor(Math.random() * 3) + 1
-                    }); 
-                }
+                if(rand < 0.25) crocos.push({x:x, y:y});
+                else if(rand < 0.40) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: 2, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
             }
         }
     }
@@ -142,21 +120,34 @@
                     cell.className = 'cell';
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
-                    if(crocos.some(c => c.x === x && c.y === y)) cell.innerHTML = '🐊';
-                    let tree = scenery.find(s => s.x === x && s.y === y);
-                    if(tree) cell.innerHTML = (tree.stock > 0) ? tree.icon : '🍂';
-                    
-                    for(var j=0; j<players.length; j++) {
-                        if(players[j].x === x && players[j].y === y) {
-                            var pion = document.createElement('div');
-                            pion.className = 'pion p-' + j;
+                    // Cohabitation : On affiche Croco ET Joueurs
+                    let cOnCell = crocos.some(c => c.x === x && c.y === y);
+                    let pOnCell = players.filter(pl => pl.x === x && pl.y === y);
+                    let sOnCell = scenery.find(s => s.x === x && s.y === y);
+
+                    if (cOnCell) {
+                        let cIcon = document.createElement('span');
+                        cIcon.className = 'case-element';
+                        cIcon.innerHTML = '🐊';
+                        cell.appendChild(cIcon);
+                    }
+                    if (pOnCell.length > 0) {
+                        pOnCell.forEach(pl => {
+                            let pion = document.createElement('span');
+                            pion.className = `pion case-element ${pl.stealth ? 'is-stealth' : ''}`;
+                            pion.innerHTML = pl.picto;
                             cell.appendChild(pion);
-                        }
+                        });
+                    } else if (!cOnCell && sOnCell) {
+                        // Si pas de croco ni joueur, on affiche le décor
+                        let treeIcon = document.createElement('span');
+                        treeIcon.className = 'case-element';
+                        treeIcon.innerHTML = sOnCell.stock > 0 ? sOnCell.icon : '🍂';
+                        cell.appendChild(treeIcon);
                     }
-                    cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
-                    if(turnStep === 0) {
-                        (function(cx, cy) { cell.onclick = function() { moveTo(cx, cy); }; })(x, y);
-                    }
+
+                    cell.innerHTML += `<span style="position:absolute; bottom:1px; right:2px; font-size:0.4rem; color:#555;">${alphabet[y-1]}${x}</span>`;
+                    if(turnStep === 0) cell.onclick = () => moveTo(x, y);
                 }
                 grid.appendChild(cell);
             }
@@ -166,26 +157,25 @@
     function moveTo(x, y) {
         players[currentPlayer].x = x;
         players[currentPlayer].y = y;
+        players[currentPlayer].stealth = false; // Sort de furtivité dès qu'il bouge
         turnStep = 1;
         document.getElementById('menu-actions').style.display = 'grid';
         renderGrid();
     }
 
     function doAction(type) {
-        var p = players[currentPlayer];
-        document.getElementById('overlay').style.display = 'block';
-
-        if(type === 'fouille') {
-            var tree = scenery.find(s => s.x === p.x && s.y === p.y);
-            if(tree && tree.stock > 0) {
-                tree.stock--;
-                document.getElementById('loot-icon').innerText = tree.fruit;
-                document.getElementById('loot-name').innerText = tree.fruit === '🥥' ? "NOIX DE COCO" : "BANANE";
-                document.getElementById('loot-stock').innerText = "Stock restant : " + tree.stock;
+        if(type === 'cache') {
+            players[currentPlayer].stealth = true;
+            confirmTurn('Caché');
+        } else if (type === 'fouille') {
+            let s = scenery.find(s => s.x === players[currentPlayer].x && s.y === players[currentPlayer].y);
+            if(s && s.stock > 0) {
+                s.stock--;
+                document.getElementById('loot-icon').innerText = s.fruit;
                 document.getElementById('loot-box').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
             } else {
-                document.getElementById('empty-msg').innerText = tree ? "Cet arbre est épuisé." : "Rien à récolter ici.";
-                document.getElementById('empty-box').style.display = 'block';
+                confirmTurn('Fouille vide');
             }
         } else {
             confirmTurn(type);
@@ -194,35 +184,28 @@
 
     function confirmTurn(msg) {
         document.getElementById('loot-box').style.display = 'none';
-        document.getElementById('empty-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         
-        var p = players[currentPlayer];
-        var history = document.getElementById('action-history');
-        history.innerHTML = "<div>[" + p.name + "] " + msg + "</div>" + history.innerHTML;
-
+        let p = players[currentPlayer];
+        document.getElementById('action-history').innerHTML = `<div>[${p.name}] ${msg}</div>` + document.getElementById('action-history').innerHTML;
+        
         document.getElementById('menu-actions').style.display = 'none';
-        currentPlayer++;
-
-        if(currentPlayer >= 4) {
-            currentPlayer = 0;
-            moveCrocos();
-        }
-        startNextTurn();
+        currentPlayer = (currentPlayer + 1) % 4;
+        
+        if(currentPlayer === 0) moveCrocos();
+        startTurn();
     }
 
-    function startNextTurn() {
+    function startTurn() {
         turnStep = 0;
-        var p = players[currentPlayer];
-        
-        // Verifier morsure pendante
-        if(p.pendingBite || crocos.some(c => c.x === p.x && c.y === p.y)) {
+        let p = players[currentPlayer];
+        let hasCroco = crocos.some(c => c.x === p.x && c.y === p.y);
+
+        if(hasCroco && !p.stealth) {
             p.hp--;
-            p.pendingBite = false;
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('bite-box').style.display = 'block';
         }
-
         updateUI();
         renderGrid();
     }
@@ -234,33 +217,40 @@
 
     function moveCrocos() {
         crocos.forEach(c => {
-            let target = players[Math.floor(Math.random()*4)]; // Cible aléatoire ou proche
+            // IA : Cible le joueur visible le plus proche
+            let visiblePlayers = players.filter(p => !p.stealth);
+            if(visiblePlayers.length === 0) return; // Tout le monde est caché
+
+            let target = visiblePlayers.reduce((prev, curr) => {
+                let dPrev = Math.abs(c.x - prev.x) + Math.abs(c.y - prev.y);
+                let dCurr = Math.abs(c.x - curr.x) + Math.abs(c.y - curr.y);
+                return dCurr < dPrev ? curr : prev;
+            });
+
             let nextX = c.x, nextY = c.y;
+            if (c.x < target.x) nextX++; else if (c.x > target.x) nextX--;
+            else if (c.y < target.y) nextY++; else if (c.y > target.y) nextY--;
 
-            if(c.x < target.x) nextX++; else if(c.x > target.x) nextX--;
-            else if(c.y < target.y) nextY++; else if(c.y > target.y) nextY--;
+            // Collision Crocos ET respect des zones de joueurs cachés
+            let cellOccupiedByCroco = crocos.some(other => other !== c && other.x === nextX && other.y === nextY);
+            let cellHasHiddenPlayer = players.some(p => p.stealth && p.x === nextX && p.y === nextY);
 
-            // Collision entre crocos
-            if(!crocos.some(other => other !== c && other.x === nextX && other.y === nextY)) {
+            if (!cellOccupiedByCroco && !cellHasHiddenPlayer) {
                 c.x = nextX; c.y = nextY;
-                // Si un croco arrive sur un joueur
-                players.forEach(p => {
-                    if(p.x === c.x && p.y === c.y) p.pendingBite = true;
-                });
             }
         });
     }
 
     function updateUI() {
-        var p = players[currentPlayer];
-        var head = document.getElementById('p-header');
-        head.className = "player-bar active-" + currentPlayer;
-        document.getElementById('p-name').innerText = "JOUEUR " + p.name;
-        document.getElementById('p-votes').innerText = p.votes;
+        let p = players[currentPlayer];
+        document.getElementById('p-header').className = `player-bar active-${currentPlayer}`;
+        document.getElementById('p-name').innerText = `JOUEUR ${p.name}`;
         document.getElementById('p-hp').innerText = "❤️".repeat(Math.max(0, p.hp)) + "🖤".repeat(Math.max(0, 3-p.hp));
+        document.getElementById('p-status').innerText = p.stealth ? "CACHÉ (FURTIF)" : "VISIBLE";
+        document.getElementById('p-votes').innerText = p.votes;
     }
 
-    window.onload = function() { initIsland(); renderGrid(); };
+    window.onload = () => { initIsland(); renderGrid(); };
 </script>
 </body>
 </html>
