@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V13 Fix</title>
+    <title>Lilocroco TV - V14 Visibilité</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -19,13 +19,14 @@
 
         .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; padding: 2px; overflow: hidden;}
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1rem; position: relative; border: 1px solid #2c3e50; padding: 1px; overflow: hidden;}
         .cell-hidden { visibility: hidden; }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
 
-        .pion { font-size: 1.3rem; z-index: 10; }
+        .pion { font-size: 1.2rem; z-index: 10; }
         .is-stealth { opacity: 0.4; filter: grayscale(1); }
-        .case-element { font-size: 1.1rem; margin: 1px; }
+        .case-element { margin: 1px; display: inline-block; }
+        .stock-tag { font-size: 0.6rem; vertical-align: bottom; color: var(--gold); margin-left: -2px; font-weight: bold; }
 
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
         button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
@@ -64,8 +65,8 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Un crocodile attaque ! -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
-<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;">🥥</div><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">PRENDRE</button></div>
+<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Aïe ! Le croco attaque. -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;">🥥</div><p id="loot-info"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">PRENDRE</button></div>
 
 <script>
     const alphabet = "ABCDEFGHIJKL";
@@ -87,7 +88,7 @@
                 if((x==1 && y==1) || (x==16 && y==1) || (x==1 && y==12) || (x==16 && y==12)) continue;
                 let rand = Math.random();
                 if(rand < 0.20) crocos.push({x:x, y:y});
-                else if(rand < 0.35) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: 2, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
+                else if(rand < 0.35) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: 3, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
             }
         }
     }
@@ -100,19 +101,29 @@
         for (let y = p.y - 3; y <= p.y + 3; y++) {
             for (let x = p.x - 3; x <= p.x + 3; x++) {
                 const cell = document.createElement('div');
-                
                 if (x < 1 || x > worldSize.w || y < 1 || y > worldSize.h) {
                     cell.className = 'cell cell-hidden';
                 } else {
                     cell.className = 'cell';
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
-                    // Contenu de la case
+                    // 1. DÉCORS (Arbres)
+                    let s = scenery.find(s => s.x === x && s.y === y);
+                    if (s) {
+                        let treeWrapper = document.createElement('span');
+                        treeWrapper.className = 'case-element';
+                        treeWrapper.innerHTML = (s.stock > 0 ? s.icon : '🍂') + (s.stock > 0 ? `<span class="stock-tag">x${s.stock}</span>` : '');
+                        cell.appendChild(treeWrapper);
+                    }
+
+                    // 2. CROCOS
                     if (crocos.some(c => c.x === x && c.y === y)) {
                         let cIcon = document.createElement('span');
                         cIcon.className = 'case-element'; cIcon.innerHTML = '🐊';
                         cell.appendChild(cIcon);
                     }
+
+                    // 3. JOUEURS
                     players.forEach(pl => {
                         if (pl.x === x && pl.y === y) {
                             let pion = document.createElement('span');
@@ -121,20 +132,13 @@
                             cell.appendChild(pion);
                         }
                     });
-                    let s = scenery.find(s => s.x === x && s.y === y);
-                    if (s && !players.some(pl => pl.x === x && pl.y === y) && !crocos.some(c => c.x === x && c.y === y)) {
-                        let tree = document.createElement('span');
-                        tree.className = 'case-element'; tree.innerHTML = s.stock > 0 ? s.icon : '🍂';
-                        cell.appendChild(tree);
-                    }
 
                     cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
                     
-                    // FIX : Utilisation d'une fonction fléchée pour capturer x et y correctement
                     if(turnStep === 0) {
                         cell.style.cursor = "pointer";
-                        cell.onclick = ((targetX, targetY) => {
-                            return () => moveTo(targetX, targetY);
+                        (function(tx, ty) {
+                            cell.onclick = function() { moveTo(tx, ty); };
                         })(x, y);
                     }
                 }
@@ -161,6 +165,7 @@
             if(s && s.stock > 0) {
                 s.stock--;
                 document.getElementById('loot-icon').innerText = s.fruit;
+                document.getElementById('loot-info').innerText = "Il reste " + s.stock + " fruits sur l'arbre.";
                 document.getElementById('loot-box').style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
             } else {
