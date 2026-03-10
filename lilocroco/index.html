@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V17.2 Final Fix</title>
+    <title>Lilocroco TV - V17.3 Ultimate Voice</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: sans-serif; background: #000; color: white; margin: 0; padding: 5px; display: flex; justify-content: center; }
 
-        /* Overlay de démarrage pour autoriser le son */
-        #start-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        #start-btn { padding: 20px 40px; font-size: 1.5rem; background: var(--gold); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; animation: pulse 1.5s infinite; }
+        /* Overlay de démarrage */
+        #start-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #start-btn { padding: 20px 40px; font-size: 1.5rem; background: var(--gold); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px var(--gold); }
 
         .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 98vh; display: flex; flex-direction: column; }
         
@@ -32,7 +32,7 @@
         .pion { font-size: 1.3rem; z-index: 10; transition: 0.3s; }
         .is-stealth { opacity: 0.3; filter: grayscale(1); transform: scale(0.8); }
 
-        .btn-mic { width: 100%; background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 10px; font-weight: bold; margin-bottom: 10px; cursor: pointer; }
+        .btn-mic { width: 100%; background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 12px; font-weight: bold; margin-bottom: 10px; cursor: pointer; }
         .btn-mic.listening { animation: pulse 1s infinite; background: #ff4757; }
 
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
@@ -42,14 +42,14 @@
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
         .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: #555; pointer-events: none; }
         
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.02); opacity: 0.8; } }
     </style>
 </head>
 <body>
 
 <div id="start-overlay">
-    <h1 style="color:var(--gold)">LILOCROCO TV</h1>
-    <p style="margin-bottom:30px">Prêt pour le direct ?</p>
+    <h1 style="color:var(--gold); margin-bottom:10px;">LILOCROCO TV</h1>
+    <p style="margin-bottom:30px">PRÊT POUR LE DIRECT ?</p>
     <button id="start-btn" onclick="launchGame()">LANCER LE SHOW</button>
 </div>
 
@@ -74,11 +74,11 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Un croco vous a mordu ! -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
-<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><p id="loot-info" style="font-size:0.8rem"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Un croco vous a mordu ! -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">AÏE !</button></div>
+<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><p id="loot-info" style="font-size:0.8rem"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">PRENDRE</button></div>
 
 <script>
-    // --- MOTEUR VOCAL ---
+    // --- MOTEUR VOCAL CORRIGÉ (V17.3) ---
     const synth = window.speechSynthesis;
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition;
@@ -88,9 +88,14 @@
     }
 
     function speak(text) {
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.pitch = 1.1; utter.rate = 1;
-        synth.speak(utter);
+        synth.cancel(); // On stoppe toute voix en cours
+        setTimeout(() => {
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.pitch = 1.1; 
+            utter.rate = 1;
+            utter.lang = 'fr-FR';
+            synth.speak(utter);
+        }, 250); // Le délai de 250ms corrige la première syllabe tronquée
     }
 
     function startVoice() {
@@ -111,6 +116,10 @@
                 else if (cmd.includes("repose") || cmd.includes("repos")) doAction('repos');
                 else if (cmd.includes("donne")) doAction('don');
             }
+        };
+        recognition.onerror = () => {
+            document.getElementById('mic-btn').classList.remove('listening');
+            document.getElementById('mic-btn').innerText = "🎤 PARLER À L'ANIMATEUR";
         };
     }
 
@@ -153,7 +162,6 @@
         renderGrid();
     }
 
-    // Fonction de lancement
     function launchGame() {
         document.getElementById('start-overlay').style.display = 'none';
         initIsland();
@@ -179,7 +187,7 @@
                         (function(tx, ty) { cell.onclick = () => { 
                             p.x = tx; p.y = ty; p.stealth = false; turnStep = 1;
                             document.getElementById('menu-actions').style.display = 'grid';
-                            speak("Action ?"); renderGrid();
+                            speak("Quelle action ?"); renderGrid();
                         }; })(x, y);
                     }
                 }
@@ -202,7 +210,7 @@
                 p.inv.push(item.name); speak("Incroyable trouvaille !");
                 showLoot('🎁', item.name, "Objet de mission !");
                 hiddenItems = hiddenItems.filter(i => i !== item);
-            } else { speak("Rien du tout !"); showLoot('💨', 'VIDE', 'Rien ici...'); }
+            } else { speak("Rien ici !"); showLoot('💨', 'VIDE', 'Rien ici...'); }
         } else { confirmTurn(type); }
     }
 
@@ -227,11 +235,11 @@
     function startTurn() {
         turnStep = 0; let p = players[currentPlayer];
         if(crocos.some(c => c.x === p.x && c.y === p.y) && !p.stealth) {
-            p.hp--; speak("Attention ! Une morsure !");
+            p.hp--; speak("Aïe ! Une morsure !");
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('bite-box').style.display = 'block';
         } else {
-            speak(`Joueur ${p.name}, à vous.`);
+            speak(`Joueur ${p.name}, à vous de jouer.`);
         }
         updateUI(); renderGrid();
     }
