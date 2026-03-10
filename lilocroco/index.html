@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V17.1 Opening</title>
+    <title>Lilocroco TV - V17.2 Final Fix</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: sans-serif; background: #000; color: white; margin: 0; padding: 5px; display: flex; justify-content: center; }
+
+        /* Overlay de démarrage pour autoriser le son */
+        #start-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #start-btn { padding: 20px 40px; font-size: 1.5rem; background: var(--gold); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; animation: pulse 1.5s infinite; }
 
         .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 98vh; display: flex; flex-direction: column; }
         
@@ -38,10 +42,16 @@
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
         .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: #555; pointer-events: none; }
         
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
     </style>
 </head>
 <body>
+
+<div id="start-overlay">
+    <h1 style="color:var(--gold)">LILOCROCO TV</h1>
+    <p style="margin-bottom:30px">Prêt pour le direct ?</p>
+    <button id="start-btn" onclick="launchGame()">LANCER LE SHOW</button>
+</div>
 
 <div class="app-container">
     <div id="p-header" class="header active-0">
@@ -50,7 +60,6 @@
     </div>
 
     <div class="inventory-bar" id="p-inv">🎒 Sac vide</div>
-    
     <button id="mic-btn" class="btn-mic" onclick="startVoice()">🎤 PARLER À L'ANIMATEUR</button>
 
     <div class="grid-container"><div class="grid" id="grid"></div></div>
@@ -103,10 +112,6 @@
                 else if (cmd.includes("donne")) doAction('don');
             }
         };
-        recognition.onerror = () => {
-            document.getElementById('mic-btn').classList.remove('listening');
-            document.getElementById('mic-btn').innerText = "🎤 PARLER À L'ANIMATEUR";
-        };
     }
 
     // --- LOGIQUE JEU ---
@@ -146,8 +151,12 @@
             }
         }
         renderGrid();
-        
-        // Sélection aléatoire de la phrase d'ouverture
+    }
+
+    // Fonction de lancement
+    function launchGame() {
+        document.getElementById('start-overlay').style.display = 'none';
+        initIsland();
         const randomOpening = openingLines[Math.floor(Math.random() * openingLines.length)];
         speak(randomOpening);
     }
@@ -187,7 +196,7 @@
             let tree = scenery.find(s => s.x === p.x && s.y === p.y);
             let item = hiddenItems.find(i => i.x === p.x && i.y === p.y);
             if (tree && tree.stock > 0) {
-                tree.stock--; p.inv.push(tree.fruit); speak("Bravo !");
+                tree.stock--; p.inv.push(tree.fruit); speak("Trouvé !");
                 showLoot(tree.fruit, tree.fruit === '🥥' ? 'Noix de Coco' : 'Banane', "Stock : " + tree.stock);
             } else if (item) {
                 p.inv.push(item.name); speak("Incroyable trouvaille !");
@@ -250,8 +259,6 @@
     }
 
     function closeBite() { document.getElementById('bite-box').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
-
-    window.onload = initIsland;
 </script>
 </body>
 </html>
