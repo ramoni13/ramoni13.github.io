@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V16 Voice Edition</title>
+    <title>Lilocroco TV - V17 Ultimate</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -17,24 +17,28 @@
         .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
         .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; margin-bottom: 10px;}
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; }
-        .cell-player { border: 2px solid white; background: #234d20 !important; }
-        .pion { font-size: 1.3rem; z-index: 10; }
-        .is-stealth { opacity: 0.3; filter: grayscale(1); }
+        .inventory-bar { display: flex; justify-content: center; gap: 8px; margin: 5px 0; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 5px; font-size: 0.75rem; min-height: 30px; border: 1px dashed #444;}
 
-        /* Micro & Actions */
-        .voice-controls { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn-mic { background: #e74c3c; color: white; flex: 1; font-size: 1.2rem; }
+        .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 5px; }
+        .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; }
+        .cell-hidden { visibility: hidden; }
+        .cell-player { border: 2px solid white; background: #234d20 !important; }
+
+        .pion { font-size: 1.3rem; z-index: 10; transition: 0.3s; }
+        .is-stealth { opacity: 0.3; filter: grayscale(1); transform: scale(0.8); }
+
+        .btn-mic { width: 100%; background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 10px; font-weight: bold; margin-bottom: 10px; cursor: pointer; }
         .btn-mic.listening { animation: pulse 1s infinite; background: #ff4757; }
 
-        .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; }
-        button { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
+        .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
+        button.act { padding: 15px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; cursor: pointer; }
         
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; }
-        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 90; }
-
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; box-shadow: 0 0 100px black; }
+        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: #555; pointer-events: none; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
@@ -45,97 +49,112 @@
         <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
     </div>
 
-    <div class="voice-controls">
-        <button id="mic-btn" class="btn-mic" onclick="startVoice()">🎤 PARLER À L'ANIMATEUR</button>
-    </div>
+    <div class="inventory-bar" id="p-inv">🎒 Sac vide</div>
+    
+    <button id="mic-btn" class="btn-mic" onclick="startVoice()">🎤 PARLER À L'ANIMATEUR</button>
 
-    <div id="grid" class="grid"></div>
+    <div class="grid-container"><div class="grid" id="grid"></div></div>
 
     <div id="menu-actions" class="actions-menu">
-        <button style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller</button>
-        <button style="background:#d35400" onclick="doAction('cache')">🍃 Se Cacher</button>
-        <button style="background:#2c3e50" onclick="doAction('repos')">💤 Reposer</button>
-        <button style="background:#27ae60" onclick="doAction('don')">🤝 Donner</button>
+        <button class="act" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller</button>
+        <button class="act" style="background:#d35400" onclick="doAction('cache')">🍃 Se Cacher</button>
+        <button class="act" style="background:#2c3e50" onclick="doAction('repos')">💤 Reposer</button>
+        <button class="act" id="btn-don" style="background:#27ae60" onclick="doAction('don')">🤝 Donner</button>
     </div>
+    <div id="action-history" style="font-size: 0.6rem; color: #666; margin-top: 10px; height: 40px; overflow-y: auto; background: #000; padding: 5px;"></div>
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="loot-box" class="modal"><h3 id="l-title">BUTIN !</h3><div id="l-icon" style="font-size:60px;"></div><button onclick="confirmTurn()" style="background:black; color:white; width:100%; padding:12px; border-radius:10px;">OK</button></div>
+<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Un croco vous a mordu ! -1 PV.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><p id="loot-info" style="font-size:0.8rem"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
 
 <script>
     // --- MOTEUR VOCAL ---
     const synth = window.speechSynthesis;
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'fr-FR';
+    let recognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'fr-FR';
+    }
 
     function speak(text) {
         const utter = new SpeechSynthesisUtterance(text);
-        utter.pitch = 1.2; utter.rate = 1;
+        utter.pitch = 1.1; utter.rate = 1;
         synth.speak(utter);
     }
 
     function startVoice() {
+        if (!recognition) return alert("Micro non supporté sur ce navigateur.");
         recognition.start();
         document.getElementById('mic-btn').classList.add('listening');
         document.getElementById('mic-btn').innerText = "JE VOUS ÉCOUTE...";
     }
 
-    recognition.onresult = (event) => {
-        const cmd = event.results[0][0].transcript.toLowerCase();
-        document.getElementById('mic-btn').classList.remove('listening');
-        document.getElementById('mic-btn').innerText = "🎤 PARLER À L'ANIMATEUR";
-        
-        if (turnStep === 1) {
-            if (cmd.includes("fouille")) doAction('fouille');
-            else if (cmd.includes("cache")) doAction('cache');
-            else if (cmd.includes("repose") || cmd.includes("repos")) doAction('repos');
-            else if (cmd.includes("donne")) doAction('don');
-            else speak("Je n'ai pas compris. Dites fouiller, se cacher, se reposer ou donner.");
-        } else {
-            speak("Déplacez d'abord votre pion sur la grille avant de donner un ordre.");
-        }
-    };
-
-    // --- LOGIQUE JEU ---
-    const alphabet = "ABCDEFGHIJKL";
-    let players = [
-        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, hp: 3, stealth: false },
-        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, hp: 3, stealth: false },
-        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, hp: 3, stealth: false },
-        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, hp: 3, stealth: false }
-    ];
-    let currentPlayer = 0; let turnStep = 0;
-    let crocos = []; let scenery = [];
-
-    function init() {
-        for(let x=1; x<=16; x++) {
-            for(let y=1; y<=12; y++) {
-                if(Math.random() < 0.2) crocos.push({x,y});
-                else if(Math.random() < 0.15) scenery.push({x,y, icon: '🌴', stock: 1, fruit: '🥥'});
+    if (recognition) {
+        recognition.onresult = (event) => {
+            const cmd = event.results[0][0].transcript.toLowerCase();
+            document.getElementById('mic-btn').classList.remove('listening');
+            document.getElementById('mic-btn').innerText = "🎤 PARLER À L'ANIMATEUR";
+            if (turnStep === 1) {
+                if (cmd.includes("fouille")) doAction('fouille');
+                else if (cmd.includes("cache")) doAction('cache');
+                else if (cmd.includes("repose") || cmd.includes("repos")) doAction('repos');
+                else if (cmd.includes("donne")) doAction('don');
             }
-        }
-        render();
-        speak("Bienvenue sur Lilo Croco TV ! Joueur Bleu, c'est à vous. Choisissez votre case d'arrivée.");
+        };
+        recognition.onerror = () => {
+            document.getElementById('mic-btn').classList.remove('listening');
+            document.getElementById('mic-btn').innerText = "🎤 PARLER À L'ANIMATEUR";
+        };
     }
 
-    function render() {
+    // --- LOGIQUE JEU V15 ---
+    const alphabet = "ABCDEFGHIJKL";
+    let players = [
+        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, hp: 3, stealth: false, inv: [] },
+        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, hp: 3, stealth: false, inv: [] },
+        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, hp: 3, stealth: false, inv: [] },
+        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, hp: 3, stealth: false, inv: [] }
+    ];
+    let currentPlayer = 0; let turnStep = 0; 
+    let worldSize = { w: 16, h: 12 };
+    let crocos = []; let scenery = []; let hiddenItems = [];
+
+    function initIsland() {
+        const missions = ['🗿 Totem', '📦 Caisse', '🍶 Rhum', '🏺 Vase'];
+        for(let x=1; x<=16; x++) {
+            for(let y=1; y<=12; y++) {
+                if((x==1 && y==1) || (x==16 && y==1) || (x==1 && y==12) || (x==16 && y==12)) continue;
+                let rand = Math.random();
+                if(rand < 0.25) crocos.push({x:x, y:y});
+                else if(rand < 0.40) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: Math.floor(Math.random()*3)+1, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
+                else if(rand < 0.60) hiddenItems.push({x:x, y:y, name: missions[Math.floor(Math.random()*missions.length)]});
+            }
+        }
+        renderGrid();
+        speak("Direct en cours ! Joueur Bleu, à vous de jouer. Déplacez votre personnage.");
+    }
+
+    function renderGrid() {
         const grid = document.getElementById('grid'); grid.innerHTML = '';
         const p = players[currentPlayer];
         for (let y = p.y - 3; y <= p.y + 3; y++) {
             for (let x = p.x - 3; x <= p.x + 3; x++) {
                 const cell = document.createElement('div');
-                if (x < 1 || x > 16 || y < 1 || y > 12) cell.className = 'cell style="visibility:hidden"';
+                if (x < 1 || x > worldSize.w || y < 1 || y > worldSize.h) cell.className = 'cell cell-hidden';
                 else {
-                    cell.className = 'cell' + (x===p.x && y===p.y ? ' cell-player' : '');
+                    cell.className = 'cell' + (x === p.x && y === p.y ? ' cell-player' : '');
                     if (crocos.some(c => c.x === x && c.y === y)) cell.innerHTML = '🐊';
-                    players.forEach(pl => { if(pl.x===x && pl.y===y) cell.innerHTML += `<span class="pion ${pl.stealth?'is-stealth':''}">${pl.picto}</span>`; });
+                    players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion ${pl.stealth ? 'is-stealth' : ''}">${pl.picto}</span>`; });
+                    let s = scenery.find(s => s.x === x && s.y === y);
+                    if (s) cell.innerHTML += `<span class="case-element">${s.stock > 0 ? s.icon : '🍂'}</span>`;
+                    cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
                     if(turnStep === 0) {
                         (function(tx, ty) { cell.onclick = () => { 
                             p.x = tx; p.y = ty; p.stealth = false; turnStep = 1;
                             document.getElementById('menu-actions').style.display = 'grid';
-                            speak("Bien reçu. Quelle action voulez-vous faire ?");
-                            render();
+                            speak("Action ?"); renderGrid();
                         }; })(x, y);
                     }
                 }
@@ -146,32 +165,77 @@
 
     function doAction(type) {
         let p = players[currentPlayer];
-        if (type === 'cache') { p.stealth = true; speak("Vous vous glissez dans les fougères. Malin !"); confirmTurn(); }
-        else if (type === 'repos') { speak("Un peu de repos ne fait pas de mal."); confirmTurn(); }
+        if (type === 'cache') { p.stealth = true; speak("Bien caché !"); confirmTurn('Caché'); }
         else if (type === 'fouille') {
-            let s = scenery.find(s => s.x === p.x && s.y === p.y);
-            if(s && s.stock > 0) {
-                s.stock--; speak("Bravo ! Vous avez trouvé une noix de coco !");
-                document.getElementById('l-icon').innerText = '🥥';
-                document.getElementById('loot-box').style.display = 'block';
-                document.getElementById('overlay').style.display = 'block';
-            } else { speak("Il n'y a rien ici. Quel dommage pour l'audimat."); confirmTurn(); }
-        } else { confirmTurn(); }
+            document.getElementById('overlay').style.display = 'block';
+            let tree = scenery.find(s => s.x === p.x && s.y === p.y);
+            let item = hiddenItems.find(i => i.x === p.x && i.y === p.y);
+            if (tree && tree.stock > 0) {
+                tree.stock--; p.inv.push(tree.fruit); speak("Trouvé !");
+                showLoot(tree.fruit, tree.fruit === '🥥' ? 'Noix de Coco' : 'Banane', "Stock : " + tree.stock);
+            } else if (item) {
+                p.inv.push(item.name); speak("Magnifique !");
+                showLoot('🎁', item.name, "Objet de mission !");
+                hiddenItems = hiddenItems.filter(i => i !== item);
+            } else { speak("Rien ici."); showLoot('💨', 'VIDE', 'Rien ici...'); }
+        } else { confirmTurn(type); }
     }
 
-    function confirmTurn() {
+    function showLoot(icon, name, info) {
+        document.getElementById('loot-icon').innerText = icon;
+        document.getElementById('loot-name').innerText = name;
+        document.getElementById('loot-info').innerText = info;
+        document.getElementById('loot-box').style.display = 'block';
+    }
+
+    function confirmTurn(msg) {
         document.getElementById('loot-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'none';
-        currentPlayer = (currentPlayer + 1) % 4; turnStep = 0;
+        let p = players[currentPlayer];
+        document.getElementById('action-history').innerHTML = `<div>[${p.name}] ${msg}</div>` + document.getElementById('action-history').innerHTML;
+        currentPlayer = (currentPlayer + 1) % 4;
+        if(currentPlayer === 0) moveCrocos();
+        startTurn();
+    }
+
+    function startTurn() {
+        turnStep = 0; let p = players[currentPlayer];
+        if(crocos.some(c => c.x === p.x && c.y === p.y) && !p.stealth) {
+            p.hp--; speak("Aïe ! Morsure !");
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('bite-box').style.display = 'block';
+        } else {
+            speak(`Joueur ${p.name}, à vous.`);
+        }
+        updateUI(); renderGrid();
+    }
+
+    function moveCrocos() {
+        crocos.forEach(c => {
+            let targets = players.filter(p => !p.stealth);
+            if(targets.length === 0) return;
+            let target = targets.reduce((prev, curr) => (Math.abs(c.x - curr.x) + Math.abs(c.y - curr.y) < Math.abs(c.x - prev.x) + Math.abs(c.y - prev.y)) ? curr : prev);
+            let nX = c.x, nY = c.y;
+            if (c.x < target.x) nX++; else if (c.x > target.x) nX--;
+            else if (c.y < target.y) nY++; else if (c.y > target.y) nY--;
+            if (!players.some(p => p.stealth && p.x === nX && p.y === nY) && !crocos.some(o => o !== c && o.x === nX && o.y === nY)) {
+                c.x = nX; c.y = nY;
+            }
+        });
+    }
+
+    function updateUI() {
         let p = players[currentPlayer];
         document.getElementById('p-header').className = `header active-${currentPlayer}`;
         document.getElementById('p-name').innerText = `JOUEUR ${p.name}`;
-        render();
-        speak(`Joueur ${p.name}, à vous de jouer. Déplacez votre personnage.`);
+        document.getElementById('p-hp').innerText = "❤️".repeat(Math.max(0, p.hp)) + "🖤".repeat(Math.max(0, 3-p.hp));
+        document.getElementById('p-inv').innerText = p.inv.length > 0 ? "🎒 " + p.inv.join(' | ') : "🎒 Sac vide";
     }
 
-    window.onload = init;
+    function closeBite() { document.getElementById('bite-box').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
+
+    window.onload = initIsland;
 </script>
 </body>
 </html>
