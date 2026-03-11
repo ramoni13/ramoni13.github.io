@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V21.1 Animation Fix</title>
+    <title>Lilocroco TV - V21.3 All Player Animations</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; --move-bg: rgba(46, 204, 113, 0.4); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -70,12 +70,11 @@
         <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">💤 Se Reposer</button>
         <button class="act btn-ui" id="btn-don" style="background:#27ae60" onclick="doAction('don')">🤝 Donner</button>
     </div>
-    <div id="action-history" style="font-size: 0.6rem; color: #666; margin-top: 10px; height: 40px; overflow-y: auto; background: #000; padding: 5px;"></div>
 </div>
 
 <div class="overlay" id="overlay"></div>
 <div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p id="bite-msg"></p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">C'EST FAIT</button></div>
-<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><button onclick="confirmTurn()" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
 
 <script>
     const synth = window.speechSynthesis;
@@ -89,28 +88,16 @@
     }
 
     const alphabet = "ABCDEFGHIJKL";
-    const openingLines = [
-        "Bienvenue dans Lilocroco TV ! Quatre candidats, une île, et des mâchoires affamées. Que le meilleur gagne !",
-        "Ici la régie ! Les caméras sont prêtes, le public est bouillant. Joueur Bleu, ouvrez le bal !",
-        "Lilocroco TV : l'émission où chaque pas peut être le dernier !",
-        "Le soleil tape fort sur l'île mondiale ! Naufragés, preparez-vous !",
-        "3, 2, 1... Antenne ! Bienvenue sur l'île la plus dangereuse de la planète !",
-        "Messieurs dames, préparez vos pansements ! Lilocroco TV lance son défi !",
-        "Les crocos n'ont pas déjeuné. Quel spectacle magnifique !",
-        "Avis à tous les téléspectateurs : ne reproduisez pas ça chez vous !",
-        "L'île aux crocodiles vous ouvre ses portes... Sortirez-vous vivants ?",
-        "Silence plateau ! On tourne ! Joueur Bleu, avancez !"
-    ];
+    const openingLines = ["Bienvenue dans Lilocroco TV !"];
 
     let historyDistances = []; let historyActions = []; let historyLoots = [];
     let players = [
-        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, stealth: false, inv: [] },
-        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, stealth: false, inv: [] },
-        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, stealth: false, inv: [] },
-        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, stealth: false, inv: [] }
+        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, inv: [] },
+        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, inv: [] },
+        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, inv: [] },
+        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, inv: [] }
     ];
     let currentPlayer = 0; let turnStep = 0; let currentRange = 0;
-    let worldSize = { w: 16, h: 12 };
     let crocos = []; let scenery = [];
     let isAnimating = false;
 
@@ -129,7 +116,7 @@
     function launchGame() {
         document.getElementById('start-overlay').style.display = 'none';
         initIsland();
-        speak(openingLines[Math.floor(Math.random() * openingLines.length)]);
+        speak(openingLines[0]);
     }
 
     function prepMove(range) {
@@ -160,9 +147,7 @@
                     if (isReachable) cell.classList.add('cell-reachable');
 
                     crocos.forEach(c => {
-                        let shouldShow = false;
-                        let isBlinking = false;
-                        
+                        let shouldShow = false; let isBlinking = false;
                         if(c.stage === 'old' && c.oldX === x && c.oldY === y) { shouldShow = true; isBlinking = true; }
                         else if(c.stage === 'new' && c.x === x && c.y === y) { shouldShow = true; isBlinking = true; }
                         else if(c.stage === 'none' && c.x === x && c.y === y) { shouldShow = true; isBlinking = false; }
@@ -177,11 +162,8 @@
                     
                     players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
                     if (scenery.some(s => s.x === x && s.y === y && s.stock > 0)) cell.innerHTML += '🌴';
-                    
                     cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
-                    if(isReachable) {
-                        (function(tx, ty, d) { cell.onclick = () => { finalizeTurnMove(tx, ty, d); }; })(x, y, dist);
-                    }
+                    if(isReachable) cell.onclick = () => finalizeTurnMove(x, y, dist);
                 }
                 grid.appendChild(cell);
             }
@@ -193,29 +175,22 @@
         const p = players[currentPlayer];
         console.log("--- POSITIONS CROCOS ---", crocos.map(c => ({id: c.id, old: alphabet[c.oldY-1]+c.oldX, new: alphabet[c.y-1]+c.x})));
 
+        // Animation au début du tour de CHAQUE joueur
         for (let c of crocos) {
             let inZoneOld = (Math.abs(c.oldX - p.x) <= 3 && Math.abs(c.oldY - p.y) <= 3);
             let inZoneNew = (Math.abs(c.x - p.x) <= 3 && Math.abs(c.y - p.y) <= 3);
-            let hasMoved = c.pendingMove;
-
-            if(hasMoved && (inZoneOld || inZoneNew)) {
-                // 1. Clignote sur oldx / oldy pendant 2s
+            if(c.pendingMove && (inZoneOld || inZoneNew)) {
                 c.stage = 'old'; renderGrid();
                 await new Promise(r => setTimeout(r, 2000));
-                
-                // 2. Disparait et apparait sur rX / rY avec clignotement pendant 1s
                 c.stage = 'new'; renderGrid();
                 await new Promise(r => setTimeout(r, 1000));
-                
-                c.stage = 'none';
-                c.pendingMove = false;
-            } else {
                 c.stage = 'none';
                 c.pendingMove = false;
             }
         }
         
         isAnimating = false;
+        crocos.forEach(c => { c.stage = 'none'; c.pendingMove = false; });
         renderGrid();
 
         if(crocos.some(c => c.x === p.x && c.y === p.y)) {
@@ -233,10 +208,8 @@
         crocos.forEach(c => {
             c.oldX = c.x; c.oldY = c.y;
             let target = players.find(p => getDistance(c.x, c.y, p.x, p.y) === 1);
-            let nX = c.x, nY = c.y;
-
             if (target) {
-                nX = target.x; nY = target.y;
+                c.x = target.x; c.y = target.y;
                 c.pendingMove = true;
             } else {
                 let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0},{x:1,y:1},{x:-1,y:-1},{x:1,y:-1},{x:-1,y:1}];
@@ -244,36 +217,44 @@
                 let tx = Math.max(1, Math.min(16, c.x + move.x));
                 let ty = Math.max(1, Math.min(12, c.y + move.y));
                 if (!crocos.some(o => o.x === tx && o.y === ty)) {
-                    nX = tx; nY = ty;
-                    c.pendingMove = (nX !== c.oldX || nY !== c.oldY);
+                    c.x = tx; c.y = ty;
+                    c.pendingMove = (c.x !== c.oldX || c.y !== c.oldY);
                 }
             }
-            c.x = nX; c.y = nY;
         });
+    }
+
+    function hasSafePath(startX, startY, endX, endY, maxSteps) {
+        let queue = [{x: startX, y: startY, dist: 0}];
+        let visited = new Set([`${startX},${startY}`]);
+        while(queue.length > 0) {
+            let curr = queue.shift();
+            if(curr.x === endX && curr.y === endY) return true;
+            if(curr.dist >= maxSteps) continue;
+            let neighbors = [{x:curr.x+1,y:curr.y},{x:curr.x-1,y:curr.y},{x:curr.x,y:curr.y+1},{x:curr.x,y:curr.y-1}];
+            for(let n of neighbors) {
+                if(n.x<1||n.x>16||n.y<1||n.y>12) continue;
+                let k = `${n.x},${n.y}`;
+                if(!visited.has(k) && !crocos.some(c => c.x === n.x && c.y === n.y)) {
+                    visited.add(k); queue.push({x: n.x, y: n.y, dist: curr.dist + 1});
+                }
+            }
+        }
+        return false;
     }
 
     function finalizeTurnMove(nx, ny, dist) {
         let p = players[currentPlayer];
-        let pathBite = false;
-        let cx = p.x; let cy = p.y;
-        while(cx !== nx || cy !== ny) {
-            if (cx < nx) cx++; else if (cx > nx) cx--;
-            else if (cy < ny) cy++; else if (cy > ny) cy--;
-            if (crocos.some(c => c.x === cx && c.y === cy)) pathBite = true;
-        }
+        let pathBite = !hasSafePath(p.x, p.y, nx, ny, dist);
         p.x = nx; p.y = ny;
-        historyDistances.push({player: p.name, dist: dist});
-        
         if (dist === 2) speak("Fatigue. Ajoutez 1 carte Fatigue à votre défausse.");
         if (dist === 3) speak("Double Fatigue. Ajoutez 2 cartes Fatigue à votre défausse.");
-        
         if (pathBite) {
-            document.getElementById('bite-msg').innerText = "Passage sur un croco ! Prenez une blessure physique.";
+            document.getElementById('bite-msg').innerText = "Morsure inévitable ! Prenez une blessure.";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('bite-box').style.display = 'block';
-            speak("Morsure en chemin ! Prenez une blessure.");
+            speak("Morsure !");
         }
-
         turnStep = 2;
         document.getElementById('deck-menu').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'grid';
@@ -281,16 +262,12 @@
     }
 
     function doAction(type) {
-        let p = players[currentPlayer];
-        historyActions.push({player: p.name, action: type});
         if (type === 'fouille') {
+            let p = players[currentPlayer];
             let s = scenery.find(s => s.x === p.x && s.y === p.y);
-            if (s && s.stock > 0) {
-                s.stock--; p.inv.push(s.fruit);
-                historyLoots.push({player: p.name, item: s.fruit});
-                showLoot(s.fruit, "Récolté !");
-            } else { showLoot('💨', 'Il n\'y a rien ici'); }
-        } else { confirmTurn(type); }
+            if (s && s.stock > 0) { s.stock--; showLoot('🥥', "Récolté !"); }
+            else { showLoot('💨', 'Vide'); }
+        } else { confirmTurn(); }
     }
 
     function showLoot(icon, name) {
