@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V20 Monster Tracker</title>
+    <title>Lilocroco TV - V21 Monster Tracking</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; --move-bg: rgba(46, 204, 113, 0.4); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -31,9 +31,9 @@
         .croco-unit { position: relative; display: flex; align-items: center; justify-content: center; }
         .croco-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: red; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
         
-        /* Animation Clignotement */
-        .croco-moved { animation: blink-red 0.5s step-end infinite alternate; }
-        @keyframes blink-red { 50% { filter: brightness(2) drop-shadow(0 0 5px red); } }
+        /* Animation Clignotement Demandée */
+        .croco-blink { animation: blink-fast 0.2s step-end infinite alternate; }
+        @keyframes blink-fast { 50% { opacity: 0; filter: brightness(3); } }
 
         .button-zone { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; }
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
@@ -67,9 +67,9 @@
 
     <div id="menu-actions" class="actions-menu">
         <button class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller</button>
-        <button class="btn-ui" style="background:#d35400" onclick="doAction('cache')">🍃 Se Cacher</button>
-        <button class="btn-ui" style="background:#2c3e50" onclick="doAction('repos')">💤 Se Reposer</button>
-        <button class="btn-ui" id="btn-don" style="background:#27ae60" onclick="doAction('don')">🤝 Donner</button>
+        <button class="act btn-ui" style="background:#d35400" onclick="doAction('cache')">🍃 Se Cacher</button>
+        <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">💤 Se Reposer</button>
+        <button class="act btn-ui" id="btn-don" style="background:#27ae60" onclick="doAction('don')">🤝 Donner</button>
     </div>
     <div id="action-history" style="font-size: 0.6rem; color: #666; margin-top: 10px; height: 40px; overflow-y: auto; background: #000; padding: 5px;"></div>
 </div>
@@ -103,25 +103,23 @@
         "Silence plateau ! On tourne ! Joueur Bleu, avancez !"
     ];
 
-    let historyDistances = [];
-    let historyActions = [];
-    let historyLoots = [];
-
+    let historyDistances = []; let historyActions = []; let historyLoots = [];
     let players = [
         { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, stealth: false, inv: [] },
         { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, stealth: false, inv: [] },
         { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, stealth: false, inv: [] },
         { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, stealth: false, inv: [] }
     ];
-    let currentPlayer = 0; let turnStep = 0; 
-    let currentRange = 0;
+    let currentPlayer = 0; let turnStep = 0; let currentRange = 0;
+    let worldSize = { w: 16, h: 12 };
     let crocos = []; let scenery = [];
+    let isAnimating = false; // Bloque les clics pendant l'animation
 
     function initIsland() {
         for(let i=1; i<=10; i++) {
             let rx = Math.floor(Math.random()*14)+2;
             let ry = Math.floor(Math.random()*10)+2;
-            crocos.push({id: i, x: rx, y: ry, oldX: rx, oldY: ry, moved: false});
+            crocos.push({id: i, x: rx, y: ry, oldX: rx, oldY: ry, animating: false, stage: 'none'});
         }
         for(let i=0; i<15; i++) {
             scenery.push({x: Math.floor(Math.random()*16)+1, y: Math.floor(Math.random()*12)+1, icon: '🌴', stock: 1, fruit: '🥥'});
@@ -136,6 +134,7 @@
     }
 
     function prepMove(range) {
+        if(isAnimating) return;
         currentRange = range; turnStep = 1;
         document.getElementById('deck-menu').style.opacity = "0.3";
         renderGrid();
@@ -158,16 +157,28 @@
                     
                     let dist = getDistance(p.x, p.y, x, y);
                     let isOccupiedByPlayer = players.some(pl => pl.id !== p.id && pl.x === x && pl.y === y);
-                    let isReachable = (turnStep === 1 && dist <= currentRange && !isOccupiedByPlayer);
+                    let isReachable = (turnStep === 1 && dist <= currentRange && !isOccupiedByPlayer && !isAnimating);
                     if (isReachable) cell.classList.add('cell-reachable');
 
-                    let crocoHere = crocos.find(c => c.x === x && c.y === y);
-                    if (crocoHere) {
-                        let cDiv = document.createElement('div');
-                        cDiv.className = "croco-unit" + (crocoHere.moved ? " croco-moved" : "");
-                        cDiv.innerHTML = `🐊<div class="croco-num">${crocoHere.id}</div>`;
-                        cell.appendChild(cDiv);
-                    }
+                    // AFFICHAGE CROCOS AVEC ANIMATION
+                    crocos.forEach(c => {
+                        let shouldShow = false;
+                        let isBlinking = false;
+                        
+                        // Si le croco est en phase d'animation sur l'ancienne case
+                        if(c.stage === 'old' && c.oldX === x && c.oldY === y) { shouldShow = true; isBlinking = true; }
+                        // Si le croco est en phase d'animation sur la nouvelle case
+                        else if(c.stage === 'new' && c.x === x && c.y === y) { shouldShow = true; isBlinking = true; }
+                        // Affichage normal (hors animation)
+                        else if(c.stage === 'none' && c.x === x && c.y === y) { shouldShow = true; isBlinking = false; }
+
+                        if(shouldShow) {
+                            let cDiv = document.createElement('div');
+                            cDiv.className = "croco-unit" + (isBlinking ? " croco-blink" : "");
+                            cDiv.innerHTML = `🐊<div class="croco-num">${c.id}</div>`;
+                            cell.appendChild(cDiv);
+                        }
+                    });
                     
                     players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
                     if (scenery.some(s => s.x === x && s.y === y && s.stock > 0)) cell.innerHTML += '🌴';
@@ -182,6 +193,66 @@
         }
     }
 
+    async function startTurn() {
+        isAnimating = true;
+        const p = players[currentPlayer];
+        console.log("--- POSITIONS CROCOS ---", crocos.map(c => ({id: c.id, old: alphabet[c.oldY-1]+c.oldX, new: alphabet[c.y-1]+c.x})));
+
+        // Animation séquentielle des crocos dans la zone
+        for (let c of crocos) {
+            let inZoneOld = (Math.abs(c.oldX - p.x) <= 3 && Math.abs(c.oldY - p.y) <= 3);
+            let inZoneNew = (Math.abs(c.x - p.x) <= 3 && Math.abs(c.y - p.y) <= 3);
+            let hasMoved = (c.x !== c.oldX || c.y !== c.oldY);
+
+            if(hasMoved && (inZoneOld || inZoneNew)) {
+                // 1. Clignote sur l'ancienne position (2s)
+                c.stage = 'old'; renderGrid();
+                await new Promise(r => setTimeout(r, 2000));
+                
+                // 2. Disparait et apparait sur la nouvelle avec clignotement (1s)
+                c.stage = 'new'; renderGrid();
+                await new Promise(r => setTimeout(r, 1000));
+                
+                c.stage = 'none';
+            }
+        }
+        
+        isAnimating = false;
+        renderGrid();
+
+        if(crocos.some(c => c.x === p.x && c.y === p.y)) {
+            document.getElementById('bite-msg').innerText = "Un crocodile vous a mordu ! Ajoutez une blessure physique.";
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('bite-box').style.display = 'block';
+            speak("Morsure ! Prenez une blessure.");
+        } else {
+            speak("Joueur " + p.name + ", à vous.");
+        }
+        updateUI();
+    }
+
+    function moveCrocosMaster() {
+        crocos.forEach(c => {
+            c.oldX = c.x; c.oldY = c.y; // Sauvegarde avant mouvement
+            let target = players.find(p => getDistance(c.x, c.y, p.x, p.y) === 1);
+            let nX = c.x, nY = c.y;
+
+            if (target) {
+                nX = target.x; nY = target.y;
+            } else {
+                let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0},{x:1,y:1},{x:-1,y:-1},{x:1,y:-1},{x:-1,y:1}];
+                let move = dirs[Math.floor(Math.random()*dirs.length)];
+                let tx = Math.max(1, Math.min(16, c.x + move.x));
+                let ty = Math.max(1, Math.min(12, c.y + move.y));
+                if (!crocos.some(o => o.x === tx && o.y === ty)) {
+                    nX = tx; nY = ty;
+                }
+            }
+            c.x = nX; c.y = nY;
+            c.stage = 'none';
+        });
+    }
+
     function finalizeTurnMove(nx, ny, dist) {
         let p = players[currentPlayer];
         let pathBite = false;
@@ -191,20 +262,15 @@
             else if (cy < ny) cy++; else if (cy > ny) cy--;
             if (crocos.some(c => c.x === cx && c.y === cy)) pathBite = true;
         }
-
         p.x = nx; p.y = ny;
         historyDistances.push({player: p.name, dist: dist});
-        
-        if (dist === 2) speak("Fatigue ! Ajoutez une carte à votre défausse.");
-        if (dist === 3) speak("Double fatigue ! Ajoutez deux cartes à votre défausse.");
-        
+        if (dist === 2) speak("Fatigue !");
+        if (dist === 3) speak("Double fatigue !");
         if (pathBite) {
-            document.getElementById('bite-msg').innerText = "Morsure en chemin ! Ajoutez une carte Blessure.";
+            document.getElementById('bite-msg').innerText = "Passage sur un croco ! Prenez une blessure.";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('bite-box').style.display = 'block';
-            speak("Morsure ! Prenez une blessure.");
         }
-
         turnStep = 2;
         document.getElementById('deck-menu').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'grid';
@@ -219,11 +285,8 @@
             if (s && s.stock > 0) {
                 s.stock--; p.inv.push(s.fruit);
                 historyLoots.push({player: p.name, item: s.fruit});
-                showLoot(s.fruit, "Noix de Coco");
-            } else { 
-                showLoot('💨', 'Il n\'y a rien ici');
-                speak("Rien ici.");
-            }
+                showLoot(s.fruit, "Récolté !");
+            } else { showLoot('💨', 'Vide'); }
         } else { confirmTurn(type); }
     }
 
@@ -235,63 +298,26 @@
     }
 
     function confirmTurn() {
-        console.log("DISTANCES:", historyDistances, "ACTIONS:", historyActions, "OBJETS:", historyLoots);
+        console.log("LOGS:", historyDistances, historyActions, historyLoots);
         document.getElementById('loot-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'none';
         document.getElementById('deck-menu').style.display = 'grid';
         document.getElementById('deck-menu').style.opacity = "1";
-        
         currentPlayer = (currentPlayer + 1) % 4;
         turnStep = 0;
         if(currentPlayer === 0) moveCrocosMaster();
         startTurn();
     }
 
-    function startTurn() {
-        let p = players[currentPlayer];
-        // On vérifie si un croco a fini sur lui
-        if(crocos.some(c => c.x === p.x && c.y === p.y)) {
-            document.getElementById('bite-msg').innerText = "Un crocodile vous attendait ! Ajoutez une carte Blessure.";
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('bite-box').style.display = 'block';
-            speak("Aïe ! Le crocodile vous a mordu. Prenez une blessure.");
-        } else {
-            speak("Joueur " + p.name + ", à vous.");
-        }
-        updateUI(); renderGrid();
-    }
-
-    function moveCrocosMaster() {
-        crocos.forEach(c => {
-            c.moved = false;
-            let target = players.find(p => getDistance(c.x, c.y, p.x, p.y) === 1);
-            let nX = c.x, nY = c.y;
-
-            if (target) {
-                nX = target.x; nY = target.y;
-                c.moved = true;
-            } else {
-                let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0},{x:1,y:1},{x:-1,y:-1},{x:1,y:-1},{x:-1,y:1}];
-                let move = dirs[Math.floor(Math.random()*dirs.length)];
-                let tx = Math.max(1, Math.min(16, c.x + move.x));
-                let ty = Math.max(1, Math.min(12, c.y + move.y));
-                if (!crocos.some(o => o.x === tx && o.y === ty)) {
-                    c.x = tx; c.y = ty;
-                    c.moved = true;
-                }
-            }
-        });
-    }
-
     function updateUI() {
         let p = players[currentPlayer];
         document.getElementById('p-header').className = `header active-${currentPlayer}`;
         document.getElementById('p-name').innerText = `JOUEUR ${p.name}`;
-        document.getElementById('p-votes').innerText = p.votes;
     }
 
     function closeBite() { document.getElementById('bite-box').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
+    window.onload = () => {};
 </script>
 </body>
 </html>
