@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V18 Deck & Move</title>
+    <title>Lilocroco TV - V19 Board Game Assistant</title>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; --move-bg: rgba(46, 204, 113, 0.4); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -20,29 +20,21 @@
         .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
         .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        .inventory-bar { display: flex; justify-content: center; gap: 8px; margin: 5px 0; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 5px; font-size: 0.75rem; min-height: 30px; border: 1px dashed #444;}
-
         .grid-container { background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; margin-bottom: 5px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; transition: 0.2s; }
+        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; }
         .cell-hidden { visibility: hidden; }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
         .cell-reachable { background: var(--move-bg); border: 1px solid var(--green); cursor: pointer; }
 
         .pion { font-size: 1.3rem; z-index: 10; }
-        .is-stealth { opacity: 0.3; filter: grayscale(1); }
+        .croco-unit { position: relative; display: flex; align-items: center; justify-content: center; }
+        .croco-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: red; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
 
-        /* Zones de Boutons */
         .button-zone { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; }
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
-        button.btn-ui { padding: 12px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
+        button.btn-ui { padding: 12px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.65rem; cursor: pointer; }
         
-        /* Couleurs Boutons Deck */
-        .btn-deck-move { background: #27ae60; }
-        .btn-deck-fatigue { background: #d35400; }
-        .btn-deck-wound { background: #c0392b; }
-        button:disabled { opacity: 0.3; cursor: not-allowed; }
-
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; box-shadow: 0 0 100px black; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
         .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: #555; pointer-events: none; }
@@ -52,22 +44,19 @@
 
 <div id="start-overlay">
     <h1 style="color:var(--gold)">LILOCROCO TV</h1>
-    <p style="margin-bottom:30px">PRÊT POUR LE DIRECT ?</p>
     <button id="start-btn" onclick="launchGame()">LANCER LE SHOW</button>
 </div>
 
 <div class="app-container">
     <div id="p-header" class="header active-0">
-        <div><div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div><div id="p-stat">0 Blessure reçue</div></div>
+        <div><div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div></div>
         <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
     </div>
 
-    <div class="inventory-bar" id="p-inv">🎒 Sac vide</div>
-    
     <div id="deck-menu" class="button-zone">
-        <button class="btn-ui btn-deck-move" onclick="prepMove(3)">🏃 Déplacement<br>(0-3)</button>
-        <button class="btn-ui btn-deck-fatigue" onclick="prepMove(2)">😫 Fatigue<br>(0-2)</button>
-        <button class="btn-ui btn-deck-wound" onclick="prepMove(1)">🩸 Blessure<br>(0-1)</button>
+        <button class="btn-ui" style="background:#27ae60" onclick="prepMove(3)">🏃 Déplacement</button>
+        <button class="btn-ui" style="background:#d35400" onclick="prepMove(2)">😫 Fatigue</button>
+        <button class="btn-ui" style="background:#c0392b" onclick="prepMove(1)">🩸 Blessure</button>
     </div>
 
     <div class="grid-container"><div class="grid" id="grid"></div></div>
@@ -82,8 +71,8 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
-<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>L'animateur : "Aïe ! Ajoutez une carte Blessure à votre défausse physique !"</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">C'EST FAIT</button></div>
-<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><p id="loot-info" style="font-size:0.8rem"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p id="bite-msg"></p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">C'EST FAIT</button></div>
+<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><button onclick="confirmTurn('Récolte')" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
 
 <script>
     const synth = window.speechSynthesis;
@@ -97,26 +86,43 @@
     }
 
     const alphabet = "ABCDEFGHIJKL";
-    let players = [
-        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, wounds: 0, stealth: false, inv: [] },
-        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, wounds: 0, stealth: false, inv: [] },
-        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, wounds: 0, stealth: false, inv: [] },
-        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, wounds: 0, stealth: false, inv: [] }
+    const openingLines = [
+        "Bienvenue dans Lilocroco TV ! Quatre candidats, une île, et des mâchoires affamées. Que le meilleur gagne !",
+        "Ici la régie ! Les caméras sont prêtes, le public est bouillant. Joueur Bleu, ouvrez le bal !",
+        "Lilocroco TV : l'émission où chaque pas peut être le dernier ! Qui sera la star de l'audimat aujourd'hui ?",
+        "Le soleil tape fort sur l'île mondiale ! Naufragés, preparez-vous, le direct commence maintenant !",
+        "3, 2, 1... Antenne ! Bienvenue sur l'île la plus dangereuse de la planète. Montrez-nous de quoi vous êtes capables !",
+        "Messieurs dames, préparez vos mouchoirs ou vos pansements ! Lilocroco TV lance son grand défi du jour !",
+        "Les crocos n'ont pas déjeuné et nos candidats sont en place. Quel spectacle magnifique nous attend !",
+        "Avis à tous les téléspectateurs : ne reproduisez pas ça chez vous ! Joueur Bleu, à vous l'honneur !",
+        "L'île aux crocodiles vous ouvre ses portes... Sortirez-vous vivants de ce tournage de l'extrême ?",
+        "Silence plateau ! On tourne ! Joueur Bleu, le destin de votre équipe est entre vos mains. Avancez !"
     ];
-    let currentPlayer = 0; let turnStep = 0; // 0: Select Card, 1: Select Case, 2: Action
+
+    // Mémoires demandées
+    let historyDistances = [];
+    let historyActions = [];
+    let historyLoots = [];
+
+    let players = [
+        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, stealth: false, inv: [] },
+        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, stealth: false, inv: [] },
+        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, stealth: false, inv: [] },
+        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, stealth: false, inv: [] }
+    ];
+    let currentPlayer = 0; let turnStep = 0; 
     let currentRange = 0;
     let worldSize = { w: 16, h: 12 };
-    let crocos = []; let scenery = []; let hiddenItems = [];
+    let crocos = []; let scenery = [];
 
     function initIsland() {
-        for(let x=1; x<=16; x++) {
-            for(let y=1; y<=12; y++) {
-                if((x==1 && y==1) || (x==16 && y==1) || (x==1 && y==12) || (x==16 && y==12)) continue;
-                let rand = Math.random();
-                if(rand < 0.25) crocos.push({x:x, y:y});
-                else if(rand < 0.35) scenery.push({x:x, y:y, icon: Math.random() > 0.5 ? '🌴' : '🌿', stock: 2, fruit: Math.random() > 0.5 ? '🥥' : '🍌'});
-                else if(rand < 0.50) hiddenItems.push({x:x, y:y, name: 'Mission'});
-            }
+        // 10 Crocodiles numérotés
+        for(let i=1; i<=10; i++) {
+            crocos.push({id: i, x: Math.floor(Math.random()*14)+2, y: Math.floor(Math.random()*10)+2});
+        }
+        // Scénographie
+        for(let i=0; i<15; i++) {
+            scenery.push({x: Math.floor(Math.random()*16)+1, y: Math.floor(Math.random()*12)+1, icon: '🌴', stock: 1, fruit: '🥥'});
         }
         renderGrid();
     }
@@ -124,25 +130,17 @@
     function launchGame() {
         document.getElementById('start-overlay').style.display = 'none';
         initIsland();
-        speak("Bienvenue sur Lilocroco TV ! Joueur Bleu, quelle carte jouez-vous ?");
+        speak(openingLines[Math.floor(Math.random() * openingLines.length)]);
     }
 
-    // Phase 1 : Choix de la carte
     function prepMove(range) {
-        currentRange = range;
-        turnStep = 1;
+        currentRange = range; turnStep = 1;
         document.getElementById('deck-menu').style.opacity = "0.3";
-        // On empêche de recliquer sur le menu deck
-        const btns = document.querySelectorAll('#deck-menu button');
-        btns.forEach(b => b.disabled = true);
-        speak("Portée de " + range + " cases. Choisissez votre destination.");
+        speak("Choisissez votre case.");
         renderGrid();
     }
 
-    function getDistance(x1, y1, x2, y2) {
-        // Distance de Manhattan (uniquement orthogonal)
-        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
-    }
+    function getDistance(x1, y1, x2, y2) { return Math.abs(x1 - x2) + Math.abs(y1 - y2); }
 
     function renderGrid() {
         const grid = document.getElementById('grid'); grid.innerHTML = '';
@@ -157,21 +155,23 @@
                     cell.className = 'cell';
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
-                    // Calcul portée (Orthogonal seulement)
                     let dist = getDistance(p.x, p.y, x, y);
-                    let isReachable = (turnStep === 1 && dist <= currentRange);
+                    // Interdiction de finir sur un joueur adverse
+                    let isOccupiedByPlayer = players.some(pl => pl.id !== p.id && pl.x === x && pl.y === y);
+                    let isReachable = (turnStep === 1 && dist <= currentRange && !isOccupiedByPlayer);
 
                     if (isReachable) cell.classList.add('cell-reachable');
 
-                    if (crocos.some(c => c.x === x && c.y === y)) cell.innerHTML = '🐊';
-                    players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion ${pl.stealth ? 'is-stealth' : ''}">${pl.picto}</span>`; });
-                    let s = scenery.find(s => s.x === x && s.y === y);
-                    if (s) cell.innerHTML += `<span class="case-element">${s.stock > 0 ? s.icon : '🍂'}</span>`;
+                    let crocoHere = crocos.find(c => c.x === x && c.y === y);
+                    if (crocoHere) cell.innerHTML = `<div class="croco-unit">🐊<div class="croco-num">${crocoHere.id}</div></div>`;
+                    
+                    players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
+                    if (scenery.some(s => s.x === x && s.y === y && s.stock > 0)) cell.innerHTML += '🌴';
                     
                     cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
 
                     if(isReachable) {
-                        (function(tx, ty) { cell.onclick = () => { finalizeMove(tx, ty); }; })(x, y);
+                        (function(tx, ty, d) { cell.onclick = () => { finalizeTurnMove(tx, ty, d); }; })(x, y, dist);
                     }
                 }
                 grid.appendChild(cell);
@@ -179,76 +179,101 @@
         }
     }
 
-    function finalizeMove(nx, ny) {
-        players[currentPlayer].x = nx;
-        players[currentPlayer].y = ny;
-        players[currentPlayer].stealth = false;
+    function finalizeTurnMove(nx, ny, dist) {
+        let p = players[currentPlayer];
+        let hadToCrossCroco = false;
+        
+        // Calcul simplifié du passage (si la destination ou la case intermédiaire contient un croco)
+        // Comme c'est orthogonal, on vérifie les cases sur l'axe de déplacement
+        let checkX = p.x; let checkY = p.y;
+        while(checkX !== nx || checkY !== ny) {
+            if (checkX < nx) checkX++; else if (checkX > nx) checkX--;
+            else if (checkY < ny) checkY++; else if (checkY > ny) checkY--;
+            if (crocos.some(c => c.x === checkX && c.y === checkY)) hadToCrossCroco = true;
+        }
+
+        p.x = nx; p.y = ny;
+        historyDistances.push({player: p.name, dist: dist});
+        
+        if (dist === 2) speak("Ajoutez une carte Fatigue à votre défausse.");
+        if (dist === 3) speak("Ajoutez deux cartes Fatigue à votre défausse.");
+        
+        if (hadToCrossCroco) {
+            document.getElementById('bite-msg').innerText = "Vous avez traversé une case occupée par un crocodile ! Ajoutez une carte Blessure.";
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('bite-box').style.display = 'block';
+            speak("Morsure en chemin ! Prenez une blessure.");
+        }
+
         turnStep = 2;
         document.getElementById('deck-menu').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'grid';
-        speak("Case atteinte. Quelle action ?");
         renderGrid();
     }
 
     function doAction(type) {
         let p = players[currentPlayer];
-        if (type === 'cache') { p.stealth = true; speak("Furtif !"); confirmTurn('Caché'); }
-        else if (type === 'fouille') {
-            document.getElementById('overlay').style.display = 'block';
-            let tree = scenery.find(s => s.x === p.x && s.y === p.y);
-            if (tree && tree.stock > 0) {
-                tree.stock--; p.inv.push(tree.fruit); speak("Trouvé !");
-                showLoot(tree.fruit, tree.fruit === '🥥' ? 'Noix de Coco' : 'Banane', "Récolté !");
-            } else { speak("Rien ici !"); showLoot('💨', 'VIDE', 'Rien ici...'); }
+        historyActions.push({player: p.name, action: type});
+        if (type === 'fouille') {
+            let s = scenery.find(s => s.x === p.x && s.y === p.y);
+            if (s && s.stock > 0) {
+                s.stock--; p.inv.push(s.fruit);
+                historyLoots.push({player: p.name, item: s.fruit});
+                showLoot(s.fruit, "Noix de Coco");
+            } else { confirmTurn('Rien'); }
         } else { confirmTurn(type); }
     }
 
-    function showLoot(icon, name, info) {
+    function showLoot(icon, name) {
         document.getElementById('loot-icon').innerText = icon;
         document.getElementById('loot-name').innerText = name;
-        document.getElementById('loot-info').innerText = info;
         document.getElementById('loot-box').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
     }
 
     function confirmTurn(msg) {
+        // Console Logs demandés
+        console.log("--- TABLEAU DISTANCES ---", historyDistances);
+        console.log("--- TABLEAU ACTIONS ---", historyActions);
+        console.log("--- TABLEAU OBJETS ---", historyLoots);
+
         document.getElementById('loot-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'none';
         document.getElementById('deck-menu').style.display = 'grid';
         document.getElementById('deck-menu').style.opacity = "1";
         
-        const btns = document.querySelectorAll('#deck-menu button');
-        btns.forEach(b => b.disabled = false);
-
         currentPlayer = (currentPlayer + 1) % 4;
-        turnStep = 0;
-        if(currentPlayer === 0) moveCrocos();
+        if(currentPlayer === 0) moveCrocosMaster();
         startTurn();
     }
 
     function startTurn() {
+        turnStep = 0;
         let p = players[currentPlayer];
-        if(crocos.some(c => c.x === p.x && c.y === p.y) && !p.stealth) {
-            p.wounds++;
-            speak("Morsure ! Joueur " + p.name + ", ajoutez une carte Blessure à votre défausse physique.");
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('bite-box').style.display = 'block';
-        } else {
-            speak("Joueur " + p.name + ", choisissez votre carte de mouvement.");
-        }
+        speak("Joueur " + p.name + ", à vous.");
         updateUI(); renderGrid();
     }
 
-    function moveCrocos() {
+    function moveCrocosMaster() {
         crocos.forEach(c => {
-            let targets = players.filter(p => !p.stealth);
-            if(targets.length === 0) return;
-            let target = targets.reduce((prev, curr) => (getDistance(c.x, c.y, curr.x, curr.y) < getDistance(c.x, c.y, prev.x, prev.y)) ? curr : prev);
+            let target = players.find(p => getDistance(c.x, c.y, p.x, p.y) === 1);
             let nX = c.x, nY = c.y;
-            if (c.x < target.x) nX++; else if (c.x > target.x) nX--;
-            else if (c.y < target.y) nY++; else if (c.y > target.y) nY--;
-            // On reste en orthogonal pour les crocos aussi
-            if (!players.some(p => p.stealth && p.x === nX && p.y === nY) && !crocos.some(o => o !== c && o.x === nX && o.y === nY)) {
+
+            if (target) {
+                // Mord le joueur à proximité
+                nX = target.x; nY = target.y;
+                speak("Le crocodile " + c.id + " mord le joueur " + target.name);
+            } else {
+                // Déplacement au hasard (1 case tous sens)
+                let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0},{x:1,y:1},{x:-1,y:-1},{x:1,y:-1},{x:-1,y:1}];
+                let move = dirs[Math.floor(Math.random()*dirs.length)];
+                nX = Math.max(1, Math.min(16, c.x + move.x));
+                nY = Math.max(1, Math.min(12, c.y + move.y));
+            }
+
+            // Un seul croco par case
+            if (!crocos.some(o => o !== c && o.x === nX && o.y === nY)) {
                 c.x = nX; c.y = nY;
             }
         });
@@ -258,8 +283,6 @@
         let p = players[currentPlayer];
         document.getElementById('p-header').className = `header active-${currentPlayer}`;
         document.getElementById('p-name').innerText = `JOUEUR ${p.name}`;
-        document.getElementById('p-stat').innerText = `${p.wounds} Blessure(s) reçue(s)`;
-        document.getElementById('p-inv').innerText = p.inv.length > 0 ? "🎒 " + p.inv.join(' | ') : "🎒 Sac vide";
         document.getElementById('p-votes').innerText = p.votes;
     }
 
