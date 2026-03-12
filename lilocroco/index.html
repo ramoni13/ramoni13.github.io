@@ -41,10 +41,22 @@
         .button-zone { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; }
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
         button.btn-ui { padding: 12px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.65rem; cursor: pointer; }
+        button.btn-ui:disabled { opacity: 0.3; cursor: not-allowed; }
         
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
-        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: #555; pointer-events: none; }
+                        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: white; pointer-events: none; font-weight: bold; }
+                .weather-banner { background: linear-gradient(90deg, #2c3e50, #34495e); color: white; padding: 8px; text-align: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; border-radius: 8px; overflow: hidden; white-space: nowrap; }
+        .weather-scroll { display: inline-block; animation: scroll-left 15s linear infinite; }
+        @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .inventory-zone { display: flex; justify-content: space-around; margin-bottom: 15px; gap: 5px; }
+        .inv-slot { width: 60px; height: 60px; border: 2px solid #333; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: #f0f0f0; cursor: pointer; }
+        .inv-slot:hover { background: #e0e0e0; }
+        .inv-slot.selected { border-color: var(--gold); background: #fff3cd; }
+        .items-found { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
+        .item-card { width: 50px; height: 50px; border: 2px solid #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: white; cursor: pointer; }
+        .item-card:hover { border-color: var(--gold); }
+        .item-card.selected { border-color: var(--gold); background: #fff3cd; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
     </style>
 </head>
 <body>
@@ -55,30 +67,59 @@
 </div>
 
 <div class="app-container">
+            <div id="weather-banner" class="weather-banner">
+        <div class="weather-scroll" id="weather-text">☀️ BEAU TEMPS - Tout va bien !</div>
+    </div>
+
     <div id="p-header" class="header active-0">
         <div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div>
         <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
     </div>
 
-    <div id="deck-menu" class="button-zone">
-        <button class="btn-ui" style="background:#27ae60" onclick="prepMove(3)">🏃 Déplacement</button>
-        <button class="btn-ui" style="background:#d35400" onclick="prepMove(2)">😫 Fatigue</button>
-        <button class="btn-ui" style="background:#c0392b" onclick="prepMove(1)">🩸 Blessure</button>
+            <div id="deck-menu" class="button-zone">
+        <button id="btn-move" class="btn-ui" style="background:#27ae60" onclick="prepMove(3)">🏃 Déplacement</button>
+        <button id="btn-fatigue" class="btn-ui" style="background:#d35400" onclick="prepMove(2)" disabled>😫 Fatigue</button>
+        <button id="btn-wound" class="btn-ui" style="background:#c0392b" onclick="prepMove(1)" disabled>🩸 Blessure</button>
     </div>
 
     <div class="grid-container"><div class="grid" id="grid"></div></div>
 
     <div id="menu-actions" class="actions-menu">
-        <button class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller</button>
-        <button class="act btn-ui" style="background:#d35400" onclick="doAction('cache')">🍃 Se Cacher</button>
-        <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">💤 Se Reposer</button>
+        <button id="btn-search" class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller</button>
+        <button class="act btn-ui" style="background:#d35400" onclick="doAction('cache')">😶‍🌫️ Se Cacher</button>
+        <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">😴 Se Reposer</button>
         <button class="act btn-ui" style="background:#27ae60" onclick="doAction('don')">🤝 Donner</button>
     </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
 <div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Morsure : ajoutez une carte blessure à votre défausse.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
-<div id="loot-box" class="modal"><h3>BUTIN !</h3><div id="loot-icon" style="font-size:60px;"></div><p id="loot-name" style="font-weight:bold"></p><button onclick="confirmTurn()" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="loot-box" class="modal" style="width: 350px;">
+    <h3>FOUILLE</h3>
+    <div class="inventory-zone">
+        <div>
+            <div style="font-size: 0.7rem; margin-bottom: 3px;">Main G.</div>
+            <div class="inv-slot" id="inv-left" onclick="selectInventorySlot('left')"></div>
+        </div>
+        <div>
+            <div style="font-size: 0.7rem; margin-bottom: 3px;">Sac</div>
+            <div style="display: flex; gap: 3px;">
+                <div class="inv-slot" id="inv-back0" onclick="selectInventorySlot('back0')"></div>
+                <div class="inv-slot" id="inv-back1" onclick="selectInventorySlot('back1')"></div>
+                <div class="inv-slot" id="inv-back2" onclick="selectInventorySlot('back2')"></div>
+            </div>
+        </div>
+        <div>
+            <div style="font-size: 0.7rem; margin-bottom: 3px;">Main D.</div>
+            <div class="inv-slot" id="inv-right" onclick="selectInventorySlot('right')"></div>
+        </div>
+    </div>
+    <hr style="border-color: #ddd;">
+    <p style="font-weight: bold; margin: 10px 0;">Objets trouvés :</p>
+    <div class="items-found" id="items-found"></div>
+    <button onclick="closeLoot()" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px; margin-top: 10px;">TERMINER</button>
+</div>
+<div id="player-change-box" class="modal"><h3 style="color:var(--gold)">CHANGEMENT DE JOUEUR</h3><div style="font-size:60px;" id="next-player-icon">👤</div><p id="next-player-text" style="font-weight:bold; font-size:1.2rem;">Au tour de JOUEUR BLEU</p><button onclick="closePlayerChange()" style="background:var(--gold); color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;">C'EST PARTI !</button></div>
 
 <script>
     const synth = window.speechSynthesis;
@@ -91,16 +132,37 @@
         }, 250);
     }
 
+    // Alphabet pour les coordonnées des cases (A-L)
     const alphabet = "ABCDEFGHIJKL";
+    
+    // Définition des 4 joueurs avec leur inventaire
     let players = [
-        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, inv: [] },
-        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, inv: [] },
-        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, inv: [] },
-        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, inv: [] }
+        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
+        { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
+        { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
+        { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 }
     ];
-    let currentPlayer = 0; let turnStep = 0; let currentRange = 0;
-    let crocos = []; let scenery = [];
-    let isAnimating = false;
+    
+    // Variables globales du jeu
+    let currentPlayer = 0;          // Index du joueur actuel (0-3)
+    let turnStep = 0;               // Étape du tour (0=attente, 1=déplacement, 2=action)
+    let currentRange = 0;           // Portée de déplacement actuelle
+    let crocos = [];                // Liste des crocodiles
+    let scenery = [];               // Liste des arbres (cocotiers et bananiers)
+    let isAnimating = false;        // Indicateur d'animation en cours
+    let currentWeather = 'Beau temps'; // Météo actuelle
+    let selectedItem = null;        // Objet sélectionné dans l'interface de fouille
+    let currentCellItems = [];      // Objets trouvés sur la case actuelle
+    let autoSearchDone = false;     // Indique si la fouille automatique (pioche) a été faite
+    
+    // Liste des objets disponibles sur les arbres
+    const ITEMS = [
+        {name: 'totem', icon: '🗿'},
+        {name: 'pioche', icon: '⛏️'},
+        {name: 'arc', icon: '🏹'},
+        {name: 'torche', icon: '🔥'},
+        {name: 'gourde', icon: '🥤'}
+    ];
 
     // Définition des camps (4 cases par coin)
     function getBaseOwner(x, y) {
@@ -111,38 +173,104 @@
         return null;
     }
 
+    /**
+     * Initialise l'île avec les crocodiles et les arbres
+     */
     function initIsland() {
-        // 12 Crocos (3 par quart)
-        const sectors = [[3,8,3,6], [9,14,3,6], [3,8,7,10], [9,14,7,10]];
+        // === CROCODILES (12 total) ===
         let cId = 1;
+        
+        // 4 crocodiles près des camps (1 par camp)
+        const campPositions = [{x:3,y:3}, {x:14,y:3}, {x:3,y:10}, {x:14,y:10}];
+        campPositions.forEach(pos => {
+            crocos.push({id: cId++, x: pos.x, y: pos.y, oldX: pos.x, oldY: pos.y, stage: 'none', seen: false});
+        });
+        
+        // 8 crocodiles dans les secteurs (2 par secteur)
+        const sectors = [[4,8,4,6], [9,13,4,6], [4,8,7,9], [9,13,7,9]];
         sectors.forEach(s => {
-            for(let i=0; i<3; i++) {
-                let rx = Math.floor(Math.random()*(s[1]-s[0]+1))+s[0];
-                let ry = Math.floor(Math.random()*(s[3]-s[2]+1))+s[2];
+            for(let i=0; i<2; i++) {
+                let rx, ry;
+                let attempts = 0;
+                // Trouver une position libre (sans autre croco)
+                do {
+                    rx = Math.floor(Math.random()*(s[1]-s[0]+1))+s[0];
+                    ry = Math.floor(Math.random()*(s[3]-s[2]+1))+s[2];
+                    attempts++;
+                } while (crocos.some(c => c.x === rx && c.y === ry) && attempts < 100);
                 crocos.push({id: cId++, x: rx, y: ry, oldX: rx, oldY: ry, stage: 'none', seen: false});
             }
         });
+        
+        // === COCOTIERS (15 total) ===
         for(let i=0; i<15; i++) {
-            scenery.push({x: Math.floor(Math.random()*12)+3, y: Math.floor(Math.random()*8)+3, icon: '🌴', stock: 1, fruit: '🥥'});
+            let sx, sy;
+            let attempts = 0;
+            // Trouver une position libre (sans autre arbre)
+            do {
+                sx = Math.floor(Math.random()*12)+3;
+                sy = Math.floor(Math.random()*8)+3;
+                attempts++;
+            } while (scenery.some(s => s.x === sx && s.y === sy) && attempts < 100);
+            // Ajouter un objet aléatoire sur l'arbre
+            let randomItem = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+            scenery.push({x: sx, y: sy, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: {...randomItem}});
         }
+        
+        // === BANANIERS (15 total) ===
+        for(let i=0; i<15; i++) {
+            let sx, sy;
+            let attempts = 0;
+            // Trouver une position libre (sans autre arbre)
+            do {
+                sx = Math.floor(Math.random()*12)+3;
+                sy = Math.floor(Math.random()*8)+3;
+                attempts++;
+            } while (scenery.some(s => s.x === sx && s.y === sy) && attempts < 100);
+            // Ajouter un objet aléatoire sur l'arbre
+            let randomItem = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+            scenery.push({x: sx, y: sy, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: {...randomItem}});
+        }
+        
+        console.log('INIT - Crocos:', crocos);
         renderGrid();
     }
 
+    /**
+     * Lance le jeu au clic sur le bouton de démarrage
+     */
     function launchGame() {
         document.getElementById('start-overlay').style.display = 'none';
         initIsland();
-        speak("Direct en cours ! Bienvenue sur Lilocroco TV !");
+        speak("Direct en cours ! Bienvenue sur Lilocroco TV ! C'est parti pour une nouvelle aventure !");
     }
 
+    /**
+     * Prépare le déplacement du joueur
+     * @param {number} range - Portée de déplacement (1, 2 ou 3 cases)
+     */
     function prepMove(range) {
         if(isAnimating) return;
-        currentRange = range; turnStep = 1;
+        
+        // Réduction de 1 case en cas d'Orage
+        if (currentWeather === 'Orage') range--;
+        
+        currentRange = range;
+        turnStep = 1; // Passer en mode sélection de case
         document.getElementById('deck-menu').style.opacity = "0.3";
         renderGrid();
     }
 
-    function getDistance(x1, y1, x2, y2) { return Math.abs(x1 - x2) + Math.abs(y1 - y2); }
+    /**
+     * Calcule la distance de Manhattan entre deux points
+     */
+    function getDistance(x1, y1, x2, y2) {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
 
+    /**
+     * Affiche la grille de jeu (7x7 cases centrées sur le joueur actuel)
+     */
     function renderGrid() {
         const grid = document.getElementById('grid'); grid.innerHTML = '';
         const p = players[currentPlayer];
@@ -164,21 +292,16 @@
                     if (isReachable) cell.classList.add('cell-reachable');
 
                     crocos.forEach(c => {
-                        let shouldShow = false; let isBlinking = false;
-                        if(c.stage === 'old' && c.oldX === x && c.oldY === y) { shouldShow = true; isBlinking = true; }
-                        else if(c.stage === 'new' && c.x === x && c.y === y) { shouldShow = true; isBlinking = true; }
-                        else if(c.stage === 'none' && c.x === x && c.y === y) { shouldShow = true; isBlinking = false; }
-
-                        if(shouldShow) {
+                        if(c.x === x && c.y === y) {
                             let cDiv = document.createElement('div');
-                            cDiv.className = "croco-unit" + (isBlinking ? " croco-blink" : "");
+                            cDiv.className = "croco-unit";
                             cDiv.innerHTML = `🐊<div class="croco-num">${c.id}</div>`;
                             cell.appendChild(cDiv);
                         }
                     });
                     
-                    players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
-                    if (scenery.some(s => s.x === x && s.y === y && s.stock > 0)) cell.innerHTML += '🌴';
+                                                                                players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
+                    scenery.forEach(s => { if (s.x === x && s.y === y) cell.innerHTML += s.icon; });
                     cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
                     if(isReachable) cell.onclick = () => finalizeTurnMove(x, y, dist);
                 }
@@ -187,46 +310,54 @@
         }
     }
 
-    async function startTurn() {
-        isAnimating = true;
+        /**
+     * Démarre le tour d'un joueur
+     */
+    function startTurn() {
         const p = players[currentPlayer];
+        console.log('========== DÉBUT TOUR ==========');
+        console.log('TOUS LES JOUEURS:', JSON.parse(JSON.stringify(players)));
+        renderGrid();
 
-        for (let c of crocos) {
-            let inZoneOld = (Math.abs(c.oldX - p.x) <= 3 && Math.abs(c.oldY - p.y) <= 3);
-            let inZoneNew = (Math.abs(c.x - p.x) <= 3 && Math.abs(c.y - p.y) <= 3);
-            if(c.oldX !== c.x || c.oldY !== c.y) {
-                if(inZoneOld || inZoneNew) {
-                    c.seen = true;
-                    c.stage = 'old'; renderGrid();
-                    await new Promise(r => setTimeout(r, 2000));
-                    c.stage = 'new'; renderGrid();
-                    await new Promise(r => setTimeout(r, 1000));
-                    c.stage = 'none';
-                }
+        // Vérifier les protections du joueur
+        let isCached = p.status.includes('caché');
+        let hasTorch = (p.leftHand && p.leftHand.name === 'torche') || (p.rightHand && p.rightHand.name === 'torche');
+        
+        // Vérifier s'il y a un croco sur la case
+        if(crocos.some(c => c.x === p.x && c.y === p.y)) {
+            if (isCached) {
+                speak("Vous étiez caché, le crocodile ne vous a pas vu !");
+            } else if (hasTorch) {
+                speak("Votre torche effraie le crocodile ! Vous êtes protégé.");
+            } else {
+                p.woundCards++;
+                document.getElementById('bite-box').querySelector('p').innerText = 'Morsure : ajoutez une carte blessure à votre défausse.';
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('bite-box').style.display = 'block';
+                speak("Morsure ! Ajoutez une blessure.");
             }
         }
         
-        isAnimating = false;
-        renderGrid();
-
-        if(crocos.some(c => c.x === p.x && c.y === p.y)) {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('bite-box').style.display = 'block';
-            speak("Morsure ! Ajoutez une blessure.");
-        } else {
-            speak("Joueur " + p.name + ", à vous.");
-        }
+        // Retirer le statut "caché" après utilisation
+        p.status = p.status.filter(s => s !== 'caché');
+        
         updateUI();
     }
 
+    /**
+     * Déplace tous les crocodiles vers le joueur le plus proche
+     */
     function moveCrocosGlobal() {
+        console.log('AVANT DEPLACEMENT - Crocos:', JSON.parse(JSON.stringify(crocos)));
         crocos.forEach(c => {
             c.oldX = c.x; c.oldY = c.y; c.seen = false;
             let target = players.reduce((prev, curr) => (getDistance(c.x, c.y, curr.x, curr.y) < getDistance(c.x, c.y, prev.x, prev.y)) ? curr : prev);
             
-            let nX = c.x, nY = c.y;
-            if (c.x < target.x) nX++; else if (c.x > target.x) nX--;
-            else if (c.y < target.y) nY++; else if (c.y > target.y) nY--;
+                        let nX = c.x, nY = c.y;
+            if (c.x < target.x) nX++;
+            if (c.x > target.x) nX--;
+            if (c.y < target.y) nY++;
+            if (c.y > target.y) nY--;
 
             // Vérification Camp ou Collision
             if (getBaseOwner(nX, nY) !== null || crocos.some(o => o.id !== c.id && o.x === nX && o.y === nY)) {
@@ -243,60 +374,388 @@
                 c.x = nX; c.y = nY;
             }
         });
+        console.log('APRES DEPLACEMENT - Crocos:', JSON.parse(JSON.stringify(crocos)));
     }
 
-    function hasSafePath(startX, startY, endX, endY, maxSteps) {
-        let queue = [{x: startX, y: startY, dist: 0}];
-        let visited = new Set([`${startX},${startY}`]);
+    /**
+     * Compte le nombre de crocodiles sur le meilleur chemin
+     * @returns {number} Nombre de crocodiles sur le chemin optimal
+     */
+    function countCrocosOnPath(startX, startY, endX, endY, maxSteps) {
+        let allPaths = [];
+        let queue = [{x: startX, y: startY, dist: 0, path: []}];
+        let visited = new Map();
+        visited.set(`${startX},${startY}`, 0);
+        
         while(queue.length > 0) {
             let curr = queue.shift();
-            if(curr.x === endX && curr.y === endY) return true;
+            if(curr.x === endX && curr.y === endY) {
+                let crocosOnPath = curr.path.filter(pos => crocos.some(c => c.x === pos.x && c.y === pos.y)).length;
+                allPaths.push({path: curr.path, crocos: crocosOnPath, dist: curr.dist});
+                continue;
+            }
             if(curr.dist >= maxSteps) continue;
             let neighbors = [{x:curr.x+1,y:curr.y},{x:curr.x-1,y:curr.y},{x:curr.x,y:curr.y+1},{x:curr.x,y:curr.y-1}];
             for(let n of neighbors) {
                 if(n.x<1||n.x>16||n.y<1||n.y>12) continue;
-                if(!visited.has(`${n.x},${n.y}`) && !crocos.some(c => c.x === n.x && c.y === n.y)) {
-                    visited.add(`${n.x},${n.y}`); queue.push({x: n.x, y: n.y, dist: curr.dist + 1});
+                let key = `${n.x},${n.y}`;
+                let newDist = curr.dist + 1;
+                if(!visited.has(key) || visited.get(key) >= newDist) {
+                    visited.set(key, newDist);
+                    queue.push({x: n.x, y: n.y, dist: newDist, path: [...curr.path, {x: n.x, y: n.y}]});
                 }
             }
         }
-        return false;
+        
+        if(allPaths.length === 0) return -1;
+        
+        // Trier : priorité aux chemins sans crocos, puis par distance
+        allPaths.sort((a, b) => {
+            if(a.crocos !== b.crocos) return a.crocos - b.crocos;
+            return a.dist - b.dist;
+        });
+        
+        return allPaths[0].crocos;
     }
 
+    /**
+     * Finalise le déplacement du joueur vers une case
+     */
     function finalizeTurnMove(nx, ny, dist) {
         let p = players[currentPlayer];
-        let pathBite = !hasSafePath(p.x, p.y, nx, ny, dist);
-        p.x = nx; p.y = ny;
-        if (dist === 2) speak("Fatigue. Ajoutez 1 carte Fatigue.");
-        if (dist === 3) speak("Double Fatigue. Ajoutez 2 cartes Fatigue.");
-        if (pathBite) {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('bite-box').style.display = 'block';
-            speak("Morsure !");
+        
+                // Si case de départ = case d'arrivée
+        if (p.x === nx && p.y === ny) {
+            if (crocos.some(c => c.x === p.x && c.y === p.y)) {
+                // Vérifier si le joueur a une torche
+                let hasTorch = (p.leftHand && p.leftHand.name === 'torche') || (p.rightHand && p.rightHand.name === 'torche');
+                
+                if (!hasTorch) {
+                    p.woundCards++;
+                    document.getElementById('bite-box').querySelector('p').innerText = '1 morsure : ajoutez 1 carte blessure à votre défausse.';
+                    document.getElementById('overlay').style.display = 'block';
+                    document.getElementById('bite-box').style.display = 'block';
+                    speak("Morsure ! Ajoutez une blessure.");
+                } else {
+                    speak("Votre torche protège contre la morsure !");
+                }
+            }
+            p.actions.push({type: 'move', from: {x: p.x, y: p.y}, to: {x: nx, y: ny}, distance: 0});
+            turnStep = 2;
+            document.getElementById('deck-menu').style.display = 'none';
+            document.getElementById('menu-actions').style.display = 'grid';
+            renderGrid();
+            return;
         }
+        
+        let nbCrocos = countCrocosOnPath(p.x, p.y, nx, ny, dist);
+        
+        // Enregistrer l'action de déplacement
+        p.actions.push({type: 'move', from: {x: p.x, y: p.y}, to: {x: nx, y: ny}, distance: dist});
+        
+        p.x = nx; p.y = ny;
+        
+        // Gestion fatigue selon météo
+        let fatigueCount = 0;
+        if (currentWeather === 'Canicule') {
+            if (dist >= 1 && dist <= 2) fatigueCount = 1;
+            if (dist === 3) fatigueCount = 2;
+        } else {
+            if (dist === 3) fatigueCount = 1;
+        }
+        
+        if (fatigueCount > 0) {
+            p.fatigueCards += fatigueCount;
+            if (fatigueCount === 1) speak("   Fatigue. Ajoutez 1 carte Fatigue.");
+            if (fatigueCount === 2) speak("   Double Fatigue. Ajoutez 2 cartes Fatigue.");
+        }
+        
+            if (nbCrocos > 0) {
+            // Vérifier si le joueur a une torche pour se protéger
+            let hasTorch = (p.leftHand && p.leftHand.name === 'torche') || (p.rightHand && p.rightHand.name === 'torche');
+            
+            if (hasTorch) {
+                speak("Votre torche vous protège des crocodiles sur le chemin !");
+            } else {
+                p.woundCards += nbCrocos;
+                let biteText = nbCrocos === 1 ? '1 morsure' : `${nbCrocos} morsures`;
+                let cardText = nbCrocos === 1 ? '1 carte blessure' : `${nbCrocos} cartes blessure`;
+                document.getElementById('bite-box').querySelector('p').innerText = `${biteText} : ajoutez ${cardText} à votre défausse.`;
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('bite-box').style.display = 'block';
+                speak(`${biteText} ! Ajoutez ${cardText}.`);
+            }
+        }
+        
         turnStep = 2;
         document.getElementById('deck-menu').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'grid';
+        
+        // Vérifier si le joueur a une pioche pour fouille automatique
+        let hasPioche = (p.leftHand && p.leftHand.name === 'pioche') || (p.rightHand && p.rightHand.name === 'pioche');
+        
+        if (hasPioche) {
+            autoSearchDone = true;
+            speak("Votre pioche vous permet de fouiller automatiquement !");
+            performAutoSearch();
+        } else {
+            autoSearchDone = false;
+        }
+        
+        // Activer/Désactiver le bouton Fouiller
+        document.getElementById('btn-search').disabled = autoSearchDone;
+        
         renderGrid();
     }
-
-    function doAction(type) {
-        if (type === 'fouille') {
-            let p = players[currentPlayer];
-            let s = scenery.find(s => s.x === p.x && s.y === p.y);
-            if (s && s.stock > 0) { s.stock--; showLoot('🥥', "Récolté !"); }
-            else { showLoot('💨', 'Vide'); }
-        } else { confirmTurn(); }
+    
+    /**
+     * Effectue une fouille automatique (avec pioche)
+     */
+    function performAutoSearch() {
+        let p = players[currentPlayer];
+        currentCellItems = [];
+        let trees = scenery.filter(s => s.x === p.x && s.y === p.y);
+        
+        trees.forEach(tree => {
+            if (tree.stock > 0) {
+                currentCellItems.push({type: 'fruit', icon: tree.fruit, name: tree.type});
+                tree.stock--;
+            }
+            if (tree.item) {
+                currentCellItems.push({type: 'item', icon: tree.item.icon, name: tree.item.name});
+                tree.item = null;
+            }
+        });
+        
+        p.actions.push({type: 'fouille_auto', items: currentCellItems, location: {x: p.x, y: p.y}});
+        
+        // Afficher la popup de fouille si des objets ont été trouvés
+        if (currentCellItems.length > 0) {
+            showLootInventory();
+        }
     }
 
-    function showLoot(icon, name) {
-        document.getElementById('loot-icon').innerText = icon;
-        document.getElementById('loot-name').innerText = name;
+        /**
+     * Exécute une action (fouille, cache, repos, don)
+     */
+    function doAction(type) {
+        let p = players[currentPlayer];
+        
+        if (type === 'fouille') {
+            // Si la fouille automatique a déjà été faite, ne rien faire
+            if (autoSearchDone) {
+                speak("Vous avez déjà fouillé avec votre pioche !");
+                return;
+            }
+            
+            currentCellItems = [];
+            let trees = scenery.filter(s => s.x === p.x && s.y === p.y);
+            
+            trees.forEach(tree => {
+                if (tree.stock > 0) {
+                    currentCellItems.push({type: 'fruit', icon: tree.fruit, name: tree.type});
+                    tree.stock--;
+                }
+                if (tree.item) {
+                    currentCellItems.push({type: 'item', icon: tree.item.icon, name: tree.item.name});
+                    tree.item = null;
+                }
+            });
+            
+            p.actions.push({type: 'fouille', items: currentCellItems, location: {x: p.x, y: p.y}});
+            showLootInventory();
+        } else if (type === 'cache') {
+            p.status.push('caché');
+            p.actions.push({type: 'cache', location: {x: p.x, y: p.y}});
+            speak('Vous vous cachez. Vous êtes protégé des crocodiles au prochain tour.');
+            endTurnLog();
+            showPlayerChange();
+        } else if (type === 'repos') {
+            if (p.fatigueCards > 0) {
+                p.fatigueCards--;
+                speak('Vous vous reposez. Une carte fatigue retirée.');
+            } else {
+                speak('Vous vous reposez mais vous n\'avez pas de fatigue.');
+            }
+            p.actions.push({type: 'repos', location: {x: p.x, y: p.y}});
+            endTurnLog();
+            showPlayerChange();
+        } else if (type === 'don') {
+            p.actions.push({type: 'don', location: {x: p.x, y: p.y}});
+            speak('Action donner - Non implémentée pour le moment.');
+            endTurnLog();
+            showPlayerChange();
+        } else { 
+            endTurnLog();
+            showPlayerChange();
+        }
+    }
+
+    /**
+     * Affiche la popup de fouille avec l'inventaire et les objets trouvés
+     */
+    function showLootInventory() {
+        let p = players[currentPlayer];
+        selectedItem = null;
+        
+        // Afficher inventaire actuel
+        document.getElementById('inv-left').innerText = p.leftHand ? p.leftHand.icon : '';
+        document.getElementById('inv-right').innerText = p.rightHand ? p.rightHand.icon : '';
+        document.getElementById('inv-back0').innerText = p.backpack[0] ? p.backpack[0].icon : '';
+        document.getElementById('inv-back1').innerText = p.backpack[1] ? p.backpack[1].icon : '';
+        document.getElementById('inv-back2').innerText = p.backpack[2] ? p.backpack[2].icon : '';
+        
+        // Afficher objets trouvés
+        let itemsFoundDiv = document.getElementById('items-found');
+        itemsFoundDiv.innerHTML = '';
+        
+        if (currentCellItems.length === 0) {
+            itemsFoundDiv.innerHTML = '<p style="color: #999;">Rien trouvé</p>';
+        } else {
+            currentCellItems.forEach((item, idx) => {
+                let itemDiv = document.createElement('div');
+                itemDiv.className = 'item-card';
+                itemDiv.innerText = item.icon;
+                itemDiv.onclick = () => selectFoundItem(idx);
+                itemsFoundDiv.appendChild(itemDiv);
+            });
+        }
+        
         document.getElementById('loot-box').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
     }
+    
+    /**
+     * Sélectionne un objet trouvé sur la case
+     */
+    function selectFoundItem(idx) {
+        selectedItem = {source: 'found', index: idx};
+        document.querySelectorAll('.item-card').forEach((el, i) => {
+            el.classList.toggle('selected', i === idx);
+        });
+        document.querySelectorAll('.inv-slot').forEach(el => el.classList.remove('selected'));
+    }
+    
+    /**
+     * Gère le clic sur un slot d'inventaire (main gauche, droite, sac)
+     * - Sans sélection : dépose l'objet sur la case
+     * - Avec sélection : place l'objet dans le slot (échange si occupé)
+     */
+    function selectInventorySlot(slot) {
+        let p = players[currentPlayer];
+        
+        // Si aucun objet sélectionné, on clique sur l'inventaire pour déposer
+        if (!selectedItem) {
+            let itemToRemove = null;
+            
+            if (slot === 'left' && p.leftHand) {
+                itemToRemove = p.leftHand;
+                p.leftHand = null;
+            } else if (slot === 'right' && p.rightHand) {
+                itemToRemove = p.rightHand;
+                p.rightHand = null;
+            } else if (slot.startsWith('back')) {
+                let backIdx = parseInt(slot.replace('back', ''));
+                if (p.backpack[backIdx]) {
+                    itemToRemove = p.backpack[backIdx];
+                    p.backpack[backIdx] = null;
+                }
+            }
+            
+            if (itemToRemove) {
+                currentCellItems.push(itemToRemove);
+                showLootInventory();
+            }
+            return;
+        }
+        
+        // Si un objet est sélectionné, on le place
+        let itemToPlace = null;
+        
+        if (selectedItem.source === 'found') {
+            itemToPlace = currentCellItems[selectedItem.index];
+            currentCellItems.splice(selectedItem.index, 1);
+        }
+        
+        let existingItem = null;
+        
+        if (slot === 'left') {
+            existingItem = p.leftHand;
+            p.leftHand = itemToPlace;
+        } else if (slot === 'right') {
+            existingItem = p.rightHand;
+            p.rightHand = itemToPlace;
+        } else if (slot.startsWith('back')) {
+            let backIdx = parseInt(slot.replace('back', ''));
+            existingItem = p.backpack[backIdx];
+            p.backpack[backIdx] = itemToPlace;
+        }
+        
+        if (existingItem) {
+            currentCellItems.push(existingItem);
+        }
+        
+        selectedItem = null;
+        showLootInventory();
+    }
+    
+    /**
+     * Affiche les logs de fin de tour dans la console
+     */
+    function endTurnLog() {
+        console.log('========== FIN TOUR ==========');
+        console.log('TOUS LES JOUEURS:', JSON.parse(JSON.stringify(players)));
+    }
+    
+    /**
+     * Affiche la popup de changement de joueur
+     */
+    function showPlayerChange() {
+        let nextPlayer = (currentPlayer + 1) % 4;
+        let nextP = players[nextPlayer];
+        
+        // Définir la couleur selon le joueur
+        let playerColors = ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71'];
+        let playerColor = playerColors[nextPlayer];
+        
+        document.getElementById('next-player-icon').innerText = nextP.picto;
+        document.getElementById('next-player-text').innerHTML = `Au tour de <span style="color:${playerColor};">JOUEUR ${nextP.name}</span>`;
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('player-change-box').style.display = 'block';
+        speak("Joueur " + nextP.name + ", à vous.");
+    }
+    
+    /**
+     * Ferme la popup de changement de joueur et passe au joueur suivant
+     */
+    function closePlayerChange() {
+        document.getElementById('player-change-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        confirmTurn();
+    }
+    
+        /**
+     * Ferme la popup de fouille et termine le tour
+     */
+    function closeLoot() {
+        document.getElementById('loot-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        // Si c'était une fouille automatique, ne pas terminer le tour
+        if (autoSearchDone) {
+            // Réactiver le menu d'actions pour permettre une autre action
+            return;
+        }
+        
+        endTurnLog();
+        showPlayerChange();
+    }
 
+    /**
+     * Confirme la fin du tour et passe au joueur suivant
+     */
     function confirmTurn() {
+        endTurnLog();
         document.getElementById('loot-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'none';
@@ -305,20 +764,66 @@
         currentPlayer = (currentPlayer + 1) % 4;
         turnStep = 0;
         if(currentPlayer === 0) {
-            // Fin de cycle global : update coordinates pour les crocos non vus
-            crocos.forEach(c => { if(!c.seen) { c.oldX = c.x; c.oldY = c.y; } });
+            console.log('FIN DE CYCLE - Déplacement des crocos');
             moveCrocosGlobal();
+            updateWeather();
         }
         startTurn();
     }
+    
+    /**
+     * Met à jour la météo aléatoirement
+     */
+    function updateWeather() {
+        const weathers = ['Canicule', 'Orage', 'Pluie fine', 'Beau temps'];
+        currentWeather = weathers[Math.floor(Math.random() * weathers.length)];
+        
+        let weatherText = '';
+        let weatherIcon = '';
+        
+        if (currentWeather === 'Canicule') {
+            weatherIcon = '🌡️☀️';
+            weatherText = 'CANICULE - Cocotiers +1 stock - Déplacements +1 fatigue';
+            scenery.forEach(s => { if(s.type === 'cocotier') s.stock++; });
+            speak('Attention, canicule ! Les cocotiers donnent plus de fruits mais attention à la fatigue.');
+        } else if (currentWeather === 'Orage') {
+            weatherIcon = '⛈️';
+            weatherText = 'ORAGE - Déplacements réduits de 1 case';
+            speak('Orage ! Vos déplacements sont réduits.');
+        } else if (currentWeather === 'Pluie fine') {
+            weatherIcon = '🌧️';
+            weatherText = 'PLUIE FINE - Bananiers +1 stock';
+            scenery.forEach(s => { if(s.type === 'bananier') s.stock++; });
+            speak('Pluie fine. Les bananiers donnent plus de fruits.');
+        } else {
+            weatherIcon = '☀️';
+            weatherText = 'BEAU TEMPS - Tout va bien !';
+            speak('Beau temps, profitez-en !');
+        }
+        
+        document.getElementById('weather-text').innerText = `${weatherIcon} ${weatherText}`;
+    }
 
+    /**
+     * Met à jour l'interface utilisateur (header, boutons)
+     */
     function updateUI() {
         let p = players[currentPlayer];
         document.getElementById('p-header').className = `header active-${currentPlayer}`;
         document.getElementById('p-name').innerText = `JOUEUR ${p.name}`;
+        
+        // Activer/Désactiver les boutons selon les cartes disponibles
+        document.getElementById('btn-fatigue').disabled = (p.fatigueCards === 0);
+        document.getElementById('btn-wound').disabled = (p.woundCards === 0);
     }
 
-    function closeBite() { document.getElementById('bite-box').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
+    /**
+     * Ferme la popup de morsure
+     */
+    function closeBite() {
+        document.getElementById('bite-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    }
 </script>
 </body>
 </html>
