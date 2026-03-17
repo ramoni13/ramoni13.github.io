@@ -237,18 +237,18 @@
         {name: 'canne', icon: '🎣', durability: 2}
     ];
     
-    // Missions secrètes (100 missions)
+            // Missions secrètes (100 missions) - Classées par difficulté
     const SECRET_MISSIONS = [
-        {id: 1, description: "Récupérer 3 fruits différents", votes: 30, condition: (p) => checkFruitsCollected(p, 3)},
-        {id: 2, description: "Se déplacer de 3 cases sans morsure", votes: 25, condition: (p) => checkMove3WithoutBite(p)},
-        {id: 3, description: "Donner un objet à un autre joueur", votes: 20, condition: (p) => checkGiftGiven(p)},
-        {id: 4, description: "Chasser ou pêcher 2 animaux", votes: 35, condition: (p) => checkHunt2Animals(p)},
-        {id: 5, description: "Trouver un totem", votes: 50, condition: (p) => checkTotemFound(p)},
-        {id: 6, description: "Survivre à 2 morsures dans le même tour", votes: 40, condition: (p) => checkSurvive2Bites(p)},
-        {id: 7, description: "Utiliser une torche pour se protéger", votes: 20, condition: (p) => checkTorchUsed(p)},
-        {id: 8, description: "Se cacher avec succès", votes: 15, condition: (p) => checkHideSuccess(p)},
-        {id: 9, description: "Collecter 5 objets différents", votes: 45, condition: (p) => checkCollect5Items(p)},
-        {id: 10, description: "Atteindre le camp adverse", votes: 50, condition: (p) => checkReachEnemyCamp(p)},
+        {id: 1, description: "Récupérer 3 fruits différents", votes: 120, condition: (p) => checkFruitsCollected(p, 3)},
+        {id: 2, description: "Se déplacer de 3 cases sans morsure 3X de suite", votes: 180, condition: (p) => checkMove3WithoutBite3Times(p)},
+        {id: 3, description: "Donner un objet à un autre joueur", votes: 100, condition: (p) => checkGiftGiven(p)},
+        {id: 4, description: "Chasser ou pêcher 2 animaux", votes: 140, condition: (p) => checkHunt2Animals(p)},
+        {id: 5, description: "Trouver un totem", votes: 160, condition: (p) => checkTotemFound(p)},
+        {id: 6, description: "Subir 3 morsures dans le même tour", votes: 200, condition: (p) => checkSurvive3Bites(p)},
+        {id: 7, description: "Avoir une torche dans chaque main", votes: 120, condition: (p) => checkTwoTorches(p)},
+        {id: 8, description: "Se cacher 3 tours de suite", votes: 140, condition: (p) => checkHide3TimesInRow(p)},
+        {id: 9, description: "Collecter 5 objets différents", votes: 160, condition: (p) => checkCollect5Items(p)},
+        {id: 10, description: "Atteindre le camp adverse", votes: 180, condition: (p) => checkReachEnemyCamp(p)},
         // Missions 11-100 (exemples génériques)
         ...Array.from({length: 90}, (_, i) => ({
             id: i + 11,
@@ -794,6 +794,9 @@
         let isCached = p.status.includes('caché');
         let hasTorch = (p.leftHand && p.leftHand.name === 'torche') || (p.rightHand && p.rightHand.name === 'torche');
         
+                // Réinitialiser le compteur de morsures du tour
+        p.turnStartBites = 0;
+        
         // Vérifier s'il y a un croco sur la case
         if(crocos.some(c => c.x === p.x && c.y === p.y)) {
             if (isCached) {
@@ -802,6 +805,7 @@
                 speak("Votre torche effraie le crocodile ! Vous êtes protégé.");
             } else {
                 p.woundCards++;
+                p.turnStartBites = 1; // Enregistrer la morsure de début de tour
                 document.getElementById('bite-box').querySelector('p').innerText = 'Morsure : ajoutez une carte blessure à votre défausse.';
                 document.getElementById('overlay').style.display = 'block';
                 document.getElementById('bite-box').style.display = 'block';
@@ -982,7 +986,7 @@
                     speak("Votre torche protège contre la morsure !");
                 }
             }
-            p.actions.push({type: 'move', from: {x: p.x, y: p.y}, to: {x: nx, y: ny}, distance: 0});
+            p.actions.push({type: 'move', from: {x: p.x, y: p.y}, to: {x: nx, y: ny}, distance: 0, bites: 0});
             turnStep = 2;
             document.getElementById('deck-menu').style.display = 'none';
             document.getElementById('menu-actions').style.display = 'grid';
@@ -993,8 +997,8 @@
         
         let nbCrocos = countCrocosOnPath(p.x, p.y, nx, ny, dist);
         
-        // Enregistrer l'action de déplacement
-        p.actions.push({type: 'move', from: {x: p.x, y: p.y}, to: {x: nx, y: ny}, distance: dist});
+                // Enregistrer l'action de déplacement avec le nombre de morsures
+        p.actions.push({type: 'move', from: {x: p.x, y: p.y}, to: {x: nx, y: ny}, distance: dist, bites: nbCrocos});
         
         p.x = nx; p.y = ny;
         
@@ -2231,9 +2235,27 @@
         return uniqueFruits.size >= count;
     }
     
-    function checkMove3WithoutBite(player) {
-        let lastMove = player.actions.filter(a => a.type === 'move').pop();
-        return lastMove && lastMove.distance === 3 && player.woundCards === 0;
+    function checkMove3WithoutBite3Times(player) {
+        // Récupérer tous les déplacements de 3 cases
+        let moves = player.actions.filter(a => a.type === 'move' && a.distance === 3);
+        
+        // Il faut au moins 3 déplacements de 3 cases
+        if (moves.length < 3) return false;
+        
+        // Vérifier les 3 derniers déplacements de 3 cases
+        let last3Moves = moves.slice(-3);
+        
+        // Pour chaque déplacement, vérifier qu'il n'y a pas eu de morsure
+        for (let i = 0; i < last3Moves.length; i++) {
+            let moveAction = last3Moves[i];
+            
+            // Vérifier si le déplacement a causé des morsures (stocké dans l'action move)
+            if (moveAction.bites && moveAction.bites > 0) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     function checkGiftGiven(player) {
@@ -2250,17 +2272,76 @@
         return items.some(item => item.name === 'totem');
     }
     
-    function checkSurvive2Bites(player) {
-        // À implémenter selon la logique du jeu
-        return false;
+    function checkSurvive3Bites(player) {
+        // Récupérer la dernière action de fin de tour
+        let lastTurnActions = [];
+        
+        // Parcourir les actions à l'envers pour trouver le dernier tour complet
+        for (let i = player.actions.length - 1; i >= 0; i--) {
+            lastTurnActions.unshift(player.actions[i]);
+            
+            // Un tour se termine généralement par une action de fin (fouille, cache, repos, don, chasse)
+            // ou commence par un move
+            if (i > 0 && player.actions[i-1].type === 'move' && lastTurnActions[0].type === 'move') {
+                break;
+            }
+        }
+        
+        // Compter le nombre total de morsures dans ce tour
+        let totalBites = 0;
+        
+        // 1. Morsures lors des déplacements
+        lastTurnActions.forEach(action => {
+            if (action.type === 'move' && action.bites) {
+                totalBites += action.bites;
+            }
+        });
+        
+        // 2. Morsure au début du tour (croco sur la case)
+        // Vérifier s'il y a eu une morsure de début de tour (stockée séparément)
+        if (player.turnStartBites) {
+            totalBites += player.turnStartBites;
+        }
+        
+        return totalBites >= 3;
     }
     
-    function checkTorchUsed(player) {
-        return player.actions.some(a => a.type === 'torch_protection');
+    function checkTwoTorches(player) {
+        // Vérifier que le joueur a une torche dans chaque main
+        return player.leftHand && player.leftHand.name === 'torche' &&
+               player.rightHand && player.rightHand.name === 'torche';
     }
     
-    function checkHideSuccess(player) {
-        return player.actions.some(a => a.type === 'cache');
+    function checkHide3TimesInRow(player) {
+        // Récupérer toutes les actions "cache"
+        let hideActions = player.actions.filter(a => a.type === 'cache');
+        
+        // Il faut au moins 3 actions de cache
+        if (hideActions.length < 3) return false;
+        
+        // Vérifier les 3 dernières actions de cache
+        let last3Hides = hideActions.slice(-3);
+        
+        // Vérifier qu'elles sont consécutives (pas d'autre action entre elles)
+        for (let i = 0; i < last3Hides.length - 1; i++) {
+            let currentHideIndex = player.actions.indexOf(last3Hides[i]);
+            let nextHideIndex = player.actions.indexOf(last3Hides[i + 1]);
+            
+            // Compter les actions entre les deux caches
+            let actionsBetween = nextHideIndex - currentHideIndex - 1;
+            
+            // Entre deux tours consécutifs, il devrait y avoir exactement 1 action "move"
+            // (le déplacement du tour suivant)
+            let movesBetween = player.actions.slice(currentHideIndex + 1, nextHideIndex)
+                .filter(a => a.type === 'move').length;
+            
+            // Si plus d'un move entre deux caches, ce ne sont pas des tours consécutifs
+            if (movesBetween > 1) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     function checkCollect5Items(player) {
