@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lilocroco TV - V22 Base Camps</title>
+        <title>Lilocroco TV - V22 Base Camps</title>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; --move-bg: rgba(46, 204, 113, 0.4); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -25,18 +29,31 @@
         .cell-hidden { visibility: hidden; }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
         .cell-reachable { background: var(--move-bg); border: 1px solid var(--green); cursor: pointer; }
+        .cell-giftable { background: rgba(241, 196, 15, 0.4); border: 2px solid var(--gold); cursor: pointer; animation: pulse-gift 1s infinite; }
+        @keyframes pulse-gift { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+        .cell-huntable { background: rgba(230, 126, 34, 0.4); border: 2px solid #e67e22; cursor: pointer; animation: pulse-hunt 1s infinite; }
+        @keyframes pulse-hunt { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-        /* Couleurs des Camps */
+                /* Couleurs des Camps */
         .base-0 { background: rgba(52, 152, 219, 0.4) !important; }
         .base-1 { background: rgba(231, 76, 60, 0.4) !important; }
         .base-2 { background: rgba(241, 196, 15, 0.4) !important; }
         .base-3 { background: rgba(46, 204, 113, 0.4) !important; }
+        
+        /* Case Mer */
+        .cell-sea { background: rgba(52, 152, 219, 0.6) !important; border-color: #2980b9; }
 
         .pion { font-size: 1.3rem; z-index: 10; }
         .croco-unit { position: relative; display: flex; align-items: center; justify-content: center; }
         .croco-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: red; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
         .croco-blink { animation: blink-fast 0.2s step-end infinite alternate; }
         @keyframes blink-fast { 50% { opacity: 0; filter: brightness(3); } }
+        
+        .fish-unit { position: relative; display: flex; align-items: center; justify-content: center; }
+        .fish-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: blue; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
+        
+        .bird-unit { position: relative; display: flex; align-items: center; justify-content: center; }
+        .bird-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: green; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
 
         .button-zone { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; }
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
@@ -45,8 +62,8 @@
         
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
-                        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: white; pointer-events: none; font-weight: bold; }
-                .weather-banner { background: linear-gradient(90deg, #2c3e50, #34495e); color: white; padding: 8px; text-align: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; border-radius: 8px; overflow: hidden; white-space: nowrap; }
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: white; pointer-events: none; font-weight: bold; }
+        .weather-banner { background: linear-gradient(90deg, #2c3e50, #34495e); color: white; padding: 8px; text-align: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; border-radius: 8px; overflow: hidden; white-space: nowrap; }
         .weather-scroll { display: inline-block; animation: scroll-left 15s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .inventory-zone { display: flex; justify-content: space-around; margin-bottom: 15px; gap: 5px; }
@@ -57,6 +74,20 @@
         .item-card { width: 50px; height: 50px; border: 2px solid #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: white; cursor: pointer; }
         .item-card:hover { border-color: var(--gold); }
         .item-card.selected { border-color: var(--gold); background: #fff3cd; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+        
+        .qr-button { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5); z-index: 1000; display: none; }
+        .qr-button:hover { background: #f39c12; }
+        .qr-button.visible { display: block; }
+        .qr-scanner-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; }
+        .qr-scanner-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: white; border-radius: 20px; padding: 20px; }
+        #qr-reader { width: 100%; }
+        .qr-close-btn { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 10px; margin-top: 15px; width: 100%; font-weight: bold; cursor: pointer; }
+        .mission-badge { position: absolute; top: 5px; right: 5px; background: var(--gold); color: black; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+        .sync-indicator { position: fixed; top: 10px; right: 10px; background: rgba(46, 204, 113, 0.9); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; z-index: 1500; display: none; }
+        .sync-indicator.active { display: block; animation: pulse-sync 2s infinite; }
+        @keyframes pulse-sync { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+        .global-events { background: rgba(241, 196, 15, 0.2); border: 2px solid var(--gold); border-radius: 10px; padding: 10px; margin-bottom: 8px; max-height: 100px; overflow-y: auto; }
+        .event-item { font-size: 0.75rem; margin: 3px 0; padding: 3px; background: rgba(0,0,0,0.3); border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -67,7 +98,14 @@
 </div>
 
 <div class="app-container">
-            <div id="weather-banner" class="weather-banner">
+    <div class="sync-indicator" id="sync-indicator">🌐 Synchronisé</div>
+    
+    <div class="global-events" id="global-events" style="display: none;">
+        <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 5px;">📡 Événements Mondiaux</div>
+        <div id="events-list"></div>
+    </div>
+    
+    <div id="weather-banner" class="weather-banner">
         <div class="weather-scroll" id="weather-text">☀️ BEAU TEMPS - Tout va bien !</div>
     </div>
 
@@ -85,10 +123,22 @@
     <div class="grid-container"><div class="grid" id="grid"></div></div>
 
     <div id="menu-actions" class="actions-menu">
-        <button id="btn-search" class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller</button>
+        <button id="btn-search" class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller/Poser</button>
         <button class="act btn-ui" style="background:#d35400" onclick="doAction('cache')">😶‍🌫️ Se Cacher</button>
-        <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">😴 Se Reposer</button>
-        <button class="act btn-ui" style="background:#27ae60" onclick="doAction('don')">🤝 Donner</button>
+        <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">😴 Repos/Soin</button>
+        <button id="btn-gift" class="act btn-ui" style="background:#27ae60" onclick="doAction('don')" disabled>🤝 Donner</button>
+        <button id="btn-hunt" class="act btn-ui" style="background:#e67e22" onclick="doAction('chasse')" disabled>🎯 Chasse/Pêche</button>
+    </div>
+    
+    <button id="qr-button" class="qr-button" onclick="openQRScanner()">📷 Scanner Mission Secrète</button>
+</div>
+
+<div id="qr-scanner-modal" class="qr-scanner-modal">
+    <div class="qr-scanner-container">
+        <h3 style="text-align: center; color: black; margin-top: 0;">Scanner votre Mission Secrète</h3>
+        <div id="qr-reader"></div>
+        <p id="qr-status" style="text-align: center; color: #666; margin: 10px 0;">Positionnez le QR Code devant la caméra</p>
+        <button class="qr-close-btn" onclick="closeQRScanner()">Fermer</button>
     </div>
 </div>
 
@@ -119,6 +169,16 @@
     <div class="items-found" id="items-found"></div>
     <button onclick="closeLoot()" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px; margin-top: 10px;">TERMINER</button>
 </div>
+<div id="rest-box" class="modal" style="width: 350px;">
+    <h3>REPOS / SOIN</h3>
+    <div style="background: #f0f0f0; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+        <button onclick="doRest()" style="background:#2c3e50; color:white; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">😴 SE REPOSER</button>
+    </div>
+    <hr style="border-color: #ddd;">
+    <p style="font-weight: bold; margin: 10px 0; font-size: 0.9rem;">Objets consommables :</p>
+    <div id="consumable-items" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    <button onclick="closeRest()" style="background:black; color:white; width:100%; padding:12px; border:none; border-radius:10px; margin-top: 15px;">ANNULER</button>
+</div>
 <div id="player-change-box" class="modal"><h3 style="color:var(--gold)">CHANGEMENT DE JOUEUR</h3><div style="font-size:60px;" id="next-player-icon">👤</div><p id="next-player-text" style="font-weight:bold; font-size:1.2rem;">Au tour de JOUEUR BLEU</p><button onclick="closePlayerChange()" style="background:var(--gold); color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;">C'EST PARTI !</button></div>
 
 <script>
@@ -148,21 +208,81 @@
     let turnStep = 0;               // Étape du tour (0=attente, 1=déplacement, 2=action)
     let currentRange = 0;           // Portée de déplacement actuelle
     let crocos = [];                // Liste des crocodiles
+    let fishes = [];                // Liste des poissons
+    let birds = [];                 // Liste des oiseaux
     let scenery = [];               // Liste des arbres (cocotiers et bananiers)
     let isAnimating = false;        // Indicateur d'animation en cours
     let currentWeather = 'Beau temps'; // Météo actuelle
     let selectedItem = null;        // Objet sélectionné dans l'interface de fouille
     let currentCellItems = [];      // Objets trouvés sur la case actuelle
     let autoSearchDone = false;     // Indique si la fouille automatique (pioche) a été faite
+    let giftMode = false;           // Mode don activé
+    let giftTargetPlayer = null;    // Joueur cible pour le don
+    let huntMode = false;           // Mode chasse/pêche activé
+    let huntTargets = [];           // Cibles disponibles pour la chasse/pêche
+        let html5QrCode = null;         // Instance du scanner QR
+    let isScanning = false;         // Indicateur de scan en cours
+    let firebaseDB = null;          // Instance Firebase Database
+    let gameSessionId = null;       // ID de la session de jeu
+    let isOnline = false;           // Indicateur de connexion
     
-    // Liste des objets disponibles sur les arbres
+    // Liste des objets disponibles sur les arbres avec leur durabilité
     const ITEMS = [
-        {name: 'totem', icon: '🗿'},
-        {name: 'pioche', icon: '⛏️'},
-        {name: 'arc', icon: '🏹'},
-        {name: 'torche', icon: '🔥'},
-        {name: 'gourde', icon: '🥤'}
+        {name: 'totem', icon: '🗿', durability: null},
+        {name: 'pioche', icon: '⛏️', durability: 3},
+        {name: 'arc', icon: '🏹', durability: 2},
+        {name: 'torche', icon: '🔥', durability: 3},
+        {name: 'gourde', icon: '🥤', durability: 2},
+        {name: 'trousse', icon: '🩹', durability: null},
+        {name: 'canne', icon: '🎣', durability: 2}
     ];
+    
+    // Missions secrètes (100 missions)
+    const SECRET_MISSIONS = [
+        {id: 1, description: "Récupérer 3 fruits différents", votes: 30, condition: (p) => checkFruitsCollected(p, 3)},
+        {id: 2, description: "Se déplacer de 3 cases sans morsure", votes: 25, condition: (p) => checkMove3WithoutBite(p)},
+        {id: 3, description: "Donner un objet à un autre joueur", votes: 20, condition: (p) => checkGiftGiven(p)},
+        {id: 4, description: "Chasser ou pêcher 2 animaux", votes: 35, condition: (p) => checkHunt2Animals(p)},
+        {id: 5, description: "Trouver un totem", votes: 50, condition: (p) => checkTotemFound(p)},
+        {id: 6, description: "Survivre à 2 morsures dans le même tour", votes: 40, condition: (p) => checkSurvive2Bites(p)},
+        {id: 7, description: "Utiliser une torche pour se protéger", votes: 20, condition: (p) => checkTorchUsed(p)},
+        {id: 8, description: "Se cacher avec succès", votes: 15, condition: (p) => checkHideSuccess(p)},
+        {id: 9, description: "Collecter 5 objets différents", votes: 45, condition: (p) => checkCollect5Items(p)},
+        {id: 10, description: "Atteindre le camp adverse", votes: 50, condition: (p) => checkReachEnemyCamp(p)},
+        // Missions 11-100 (exemples génériques)
+        ...Array.from({length: 90}, (_, i) => ({
+            id: i + 11,
+            description: `Mission secrète ${i + 11}`,
+            votes: 15 + Math.floor(Math.random() * 35),
+            condition: (p) => false // À implémenter selon besoin
+        }))
+    ];
+    
+    /**
+     * Crée une copie d'un objet avec sa durabilité initiale
+     */
+    function createItem(itemTemplate) {
+        return {
+            name: itemTemplate.name,
+            icon: itemTemplate.icon,
+            durability: itemTemplate.durability,
+            maxDurability: itemTemplate.durability
+        };
+    }
+
+        /**
+     * Vérifie si une case est de la mer
+     */
+    function isSeaCell(x, y) {
+        return x === 0 || x === 17 || y === 0 || y === 13;
+    }
+
+    /**
+     * Vérifie si une case est sur l'île (pas la mer)
+     */
+    function isIslandCell(x, y) {
+        return x >= 1 && x <= 16 && y >= 1 && y <= 12;
+    }
 
     // Définition des camps (4 cases par coin)
     function getBaseOwner(x, y) {
@@ -213,8 +333,8 @@
                 attempts++;
             } while (scenery.some(s => s.x === sx && s.y === sy) && attempts < 100);
             // Ajouter un objet aléatoire sur l'arbre
-            let randomItem = ITEMS[Math.floor(Math.random() * ITEMS.length)];
-            scenery.push({x: sx, y: sy, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: {...randomItem}});
+            let randomItemTemplate = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+            scenery.push({x: sx, y: sy, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: createItem(randomItemTemplate)});
         }
         
         // === BANANIERS (15 total) ===
@@ -228,24 +348,290 @@
                 attempts++;
             } while (scenery.some(s => s.x === sx && s.y === sy) && attempts < 100);
             // Ajouter un objet aléatoire sur l'arbre
-            let randomItem = ITEMS[Math.floor(Math.random() * ITEMS.length)];
-            scenery.push({x: sx, y: sy, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: {...randomItem}});
+            let randomItemTemplate = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+            scenery.push({x: sx, y: sy, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: createItem(randomItemTemplate)});
+        }
+        
+                // === POISSONS (10 total) ===
+        let fId = 1;
+        let seaCells = [];
+        
+        // Générer toutes les cases mer
+        for (let x = 0; x <= 17; x++) {
+            for (let y = 0; y <= 13; y++) {
+                if (isSeaCell(x, y)) {
+                    seaCells.push({x, y});
+                }
+            }
+        }
+        
+        // Placer 10 poissons espacés de 4 à 6 cases
+        for (let i = 0; i < 10; i++) {
+            let validPositions = seaCells.filter(pos => {
+                // Vérifier qu'il n'y a pas déjà un poisson ou un croco
+                if (fishes.some(f => f.x === pos.x && f.y === pos.y)) return false;
+                if (crocos.some(c => c.x === pos.x && c.y === pos.y)) return false;
+                
+                // Vérifier l'espacement avec les autres poissons (4 à 6 cases)
+                let tooClose = fishes.some(f => {
+                    let dist = getDistance(f.x, f.y, pos.x, pos.y);
+                    return dist < 4;
+                });
+                
+                return !tooClose;
+            });
+            
+            if (validPositions.length > 0) {
+                let randomPos = validPositions[Math.floor(Math.random() * validPositions.length)];
+                fishes.push({id: fId++, x: randomPos.x, y: randomPos.y});
+            }
+        }
+        
+        // === OISEAUX (10 total) ===
+        let bId = 1;
+        let allCells = [];
+        
+        // Générer toutes les cases (mer + île)
+        for (let x = 0; x <= 17; x++) {
+            for (let y = 0; y <= 13; y++) {
+                allCells.push({x, y});
+            }
+        }
+        
+        // Placer 10 oiseaux aléatoirement
+        for (let i = 0; i < 10; i++) {
+            let validPositions = allCells.filter(pos => {
+                // Vérifier qu'il n'y a pas déjà un animal
+                if (crocos.some(c => c.x === pos.x && c.y === pos.y)) return false;
+                if (fishes.some(f => f.x === pos.x && f.y === pos.y)) return false;
+                if (birds.some(b => b.x === pos.x && b.y === pos.y)) return false;
+                return true;
+            });
+            
+            if (validPositions.length > 0) {
+                let randomPos = validPositions[Math.floor(Math.random() * validPositions.length)];
+                birds.push({id: bId++, x: randomPos.x, y: randomPos.y});
+            }
         }
         
         console.log('INIT - Crocos:', crocos);
+        console.log('INIT - Poissons:', fishes);
+        console.log('INIT - Oiseaux:', birds);
         renderGrid();
     }
 
-    /**
+        /**
      * Lance le jeu au clic sur le bouton de démarrage
      */
     function launchGame() {
         document.getElementById('start-overlay').style.display = 'none';
+        initFirebase();
         initIsland();
         speak("Direct en cours ! Bienvenue sur Lilocroco TV ! C'est parti pour une nouvelle aventure !");
     }
-
+    
     /**
+     * Initialise Firebase et la synchronisation
+     */
+    function initFirebase() {
+        // Configuration Firebase (À REMPLACER par vos propres clés)
+        const firebaseConfig = {
+            // apiKey: "VOTRE_API_KEY",
+            // authDomain: "lilocroco-b4bd5.firebaseapp.com",
+            // databaseURL: "https://lilocroco-b4bd5.firebaseio.com",
+            // projectId: "lilocroco-b4bd5",
+            // storageBucket: "lilocroco-b4bd5.appspot.com",
+            // messagingSenderId: "VOTRE_SENDER_ID",
+            // appId: "VOTRE_APP_ID"
+            apiKey: "AIzaSyBmoFwx1ezeXVnTbb4C9Ea142GHzIuzG30",
+            authDomain: "lilocroco-b4bd5.firebaseapp.com",
+            databaseURL: "https://lilocroco-b4bd5-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "lilocroco-b4bd5",
+            storageBucket: "lilocroco-b4bd5.firebasestorage.app",
+            messagingSenderId: "107264960465",
+            appId: "1:107264960465:web:710524e1336fbf95b2a2f0",
+            measurementId: "G-9L8FBHX54F"
+        };
+        
+        try {
+            // Initialiser Firebase
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            firebaseDB = firebase.database();
+            
+            // Générer ou récupérer l'ID de session
+            gameSessionId = localStorage.getItem('lilocroco_session_id');
+            if (!gameSessionId) {
+                gameSessionId = 'game_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('lilocroco_session_id', gameSessionId);
+            }
+            
+            // Écouter les changements de météo globale
+            listenToGlobalWeather();
+            
+            // Écouter les événements globaux
+            listenToGlobalEvents();
+            
+            // Marquer comme en ligne
+            isOnline = true;
+            showSyncIndicator();
+            
+            console.log('Firebase initialisé - Session:', gameSessionId);
+        } catch (error) {
+            console.error('Erreur Firebase:', error);
+            isOnline = false;
+            speak('Mode hors ligne activé.');
+        }
+    }
+    
+    /**
+     * Affiche l'indicateur de synchronisation
+     */
+    function showSyncIndicator() {
+        const indicator = document.getElementById('sync-indicator');
+        indicator.classList.add('active');
+        setTimeout(() => {
+            indicator.classList.remove('active');
+        }, 3000);
+    }
+    
+    /**
+     * Écoute les changements de météo globale
+     */
+    function listenToGlobalWeather() {
+        if (!firebaseDB) return;
+        
+        const weatherRef = firebaseDB.ref('global/weather');
+        weatherRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.weather && data.timestamp) {
+                // Vérifier si c'est une mise à jour récente (moins de 5 minutes)
+                const now = Date.now();
+                if (now - data.timestamp < 300000) {
+                    console.log('Météo globale reçue:', data.weather);
+                    // Optionnel: synchroniser la météo locale
+                    // currentWeather = data.weather;
+                    // updateWeatherDisplay();
+                }
+            }
+        });
+    }
+    
+    /**
+     * Écoute les événements globaux
+     */
+    function listenToGlobalEvents() {
+        if (!firebaseDB) return;
+        
+        const eventsRef = firebaseDB.ref('global/events').limitToLast(10);
+        eventsRef.on('value', (snapshot) => {
+            const events = [];
+            snapshot.forEach((childSnapshot) => {
+                events.push(childSnapshot.val());
+            });
+            
+            displayGlobalEvents(events);
+        });
+    }
+    
+    /**
+     * Affiche les événements globaux
+     */
+    function displayGlobalEvents(events) {
+        const eventsContainer = document.getElementById('global-events');
+        const eventsList = document.getElementById('events-list');
+        
+        if (events.length === 0) {
+            eventsContainer.style.display = 'none';
+            return;
+        }
+        
+        eventsContainer.style.display = 'block';
+        eventsList.innerHTML = '';
+        
+        // Afficher les 5 derniers événements
+        events.slice(-5).reverse().forEach(event => {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event-item';
+            
+            const timeAgo = getTimeAgo(event.timestamp);
+            const icon = getEventIcon(event.type);
+            
+            eventDiv.innerHTML = `${icon} <strong>${event.playerName}</strong> ${event.message} <span style="opacity:0.7;">(${timeAgo})</span>`;
+            eventsList.appendChild(eventDiv);
+        });
+    }
+    
+    /**
+     * Retourne l'icône selon le type d'événement
+     */
+    function getEventIcon(type) {
+        const icons = {
+            'totem': '🗿',
+            'mission': '🎯',
+            'bite': '🐊',
+            'hunt': '🎣',
+            'move3': '🏃',
+            'default': '⭐'
+        };
+        return icons[type] || icons.default;
+    }
+    
+    /**
+     * Calcule le temps écoulé
+     */
+    function getTimeAgo(timestamp) {
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        if (seconds < 60) return 'à l\'instant';
+        if (seconds < 3600) return Math.floor(seconds / 60) + 'min';
+        return Math.floor(seconds / 3600) + 'h';
+    }
+    
+    /**
+     * Publie un événement global
+     */
+    function publishGlobalEvent(type, message) {
+        if (!firebaseDB || !isOnline) return;
+        
+        const p = players[currentPlayer];
+        const eventData = {
+            type: type,
+            playerName: p.name,
+            message: message,
+            timestamp: Date.now(),
+            sessionId: gameSessionId
+        };
+        
+        firebaseDB.ref('global/events').push(eventData)
+            .then(() => {
+                console.log('Événement publié:', eventData);
+                showSyncIndicator();
+            })
+            .catch(err => console.error('Erreur publication:', err));
+    }
+    
+    /**
+     * Publie la météo globale
+     */
+    function publishGlobalWeather(weather) {
+        if (!firebaseDB || !isOnline) return;
+        
+        const weatherData = {
+            weather: weather,
+            timestamp: Date.now(),
+            sessionId: gameSessionId
+        };
+        
+        firebaseDB.ref('global/weather').set(weatherData)
+            .then(() => {
+                console.log('Météo publiée:', weather);
+                showSyncIndicator();
+            })
+            .catch(err => console.error('Erreur publication météo:', err));
+    }
+
+        /**
      * Prépare le déplacement du joueur
      * @param {number} range - Portée de déplacement (1, 2 ou 3 cases)
      */
@@ -258,14 +644,24 @@
         currentRange = range;
         turnStep = 1; // Passer en mode sélection de case
         document.getElementById('deck-menu').style.opacity = "0.3";
+        updateQRButtonVisibility(); // Mettre à jour la visibilité du bouton QR
         renderGrid();
     }
 
-    /**
+        /**
      * Calcule la distance de Manhattan entre deux points
      */
     function getDistance(x1, y1, x2, y2) {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+
+    /**
+     * Vérifie si le joueur possède une gourde
+     */
+    function hasGourde(player) {
+        return (player.leftHand && player.leftHand.name === 'gourde') || 
+               (player.rightHand && player.rightHand.name === 'gourde') ||
+               player.backpack.some(item => item && item.name === 'gourde');
     }
 
     /**
@@ -275,11 +671,54 @@
         const grid = document.getElementById('grid'); grid.innerHTML = '';
         const p = players[currentPlayer];
 
-        for (let y = p.y - 3; y <= p.y + 3; y++) {
+                for (let y = p.y - 3; y <= p.y + 3; y++) {
             for (let x = p.x - 3; x <= p.x + 3; x++) {
                 const cell = document.createElement('div');
-                if (x < 1 || x > 16 || y < 1 || y > 12) {
+                if (x < 0 || x > 17 || y < 0 || y > 13) {
                     cell.className = 'cell cell-hidden';
+                } else if (isSeaCell(x, y)) {
+                    // Case mer
+                    cell.className = 'cell cell-sea';
+                    
+                    // Mode chasse : mettre en surbrillance les cibles sur la mer
+                    if (huntMode && turnStep === 2) {
+                        huntTargets.forEach(target => {
+                            if (target.x === x && target.y === y) {
+                                cell.classList.add('cell-huntable');
+                                cell.onclick = () => huntTarget(target);
+                            }
+                        });
+                    }
+                    
+                    // Afficher les crocodiles sur la mer
+                    crocos.forEach(c => {
+                        if(c.x === x && c.y === y) {
+                            let cDiv = document.createElement('div');
+                            cDiv.className = "croco-unit";
+                            cDiv.innerHTML = `🐊<div class="croco-num">${c.id}</div>`;
+                            cell.appendChild(cDiv);
+                        }
+                    });
+                    
+                    // Afficher les poissons
+                    fishes.forEach(f => {
+                        if(f.x === x && f.y === y) {
+                            let fDiv = document.createElement('div');
+                            fDiv.className = "fish-unit";
+                            fDiv.innerHTML = `🐟<div class="fish-num">${f.id}</div>`;
+                            cell.appendChild(fDiv);
+                        }
+                    });
+                    
+                    // Afficher les oiseaux sur la mer
+                    birds.forEach(b => {
+                        if(b.x === x && b.y === y) {
+                            let bDiv = document.createElement('div');
+                            bDiv.className = "bird-unit";
+                            bDiv.innerHTML = `🦅<div class="bird-num">${b.id}</div>`;
+                            cell.appendChild(bDiv);
+                        }
+                    });
                 } else {
                     cell.className = 'cell';
                     let baseOwner = getBaseOwner(x, y);
@@ -291,6 +730,27 @@
                     let isReachable = (turnStep === 1 && dist <= currentRange && !isOccupied && !isAnimating);
                     if (isReachable) cell.classList.add('cell-reachable');
 
+                    // Mode don : mettre en surbrillance les joueurs adjacents
+                    if (giftMode && turnStep === 2) {
+                        let adjacentPlayers = getAdjacentPlayersWithSpace();
+                        adjacentPlayers.forEach(ap => {
+                            if (ap.x === x && ap.y === y) {
+                                cell.classList.add('cell-giftable');
+                                cell.onclick = () => selectGiftTarget(ap.id);
+                            }
+                        });
+                    }
+
+                    // Mode chasse : mettre en surbrillance les cibles
+                    if (huntMode && turnStep === 2) {
+                        huntTargets.forEach(target => {
+                            if (target.x === x && target.y === y) {
+                                cell.classList.add('cell-huntable');
+                                cell.onclick = () => huntTarget(target);
+                            }
+                        });
+                    }
+
                     crocos.forEach(c => {
                         if(c.x === x && c.y === y) {
                             let cDiv = document.createElement('div');
@@ -300,8 +760,19 @@
                         }
                     });
                     
-                                                                                players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
+                    players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
                     scenery.forEach(s => { if (s.x === x && s.y === y) cell.innerHTML += s.icon; });
+                    
+                    // Afficher les oiseaux sur l'île
+                    birds.forEach(b => {
+                        if(b.x === x && b.y === y) {
+                            let bDiv = document.createElement('div');
+                            bDiv.className = "bird-unit";
+                            bDiv.innerHTML = `🦅<div class="bird-num">${b.id}</div>`;
+                            cell.appendChild(bDiv);
+                        }
+                    });
+                    
                     cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
                     if(isReachable) cell.onclick = () => finalizeTurnMove(x, y, dist);
                 }
@@ -341,6 +812,9 @@
         // Retirer le statut "caché" après utilisation
         p.status = p.status.filter(s => s !== 'caché');
         
+        // Décrémenter la durabilité des objets dans les mains
+        decreaseHandItemsDurability(p);
+        
         updateUI();
     }
 
@@ -359,12 +833,22 @@
             if (c.y < target.y) nY++;
             if (c.y > target.y) nY--;
 
-            // Vérification Camp ou Collision
-            if (getBaseOwner(nX, nY) !== null || crocos.some(o => o.id !== c.id && o.x === nX && o.y === nY)) {
+            // Vérification Camp ou Collision (crocos peuvent aller sur la mer)
+            let hasAnimal = crocos.some(o => o.id !== c.id && o.x === nX && o.y === nY) || 
+                           fishes.some(f => f.x === nX && f.y === nY) ||
+                           birds.some(b => b.x === nX && b.y === nY);
+            
+            if (getBaseOwner(nX, nY) !== null || hasAnimal) {
                 let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0},{x:1,y:1},{x:-1,y:-1},{x:1,y:-1},{x:-1,y:1}];
                 let valid = dirs.filter(d => {
                     let tx = c.x + d.x, ty = c.y + d.y;
-                    return tx>=1 && tx<=16 && ty>=1 && ty<=12 && getBaseOwner(tx, ty) === null && !crocos.some(o => o.x === tx && o.y === ty);
+                    // Crocos peuvent aller sur la mer (x=0 ou 17, y=0 ou 13) mais pas sur les camps
+                    let isValidSea = isSeaCell(tx, ty);
+                    let isValidIsland = isIslandCell(tx, ty) && getBaseOwner(tx, ty) === null;
+                    let noAnimal = !crocos.some(o => o.x === tx && o.y === ty) && 
+                                   !fishes.some(f => f.x === tx && f.y === ty) &&
+                                   !birds.some(b => b.x === tx && b.y === ty);
+                    return (isValidSea || isValidIsland) && noAnimal;
                 });
                 if (valid.length > 0) {
                     let r = valid[Math.floor(Math.random()*valid.length)];
@@ -375,6 +859,64 @@
             }
         });
         console.log('APRES DEPLACEMENT - Crocos:', JSON.parse(JSON.stringify(crocos)));
+    }
+
+    /**
+     * Déplace tous les poissons aléatoirement sur les cases mer
+     */
+    function moveFishesGlobal() {
+        console.log('AVANT DEPLACEMENT - Poissons:', JSON.parse(JSON.stringify(fishes)));
+        fishes.forEach(f => {
+            // Directions possibles (orthogonales)
+            let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0}];
+            let valid = dirs.filter(d => {
+                let tx = f.x + d.x, ty = f.y + d.y;
+                // Doit rester sur la mer
+                if (!isSeaCell(tx, ty)) return false;
+                // Pas d'autre animal sur la case
+                if (crocos.some(c => c.x === tx && c.y === ty)) return false;
+                if (fishes.some(other => other.id !== f.id && other.x === tx && other.y === ty)) return false;
+                if (birds.some(b => b.x === tx && b.y === ty)) return false;
+                return true;
+            });
+            
+            if (valid.length > 0) {
+                let r = valid[Math.floor(Math.random()*valid.length)];
+                f.x += r.x;
+                f.y += r.y;
+            }
+            // Sinon le poisson reste sur place
+        });
+        console.log('APRES DEPLACEMENT - Poissons:', JSON.parse(JSON.stringify(fishes)));
+    }
+
+    /**
+     * Déplace tous les oiseaux aléatoirement (mer et terre)
+     */
+    function moveBirdsGlobal() {
+        console.log('AVANT DEPLACEMENT - Oiseaux:', JSON.parse(JSON.stringify(birds)));
+        birds.forEach(b => {
+            // Directions possibles (orthogonales)
+            let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0}];
+            let valid = dirs.filter(d => {
+                let tx = b.x + d.x, ty = b.y + d.y;
+                // Doit rester dans les limites de la carte
+                if (tx < 0 || tx > 17 || ty < 0 || ty > 13) return false;
+                // Pas d'autre animal sur la case
+                if (crocos.some(c => c.x === tx && c.y === ty)) return false;
+                if (fishes.some(f => f.x === tx && f.y === ty)) return false;
+                if (birds.some(other => other.id !== b.id && other.x === tx && other.y === ty)) return false;
+                return true;
+            });
+            
+            if (valid.length > 0) {
+                let r = valid[Math.floor(Math.random()*valid.length)];
+                b.x += r.x;
+                b.y += r.y;
+            }
+            // Sinon l'oiseau reste sur place
+        });
+        console.log('APRES DEPLACEMENT - Oiseaux:', JSON.parse(JSON.stringify(birds)));
     }
 
     /**
@@ -444,6 +986,7 @@
             turnStep = 2;
             document.getElementById('deck-menu').style.display = 'none';
             document.getElementById('menu-actions').style.display = 'grid';
+            updateQRButtonVisibility(); // Masquer le bouton QR
             renderGrid();
             return;
         }
@@ -455,12 +998,23 @@
         
         p.x = nx; p.y = ny;
         
+                // Votes pour déplacement de 3 cases
+        if (dist === 3) {
+            addVotes(p, 20, 'Déplacement de 3 cases !');
+            publishGlobalEvent('move3', 'a fait un déplacement de 3 cases ! 🏃');
+        }
+        
+        // Vérifier la mission secrète
+        checkSecretMission(p);
+        
         // Gestion fatigue selon météo
         let fatigueCount = 0;
-        if (currentWeather === 'Canicule') {
+        let hasGourdeProtection = hasGourde(p);
+        
+        if (currentWeather === 'Canicule' && !hasGourdeProtection) {
             if (dist >= 1 && dist <= 2) fatigueCount = 1;
             if (dist === 3) fatigueCount = 2;
-        } else {
+        } else if (currentWeather !== 'Canicule') {
             if (dist === 3) fatigueCount = 1;
         }
         
@@ -476,6 +1030,8 @@
             
             if (hasTorch) {
                 speak("Votre torche vous protège des crocodiles sur le chemin !");
+                p.actions.push({type: 'torch_protection'});
+                checkSecretMission(p);
             } else {
                 p.woundCards += nbCrocos;
                 let biteText = nbCrocos === 1 ? '1 morsure' : `${nbCrocos} morsures`;
@@ -484,12 +1040,17 @@
                 document.getElementById('overlay').style.display = 'block';
                 document.getElementById('bite-box').style.display = 'block';
                 speak(`${biteText} ! Ajoutez ${cardText}.`);
+                
+                                // Votes pour avoir reçu une morsure après un déplacement
+                addVotes(p, 50, 'Morsure pendant le déplacement !');
+                publishGlobalEvent('bite', `a survécu à ${nbCrocos} morsure${nbCrocos > 1 ? 's' : ''} ! 🐊`);
             }
         }
         
         turnStep = 2;
         document.getElementById('deck-menu').style.display = 'none';
         document.getElementById('menu-actions').style.display = 'grid';
+        updateQRButtonVisibility(); // Masquer le bouton QR au step 2
         
         // Vérifier si le joueur a une pioche pour fouille automatique
         let hasPioche = (p.leftHand && p.leftHand.name === 'pioche') || (p.rightHand && p.rightHand.name === 'pioche');
@@ -504,7 +1065,11 @@
         
         // Activer/Désactiver le bouton Fouiller
         document.getElementById('btn-search').disabled = autoSearchDone;
-        
+        // Activer/Désactiver le bouton Donner
+        updateGiftButton();
+        // Activer/Désactiver le bouton Chasse/Pêche
+        updateHuntButton();
+
         renderGrid();
     }
     
@@ -522,7 +1087,14 @@
                 tree.stock--;
             }
             if (tree.item) {
-                currentCellItems.push({type: 'item', icon: tree.item.icon, name: tree.item.name});
+                // Copier l'objet complet avec sa durabilité
+                currentCellItems.push({
+                    type: 'item',
+                    icon: tree.item.icon,
+                    name: tree.item.name,
+                    durability: tree.item.durability,
+                    maxDurability: tree.item.maxDurability
+                });
                 tree.item = null;
             }
         });
@@ -557,12 +1129,35 @@
                     tree.stock--;
                 }
                 if (tree.item) {
-                    currentCellItems.push({type: 'item', icon: tree.item.icon, name: tree.item.name});
+                    // Copier l'objet complet avec sa durabilité
+                    currentCellItems.push({
+                        type: 'item',
+                        icon: tree.item.icon,
+                        name: tree.item.name,
+                        durability: tree.item.durability,
+                        maxDurability: tree.item.maxDurability
+                    });
                     tree.item = null;
                 }
             });
             
             p.actions.push({type: 'fouille', items: currentCellItems, location: {x: p.x, y: p.y}});
+            
+            // Vérifier si fouille hors arbres avec au moins un item
+            let hasTree = trees.length > 0;
+            let hasItems = currentCellItems.some(item => item.type === 'item');
+            
+            if (!hasTree && hasItems) {
+                addVotes(p, 20, 'Fouille hors arbres avec découverte !');
+            }
+            
+                        // Vérifier si un totem a été découvert
+            let hasTotem = currentCellItems.some(item => item.name === 'totem');
+            if (hasTotem) {
+                addVotes(p, 50, 'Découverte d\'un totem !');
+                publishGlobalEvent('totem', 'a trouvé un totem ! 🗿');
+            }
+            
             showLootInventory();
         } else if (type === 'cache') {
             p.status.push('caché');
@@ -571,20 +1166,18 @@
             endTurnLog();
             showPlayerChange();
         } else if (type === 'repos') {
-            if (p.fatigueCards > 0) {
-                p.fatigueCards--;
-                speak('Vous vous reposez. Une carte fatigue retirée.');
-            } else {
-                speak('Vous vous reposez mais vous n\'avez pas de fatigue.');
-            }
-            p.actions.push({type: 'repos', location: {x: p.x, y: p.y}});
-            endTurnLog();
-            showPlayerChange();
+            showRestMenu();
         } else if (type === 'don') {
-            p.actions.push({type: 'don', location: {x: p.x, y: p.y}});
-            speak('Action donner - Non implémentée pour le moment.');
-            endTurnLog();
-            showPlayerChange();
+            // Activer le mode don
+            giftMode = true;
+            speak('Sélectionnez un joueur adjacent pour lui donner un objet.');
+            renderGrid();
+        } else if (type === 'chasse') {
+            // Activer le mode chasse/pêche
+            huntMode = true;
+            huntTargets = getAdjacentHuntTargets();
+            speak('Sélectionnez votre cible.');
+            renderGrid();
         } else { 
             endTurnLog();
             showPlayerChange();
@@ -679,16 +1272,19 @@
         
         let existingItem = null;
         
-        if (slot === 'left') {
+                if (slot === 'left') {
             existingItem = p.leftHand;
             p.leftHand = itemToPlace;
+            console.log('Objet placé dans main gauche:', itemToPlace);
         } else if (slot === 'right') {
             existingItem = p.rightHand;
             p.rightHand = itemToPlace;
+            console.log('Objet placé dans main droite:', itemToPlace);
         } else if (slot.startsWith('back')) {
             let backIdx = parseInt(slot.replace('back', ''));
             existingItem = p.backpack[backIdx];
             p.backpack[backIdx] = itemToPlace;
+            console.log(`Objet placé dans sac[${backIdx}]:`, itemToPlace);
         }
         
         if (existingItem) {
@@ -763,15 +1359,22 @@
         document.getElementById('deck-menu').style.opacity = "1";
         currentPlayer = (currentPlayer + 1) % 4;
         turnStep = 0;
+        updateQRButtonVisibility(); // Masquer le bouton QR au step 0
         if(currentPlayer === 0) {
-            console.log('FIN DE CYCLE - Déplacement des crocos');
+            console.log('FIN DE CYCLE - Déplacement des crocos, poissons et oiseaux');
             moveCrocosGlobal();
+            moveFishesGlobal();
+            moveBirdsGlobal();
             updateWeather();
+            // Décrémenter la durabilité des gourdes en cas de canicule
+            if (currentWeather === 'Canicule') {
+                players.forEach(player => decreaseGourdeDurability(player));
+            }
         }
         startTurn();
     }
     
-    /**
+        /**
      * Met à jour la météo aléatoirement
      */
     function updateWeather() {
@@ -783,9 +1386,9 @@
         
         if (currentWeather === 'Canicule') {
             weatherIcon = '🌡️☀️';
-            weatherText = 'CANICULE - Cocotiers +1 stock - Déplacements +1 fatigue';
+            weatherText = 'CANICULE - Cocotiers +1 stock - Déplacements +1 fatigue (sauf pour les aventuriers qui possèdent une gourde)';
             scenery.forEach(s => { if(s.type === 'cocotier') s.stock++; });
-            speak('Attention, canicule ! Les cocotiers donnent plus de fruits mais attention à la fatigue.');
+            speak('Attention, canicule ! Les cocotiers donnent plus de fruits mais attention à la fatigue. Sauf pour ceux qui ont une gourde.');
         } else if (currentWeather === 'Orage') {
             weatherIcon = '⛈️';
             weatherText = 'ORAGE - Déplacements réduits de 1 case';
@@ -802,6 +1405,9 @@
         }
         
         document.getElementById('weather-text').innerText = `${weatherIcon} ${weatherText}`;
+        
+        // Publier la météo globalement
+        publishGlobalWeather(currentWeather);
     }
 
     /**
@@ -810,13 +1416,571 @@
     function updateUI() {
         let p = players[currentPlayer];
         document.getElementById('p-header').className = `header active-${currentPlayer}`;
-        document.getElementById('p-name').innerText = `JOUEUR ${p.name}`;
+        
+        // Afficher le nom avec badge de mission si présent
+        let nameHTML = `JOUEUR ${p.name}`;
+        if (p.secretMission && !p.secretMission.completed) {
+            nameHTML += `<span class="mission-badge">🎯 ${p.secretMission.id}</span>`;
+        }
+        document.getElementById('p-name').innerHTML = nameHTML;
+        
+        document.getElementById('p-votes').innerText = p.votes;
         
         // Activer/Désactiver les boutons selon les cartes disponibles
         document.getElementById('btn-fatigue').disabled = (p.fatigueCards === 0);
         document.getElementById('btn-wound').disabled = (p.woundCards === 0);
+        
+        // Afficher/Masquer le bouton QR selon le step et la mission
+        updateQRButtonVisibility();
+        
+        // Vérifier la mission secrète
+        checkSecretMission(p);
+    }
+    
+    /**
+     * Met à jour la visibilité du bouton QR
+     */
+    function updateQRButtonVisibility() {
+        let p = players[currentPlayer];
+        let qrButton = document.getElementById('qr-button');
+        
+        // Afficher uniquement si :
+        // - turnStep === 1 (step déplacement)
+        // - Le joueur n'a pas de mission active
+        if (turnStep === 1 && !p.secretMission) {
+            qrButton.classList.add('visible');
+        } else {
+            qrButton.classList.remove('visible');
+        }
+    }
+    
+    /**
+     * Ajoute des votes au joueur et annonce vocalement
+     */
+    function addVotes(player, votes, reason) {
+        player.votes += votes;
+        updateUI();
+        speak(`${votes} votes du public ! ${reason}`);
+        console.log(`${player.name} gagne ${votes} votes : ${reason}`);
     }
 
+    /**
+     * Vérifie si le joueur a au moins un objet dans son inventaire
+     */
+    function hasAnyItem(player) {
+        return player.leftHand !== null || player.rightHand !== null || player.backpack.some(item => item !== null);
+    }
+
+    /**
+     * Vérifie si l'inventaire d'un joueur est plein
+     */
+    function isInventoryFull(player) {
+        return player.leftHand !== null && player.rightHand !== null && player.backpack.every(item => item !== null);
+    }
+
+    /**
+     * Récupère les joueurs adjacents (orthogonalement) avec de la place dans l'inventaire
+     */
+    function getAdjacentPlayersWithSpace() {
+        let p = players[currentPlayer];
+        let adjacent = [];
+        let directions = [{x:0,y:1}, {x:0,y:-1}, {x:1,y:0}, {x:-1,y:0}];
+        
+        directions.forEach(dir => {
+            let checkX = p.x + dir.x;
+            let checkY = p.y + dir.y;
+            
+            players.forEach(other => {
+                if (other.id !== p.id && other.x === checkX && other.y === checkY && !isInventoryFull(other)) {
+                    adjacent.push(other);
+                }
+            });
+        });
+        
+        return adjacent;
+    }
+
+    /**
+     * Met à jour l'état du bouton Donner
+     */
+    function updateGiftButton() {
+        let p = players[currentPlayer];
+        let canGift = hasAnyItem(p) && getAdjacentPlayersWithSpace().length > 0;
+        document.getElementById('btn-gift').disabled = !canGift;
+    }
+
+    /**
+     * Vérifie si le joueur possède une canne
+     */
+    function hasCanne(player) {
+        return (player.leftHand && player.leftHand.name === 'canne') || 
+               (player.rightHand && player.rightHand.name === 'canne') ||
+               player.backpack.some(item => item && item.name === 'canne');
+    }
+
+    /**
+     * Vérifie si le joueur possède un arc
+     */
+    function hasArc(player) {
+        return (player.leftHand && player.leftHand.name === 'arc') || 
+               (player.rightHand && player.rightHand.name === 'arc') ||
+               player.backpack.some(item => item && item.name === 'arc');
+    }
+
+    /**
+     * Récupère les cibles adjacentes pour la chasse/pêche
+     */
+    function getAdjacentHuntTargets() {
+        let p = players[currentPlayer];
+        let targets = [];
+        let directions = [{x:0,y:1}, {x:0,y:-1}, {x:1,y:0}, {x:-1,y:0}];
+        let playerHasCanne = hasCanne(p);
+        let playerHasArc = hasArc(p);
+        
+        directions.forEach(dir => {
+            let checkX = p.x + dir.x;
+            let checkY = p.y + dir.y;
+            
+            // Vérifier les poissons si le joueur a une canne
+            if (playerHasCanne) {
+                fishes.forEach(fish => {
+                    if (fish.x === checkX && fish.y === checkY) {
+                        targets.push({type: 'fish', id: fish.id, x: fish.x, y: fish.y});
+                    }
+                });
+            }
+            
+            // Vérifier les oiseaux si le joueur a un arc
+            if (playerHasArc) {
+                birds.forEach(bird => {
+                    if (bird.x === checkX && bird.y === checkY) {
+                        targets.push({type: 'bird', id: bird.id, x: bird.x, y: bird.y});
+                    }
+                });
+            }
+        });
+        
+        return targets;
+    }
+
+    /**
+     * Met à jour l'état du bouton Chasse/Pêche
+     */
+    function updateHuntButton() {
+        let p = players[currentPlayer];
+        let canHunt = getAdjacentHuntTargets().length > 0;
+        document.getElementById('btn-hunt').disabled = !canHunt;
+    }
+
+    /**
+     * Chasse/Pêche une cible
+     */
+    function huntTarget(target) {
+        let p = players[currentPlayer];
+        
+        if (target.type === 'fish') {
+            // Retirer le poisson
+            let fishIndex = fishes.findIndex(f => f.id === target.id);
+            if (fishIndex !== -1) {
+                fishes.splice(fishIndex, 1);
+                
+                // Retirer 2 fatigues
+                let fatigueRemoved = Math.min(2, p.fatigueCards);
+                p.fatigueCards = Math.max(0, p.fatigueCards - 2);
+                
+                if (fatigueRemoved > 0) {
+                    speak(`Vous avez pêché un poisson ! Vous vous nourrissez et retirez ${fatigueRemoved} fatigue${fatigueRemoved > 1 ? 's' : ''}.`);
+                } else {
+                    speak('Vous avez pêché un poisson ! Vous vous nourrissez.');
+                }
+                
+                // Faire réapparaître le poisson ailleurs
+                respawnFish(target.id);
+                
+                // Décrémenter la durabilité de la canne
+                decreaseItemDurability(p, 'canne');
+            }
+        } else if (target.type === 'bird') {
+            // Retirer l'oiseau
+            let birdIndex = birds.findIndex(b => b.id === target.id);
+            if (birdIndex !== -1) {
+                birds.splice(birdIndex, 1);
+                
+                // Retirer 2 fatigues
+                let fatigueRemoved = Math.min(2, p.fatigueCards);
+                p.fatigueCards = Math.max(0, p.fatigueCards - 2);
+                
+                if (fatigueRemoved > 0) {
+                    speak(`Vous avez chassé un oiseau ! Vous vous nourrissez et retirez ${fatigueRemoved} fatigue${fatigueRemoved > 1 ? 's' : ''}.`);
+                } else {
+                    speak('Vous avez chassé un oiseau ! Vous vous nourrissez.');
+                }
+                
+                // Faire réapparaître l'oiseau ailleurs
+                respawnBird(target.id);
+                
+                // Décrémenter la durabilité de l'arc
+                decreaseItemDurability(p, 'arc');
+            }
+        }
+        
+        // Enregistrer l'action
+        p.actions.push({type: 'chasse', target: target.type, location: {x: p.x, y: p.y}});
+        
+        // Réinitialiser le mode chasse
+        huntMode = false;
+        huntTargets = [];
+        
+        // Terminer le tour
+        endTurnLog();
+        showPlayerChange();
+    }
+
+    /**
+     * Fait réapparaître un poisson sur une case mer aléatoire
+     */
+    function respawnFish(fishId) {
+        let seaCells = [];
+        
+        // Générer toutes les cases mer
+        for (let x = 0; x <= 17; x++) {
+            for (let y = 0; y <= 13; y++) {
+                if (isSeaCell(x, y)) {
+                    seaCells.push({x, y});
+                }
+            }
+        }
+        
+        // Trouver une position valide
+        let validPositions = seaCells.filter(pos => {
+            // Vérifier qu'il n'y a pas déjà un animal
+            if (crocos.some(c => c.x === pos.x && c.y === pos.y)) return false;
+            if (fishes.some(f => f.x === pos.x && f.y === pos.y)) return false;
+            if (birds.some(b => b.x === pos.x && b.y === pos.y)) return false;
+            
+            // Vérifier l'espacement avec les autres poissons (4 cases minimum)
+            let tooClose = fishes.some(f => {
+                let dist = getDistance(f.x, f.y, pos.x, pos.y);
+                return dist < 4;
+            });
+            
+            return !tooClose;
+        });
+        
+        if (validPositions.length > 0) {
+            let randomPos = validPositions[Math.floor(Math.random() * validPositions.length)];
+            fishes.push({id: fishId, x: randomPos.x, y: randomPos.y});
+            console.log(`Poisson ${fishId} réapparu en (${randomPos.x}, ${randomPos.y})`);
+        }
+    }
+
+    /**
+     * Fait réapparaître un oiseau sur une case aléatoire
+     */
+    function respawnBird(birdId) {
+        let allCells = [];
+        
+        // Générer toutes les cases (mer + île)
+        for (let x = 0; x <= 17; x++) {
+            for (let y = 0; y <= 13; y++) {
+                allCells.push({x, y});
+            }
+        }
+        
+        // Trouver une position valide
+        let validPositions = allCells.filter(pos => {
+            // Vérifier qu'il n'y a pas déjà un animal
+            if (crocos.some(c => c.x === pos.x && c.y === pos.y)) return false;
+            if (fishes.some(f => f.x === pos.x && f.y === pos.y)) return false;
+            if (birds.some(b => b.x === pos.x && b.y === pos.y)) return false;
+            return true;
+        });
+        
+        if (validPositions.length > 0) {
+            let randomPos = validPositions[Math.floor(Math.random() * validPositions.length)];
+            birds.push({id: birdId, x: randomPos.x, y: randomPos.y});
+            console.log(`Oiseau ${birdId} réapparu en (${randomPos.x}, ${randomPos.y})`);
+        }
+    }
+
+    /**
+     * Sélectionne le joueur cible pour le don
+     */
+    function selectGiftTarget(playerId) {
+        giftTargetPlayer = playerId;
+        giftMode = false;
+        speak('Sélectionnez l\'objet à donner.');
+        showGiftInventory();
+    }
+
+    /**
+     * Affiche l'inventaire pour sélectionner l'objet à donner
+     */
+    function showGiftInventory() {
+        let p = players[currentPlayer];
+        selectedItem = null;
+        currentCellItems = [];
+        
+        // Afficher inventaire actuel
+        document.getElementById('inv-left').innerText = p.leftHand ? p.leftHand.icon : '';
+        document.getElementById('inv-right').innerText = p.rightHand ? p.rightHand.icon : '';
+        document.getElementById('inv-back0').innerText = p.backpack[0] ? p.backpack[0].icon : '';
+        document.getElementById('inv-back1').innerText = p.backpack[1] ? p.backpack[1].icon : '';
+        document.getElementById('inv-back2').innerText = p.backpack[2] ? p.backpack[2].icon : '';
+        
+        // Changer le titre et le texte
+        document.getElementById('loot-box').querySelector('h3').innerText = 'DONNER UN OBJET';
+        document.getElementById('items-found').innerHTML = '<p style="color: #999;">Cliquez sur l\'objet à donner</p>';
+        
+        // Changer le bouton pour annuler
+        let btn = document.getElementById('loot-box').querySelector('button');
+        btn.innerText = 'ANNULER';
+        btn.onclick = cancelGift;
+        
+        // Modifier les slots pour permettre la sélection
+        document.getElementById('inv-left').onclick = () => giveItemFromSlot('left');
+        document.getElementById('inv-right').onclick = () => giveItemFromSlot('right');
+        document.getElementById('inv-back0').onclick = () => giveItemFromSlot('back0');
+        document.getElementById('inv-back1').onclick = () => giveItemFromSlot('back1');
+        document.getElementById('inv-back2').onclick = () => giveItemFromSlot('back2');
+        
+        document.getElementById('loot-box').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+    }
+
+    /**
+     * Donne un objet depuis un slot spécifique
+     */
+    function giveItemFromSlot(slot) {
+        let p = players[currentPlayer];
+        let targetPlayer = players[giftTargetPlayer];
+        let itemToGive = null;
+        
+        // Récupérer l'objet du slot
+        if (slot === 'left') {
+            itemToGive = p.leftHand;
+            if (!itemToGive) return;
+            p.leftHand = null;
+        } else if (slot === 'right') {
+            itemToGive = p.rightHand;
+            if (!itemToGive) return;
+            p.rightHand = null;
+        } else if (slot.startsWith('back')) {
+            let backIdx = parseInt(slot.replace('back', ''));
+            itemToGive = p.backpack[backIdx];
+            if (!itemToGive) return;
+            p.backpack[backIdx] = null;
+        }
+        
+        // Placer l'objet dans l'inventaire du joueur cible
+        // Priorité : sac -> main gauche -> main droite
+        let placed = false;
+        for (let i = 0; i < 3; i++) {
+            if (targetPlayer.backpack[i] === null) {
+                targetPlayer.backpack[i] = itemToGive;
+                placed = true;
+                break;
+            }
+        }
+        
+        if (!placed && targetPlayer.leftHand === null) {
+            targetPlayer.leftHand = itemToGive;
+            placed = true;
+        }
+        
+        if (!placed && targetPlayer.rightHand === null) {
+            targetPlayer.rightHand = itemToGive;
+            placed = true;
+        }
+        
+        // Enregistrer l'action
+        p.actions.push({type: 'don', item: itemToGive, to: giftTargetPlayer, location: {x: p.x, y: p.y}});
+        
+        speak(`Objet donné au joueur ${targetPlayer.name} !`);
+        
+        // Fermer et terminer le tour
+        closeGiftInventory();
+    }
+
+    /**
+     * Annule le don
+     */
+    function cancelGift() {
+        giftMode = false;
+        giftTargetPlayer = null;
+        closeGiftInventory();
+        renderGrid();
+    }
+
+    /**
+     * Ferme l'inventaire de don et termine le tour
+     */
+    function closeGiftInventory() {
+        // Réinitialiser la modal
+        document.getElementById('loot-box').querySelector('h3').innerText = 'FOUILLE';
+        let btn = document.getElementById('loot-box').querySelector('button');
+        btn.innerText = 'TERMINER';
+        btn.onclick = closeLoot;
+        
+        // Réinitialiser les onclick des slots
+        document.getElementById('inv-left').onclick = () => selectInventorySlot('left');
+        document.getElementById('inv-right').onclick = () => selectInventorySlot('right');
+        document.getElementById('inv-back0').onclick = () => selectInventorySlot('back0');
+        document.getElementById('inv-back1').onclick = () => selectInventorySlot('back1');
+        document.getElementById('inv-back2').onclick = () => selectInventorySlot('back2');
+        
+        document.getElementById('loot-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        giftMode = false;
+        giftTargetPlayer = null;
+        
+        endTurnLog();
+        showPlayerChange();
+    }
+    /**
+     * Affiche le menu repos/soin
+     */
+    function showRestMenu() {
+        let p = players[currentPlayer];
+        
+        // Afficher les objets consommables
+        let consumableDiv = document.getElementById('consumable-items');
+        consumableDiv.innerHTML = '';
+        
+        // Parcourir l'inventaire pour trouver les objets consommables
+        let consumables = [];
+        
+        // Vérifier main gauche
+        if (p.leftHand && isConsumable(p.leftHand)) {
+            consumables.push({item: p.leftHand, slot: 'left'});
+        }
+        
+        // Vérifier main droite
+        if (p.rightHand && isConsumable(p.rightHand)) {
+            consumables.push({item: p.rightHand, slot: 'right'});
+        }
+        
+        // Vérifier sac
+        p.backpack.forEach((item, idx) => {
+            if (item && isConsumable(item)) {
+                consumables.push({item: item, slot: `back${idx}`});
+            }
+        });
+        
+        if (consumables.length === 0) {
+            consumableDiv.innerHTML = '<p style="color: #999; font-size: 0.85rem; margin: 10px 0;">Aucun objet consommable</p>';
+        } else {
+            consumables.forEach(c => {
+                let btn = document.createElement('button');
+                btn.style.cssText = 'background:#27ae60; color:white; width:100%; padding:10px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; gap:8px;';
+                
+                let effect = getConsumableEffect(c.item);
+                btn.innerHTML = `<span style="font-size:1.5rem;">${c.item.icon}</span><span style="flex:1; text-align:left;">${effect.name}</span>`;
+                btn.onclick = () => consumeItem(c.slot, effect);
+                
+                consumableDiv.appendChild(btn);
+            });
+        }
+        
+        document.getElementById('rest-box').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+    }
+
+    /**
+     * Vérifie si un objet est consommable
+     */
+    function isConsumable(item) {
+        return item.name === 'trousse' || item.type === 'fruit';
+    }
+
+    /**
+     * Récupère l'effet d'un objet consommable
+     */
+    function getConsumableEffect(item) {
+        if (item.name === 'trousse') {
+            return {
+                name: 'Trousse de soin',
+                message: 'Vous vous soignez. Retirez 2 blessures et 1 fatigue.',
+                fatigue: -1,
+                wound: -2
+            };
+        } else if (item.icon === '🥥') { // Noix de coco
+            return {
+                name: 'Noix de coco',
+                message: 'Vous récupérez fatigue et immunité. Retirez 1 fatigue et 1 blessure.',
+                fatigue: -1,
+                wound: -1
+            };
+        } else if (item.icon === '🍌') { // Banane
+            return {
+                name: 'Banane',
+                message: 'Un petit coup de boost. Défaussez 2 fatigues.',
+                fatigue: -2,
+                wound: 0
+            };
+        }
+        return null;
+    }
+
+    /**
+     * Se reposer (sans consommer d'objet)
+     */
+    function doRest() {
+        let p = players[currentPlayer];
+        
+        if (p.fatigueCards > 0) {
+            p.fatigueCards--;
+            speak('Vous vous reposez. Une carte fatigue retirée.');
+        } else {
+            speak('Vous vous reposez mais vous n\'avez pas de fatigue.');
+        }
+        
+        p.actions.push({type: 'repos', location: {x: p.x, y: p.y}});
+        closeRest();
+        endTurnLog();
+        showPlayerChange();
+    }
+
+    /**
+     * Consomme un objet pour se soigner/reposer
+     */
+    function consumeItem(slot, effect) {
+        let p = players[currentPlayer];
+        
+        // Retirer l'objet de l'inventaire
+        if (slot === 'left') {
+            p.leftHand = null;
+        } else if (slot === 'right') {
+            p.rightHand = null;
+        } else if (slot.startsWith('back')) {
+            let backIdx = parseInt(slot.replace('back', ''));
+            p.backpack[backIdx] = null;
+        }
+        
+        // Appliquer les effets
+        if (effect.fatigue < 0) {
+            p.fatigueCards = Math.max(0, p.fatigueCards + effect.fatigue);
+        }
+        if (effect.wound < 0) {
+            p.woundCards = Math.max(0, p.woundCards + effect.wound);
+        }
+        
+        speak(effect.message);
+        
+        p.actions.push({type: 'soin', item: effect.name, location: {x: p.x, y: p.y}});
+        closeRest();
+        endTurnLog();
+        showPlayerChange();
+    }
+
+    /**
+     * Ferme le menu repos/soin
+     */
+    function closeRest() {
+        document.getElementById('rest-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    }
     /**
      * Ferme la popup de morsure
      */
@@ -824,6 +1988,295 @@
         document.getElementById('bite-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
     }
+    
+    /**
+     * Décrément la durabilité des objets dans les mains (torche et pioche)
+     */
+    function decreaseHandItemsDurability(player) {
+        // Vérifier main gauche
+        if (player.leftHand && player.leftHand.durability !== null) {
+            if (player.leftHand.name === 'torche' || player.leftHand.name === 'pioche') {
+                player.leftHand.durability--;
+                if (player.leftHand.durability <= 0) {
+                    speak(`Votre ${player.leftHand.name} est cassée !`);
+                    player.leftHand = null;
+                }
+            }
+        }
+        
+        // Vérifier main droite
+        if (player.rightHand && player.rightHand.durability !== null) {
+            if (player.rightHand.name === 'torche' || player.rightHand.name === 'pioche') {
+                player.rightHand.durability--;
+                if (player.rightHand.durability <= 0) {
+                    speak(`Votre ${player.rightHand.name} est cassée !`);
+                    player.rightHand = null;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Décrément la durabilité de la gourde en cas de canicule
+     */
+    function decreaseGourdeDurability(player) {
+        // Vérifier main gauche
+        if (player.leftHand && player.leftHand.name === 'gourde' && player.leftHand.durability !== null) {
+            player.leftHand.durability--;
+            if (player.leftHand.durability <= 0) {
+                speak(`La gourde de ${player.name} est vide !`);
+                player.leftHand = null;
+            }
+        }
+        
+        // Vérifier main droite
+        if (player.rightHand && player.rightHand.name === 'gourde' && player.rightHand.durability !== null) {
+            player.rightHand.durability--;
+            if (player.rightHand.durability <= 0) {
+                speak(`La gourde de ${player.name} est vide !`);
+                player.rightHand = null;
+            }
+        }
+        
+        // Vérifier sac
+        player.backpack.forEach((item, idx) => {
+            if (item && item.name === 'gourde' && item.durability !== null) {
+                item.durability--;
+                if (item.durability <= 0) {
+                    speak(`La gourde de ${player.name} est vide !`);
+                    player.backpack[idx] = null;
+                }
+            }
+        });
+    }
+    
+    /**
+     * Décrément la durabilité d'un objet spécifique (canne ou arc)
+     */
+    function decreaseItemDurability(player, itemName) {
+        // Vérifier main gauche
+        if (player.leftHand && player.leftHand.name === itemName && player.leftHand.durability !== null) {
+            player.leftHand.durability--;
+            if (player.leftHand.durability <= 0) {
+                speak(`Votre ${itemName} est cassée !`);
+                player.leftHand = null;
+            }
+            return;
+        }
+        
+        // Vérifier main droite
+        if (player.rightHand && player.rightHand.name === itemName && player.rightHand.durability !== null) {
+            player.rightHand.durability--;
+            if (player.rightHand.durability <= 0) {
+                speak(`Votre ${itemName} est cassée !`);
+                player.rightHand = null;
+            }
+            return;
+        }
+        
+        // Vérifier sac
+        for (let idx = 0; idx < player.backpack.length; idx++) {
+            let item = player.backpack[idx];
+            if (item && item.name === itemName && item.durability !== null) {
+                item.durability--;
+                if (item.durability <= 0) {
+                    speak(`Votre ${itemName} est cassée !`);
+                    player.backpack[idx] = null;
+                }
+                return;
+    }
+        }
+    }
+    
+    /**
+     * Ouvre le scanner de QR Code
+     */
+    function openQRScanner() {
+        if (isScanning) return;
+        
+        document.getElementById('qr-scanner-modal').style.display = 'block';
+        document.getElementById('qr-status').innerText = 'Positionnez le QR Code devant la caméra';
+        
+        html5QrCode = new Html5Qrcode("qr-reader");
+        
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+        
+        html5QrCode.start(
+            { facingMode: "environment" }, // Caméra arrière
+            config,
+            onQRCodeScanned,
+            onQRCodeError
+        ).then(() => {
+            isScanning = true;
+        }).catch(err => {
+            console.error('Erreur démarrage caméra:', err);
+            document.getElementById('qr-status').innerText = 'Erreur: Impossible d\'accéder à la caméra';
+        });
+    }
+    
+    /**
+     * Ferme le scanner de QR Code
+     */
+    function closeQRScanner() {
+        if (html5QrCode && isScanning) {
+            html5QrCode.stop().then(() => {
+                isScanning = false;
+                html5QrCode.clear();
+                document.getElementById('qr-scanner-modal').style.display = 'none';
+            }).catch(err => {
+                console.error('Erreur arrêt caméra:', err);
+            });
+        } else {
+            document.getElementById('qr-scanner-modal').style.display = 'none';
+        }
+    }
+    
+    /**
+     * Callback quand un QR Code est scanné
+     */
+    function onQRCodeScanned(decodedText, decodedResult) {
+        console.log('QR Code scanné:', decodedText);
+        
+        // Convertir en nombre
+        const missionId = parseInt(decodedText);
+        
+        // Vérifier que c'est un nombre entre 1 et 100
+        if (isNaN(missionId) || missionId < 1 || missionId > 100) {
+            document.getElementById('qr-status').innerText = 'QR Code invalide ! (doit être entre 1 et 100)';
+            speak('QR Code invalide !');
+            return;
+        }
+        
+        // Attribuer la mission au joueur actuel
+        assignSecretMission(missionId);
+        
+        // Fermer le scanner
+        closeQRScanner();
+    }
+    
+    /**
+     * Callback pour les erreurs de scan (silencieux)
+     */
+    function onQRCodeError(errorMessage) {
+        // Ne rien faire, c'est normal pendant le scan
+    }
+    
+    /**
+     * Attribue une mission secrète à un joueur
+     */
+    function assignSecretMission(missionId) {
+        let p = players[currentPlayer];
+        
+        // Vérifier si le joueur a déjà une mission
+        if (p.secretMission) {
+            speak('Vous avez déjà une mission secrète en cours !');
+            return;
+        }
+        
+        // Récupérer la mission
+        const mission = SECRET_MISSIONS.find(m => m.id === missionId);
+        
+        if (!mission) {
+            speak('Mission introuvable !');
+            return;
+        }
+        
+        // Attribuer la mission
+        p.secretMission = {
+            id: mission.id,
+            description: mission.description,
+            votes: mission.votes,
+            completed: false,
+            condition: mission.condition
+        };
+        
+                console.log(`Mission ${missionId} attribuée à ${p.name}:`, mission.description);
+        speak(`Mission secrète attribuée à ${p.name}:`);
+        
+        // Publier l'événement
+        publishGlobalEvent('mission', `a reçu la mission secrète #${missionId} ! 🎯`);
+        
+        // Mettre à jour l'UI pour afficher le badge de mission
+        updateUI();
+    }
+    
+    /**
+     * Vérifie si une mission secrète est accomplie
+     */
+    function checkSecretMission(player) {
+        if (!player.secretMission || player.secretMission.completed) return;
+        
+                // Vérifier la condition de la mission
+        if (player.secretMission.condition(player)) {
+            player.secretMission.completed = true;
+            addVotes(player, player.secretMission.votes, `Mission secrète accomplie : ${player.secretMission.description}`);
+            console.log(`${player.name} a accompli sa mission secrète !`);
+            
+            // Publier l'événement
+            publishGlobalEvent('mission', `a accompli sa mission secrète #${player.secretMission.id} ! (+${player.secretMission.votes} votes) ⭐`);
+        }
+    }
+    
+    // === Fonctions de vérification des missions ===
+    
+    function checkFruitsCollected(player, count) {
+        let fruits = player.actions.filter(a => a.type === 'fouille' || a.type === 'fouille_auto')
+            .flatMap(a => a.items)
+            .filter(item => item.type === 'fruit');
+        let uniqueFruits = new Set(fruits.map(f => f.icon));
+        return uniqueFruits.size >= count;
+    }
+    
+    function checkMove3WithoutBite(player) {
+        let lastMove = player.actions.filter(a => a.type === 'move').pop();
+        return lastMove && lastMove.distance === 3 && player.woundCards === 0;
+    }
+    
+    function checkGiftGiven(player) {
+        return player.actions.some(a => a.type === 'don');
+    }
+    
+    function checkHunt2Animals(player) {
+        return player.actions.filter(a => a.type === 'chasse').length >= 2;
+    }
+    
+    function checkTotemFound(player) {
+        let items = player.actions.filter(a => a.type === 'fouille' || a.type === 'fouille_auto')
+            .flatMap(a => a.items);
+        return items.some(item => item.name === 'totem');
+    }
+    
+    function checkSurvive2Bites(player) {
+        // À implémenter selon la logique du jeu
+        return false;
+    }
+    
+    function checkTorchUsed(player) {
+        return player.actions.some(a => a.type === 'torch_protection');
+    }
+    
+    function checkHideSuccess(player) {
+        return player.actions.some(a => a.type === 'cache');
+    }
+    
+    function checkCollect5Items(player) {
+        let items = player.actions.filter(a => a.type === 'fouille' || a.type === 'fouille_auto')
+            .flatMap(a => a.items)
+            .filter(item => item.type === 'item');
+        let uniqueItems = new Set(items.map(i => i.name));
+        return uniqueItems.size >= 5;
+    }
+    
+    function checkReachEnemyCamp(player) {
+        let baseOwner = getBaseOwner(player.x, player.y);
+        return baseOwner !== null && baseOwner !== player.id;
+    }
 </script>
 </body>
 </html>
+
+
