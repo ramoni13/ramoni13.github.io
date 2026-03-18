@@ -42,6 +42,9 @@
         
         /* Case Mer */
         .cell-sea { background: rgba(52, 152, 219, 0.6) !important; border-color: #2980b9; }
+        
+        /* Zone Volcan */
+        .cell-volcano { background: rgba(231, 76, 60, 0.3) !important; border-color: #c0392b; }
 
         .pion { font-size: 1.3rem; z-index: 10; }
         .croco-unit { position: relative; display: flex; align-items: center; justify-content: center; }
@@ -100,6 +103,18 @@
         .summary-item.neutral { color: #3498db; }
         .summary-icon { font-size: 1.2rem; }
         .summary-empty { color: #999; font-style: italic; font-size: 0.8rem; text-align: center; }
+        
+        /* Popup Scanner Totem */
+        .totem-scanner-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 20px; border-radius: 20px; text-align: center; z-index: 100; width: 90%; max-width: 400px; }
+        .totem-scanner-modal h3 { margin-top: 0; color: var(--gold); }
+        .totem-items-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        .totem-item-card { width: 60px; height: 60px; border: 3px solid #ddd; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: white; cursor: pointer; transition: all 0.2s; }
+        .totem-item-card:hover { border-color: var(--gold); transform: scale(1.1); }
+        .totem-item-card.selected { border-color: var(--gold); background: #fff3cd; box-shadow: 0 0 15px rgba(241, 196, 15, 0.6); }
+        .totem-scan-button { background: var(--gold); color: black; width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .totem-scan-button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .totem-ok-button { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; border: none; padding: 15px 40px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5); z-index: 1000; display: none; }
+        .totem-ok-button.visible { display: block; }
     </style>
 </head>
 <body>
@@ -219,6 +234,15 @@
 
 <div id="player-change-box" class="modal"><h3 style="color:var(--gold)">CHANGEMENT DE JOUEUR</h3><div style="font-size:60px;" id="next-player-icon">👤</div><p id="next-player-text" style="font-weight:bold; font-size:1.2rem;">Au tour de JOUEUR BLEU</p><button onclick="closePlayerChange()" style="background:var(--gold); color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;">C'EST PARTI !</button></div>
 
+<div id="totem-scanner-box" class="totem-scanner-modal">
+    <h3>🗿 SCANNER TOTEM</h3>
+    <p style="font-size: 0.9rem; color: #666; margin: 10px 0;">Sélectionnez l'objet à scanner sur la zone</p>
+    <div class="totem-items-grid" id="totem-items-grid"></div>
+    <button id="totem-scan-btn" class="totem-scan-button" onclick="activateTotemScan()" disabled>SCANNER LA ZONE</button>
+</div>
+
+<button id="totem-ok-btn" class="totem-ok-button" onclick="closeTotemScan()">OK</button>
+
 <script>
     const synth = window.speechSynthesis;
     function speak(text) {
@@ -264,6 +288,9 @@
     let gameSessionId = null;       // ID de la session de jeu
     let isOnline = false;           // Indicateur de connexion
     let mangues = [];               // Liste des mangues cachées sur la plage
+    let totemScanMode = false;      // Mode scan totem activé
+    let totemSelectedItem = null;   // Item sélectionné pour le scan totem
+    let diamonds = [];              // Liste des diamants sur la zone volcan
     let turnSummary = {             // Récapitulatif du tour en cours
         fatigueAdded: 0,
         fatigueRemoved: 0,
@@ -336,6 +363,13 @@
     function isIslandCell(x, y) {
         return x >= 1 && x <= 16 && y >= 1 && y <= 12;
     }
+    
+    /**
+     * Vérifie si une case est dans la zone du volcan
+     */
+    function isVolcanoZone(x, y) {
+        return x >= 7 && x <= 10 && y >= 5 && y <= 8;
+    }
 
     // Définition des camps (4 cases par coin)
     function getBaseOwner(x, y) {
@@ -379,26 +413,30 @@
         for(let i=0; i<15; i++) {
             let sx, sy;
             let attempts = 0;
-            // Trouver une position libre (sans autre arbre)
+            // Trouver une position libre (sans autre arbre, hors zone volcan)
             do {
                 sx = Math.floor(Math.random()*12)+3;
                 sy = Math.floor(Math.random()*8)+3;
                 attempts++;
-            } while (scenery.some(s => s.x === sx && s.y === sy) && attempts < 100);
-            scenery.push({x: sx, y: sy, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+            } while ((scenery.some(s => s.x === sx && s.y === sy) || isVolcanoZone(sx, sy)) && attempts < 100);
+            if (!isVolcanoZone(sx, sy)) {
+                scenery.push({x: sx, y: sy, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+            }
         }
         
         // === BANANIERS (15 total) - SANS OBJETS ===
         for(let i=0; i<15; i++) {
             let sx, sy;
             let attempts = 0;
-            // Trouver une position libre (sans autre arbre)
+            // Trouver une position libre (sans autre arbre, hors zone volcan)
             do {
                 sx = Math.floor(Math.random()*12)+3;
                 sy = Math.floor(Math.random()*8)+3;
                 attempts++;
-            } while (scenery.some(s => s.x === sx && s.y === sy) && attempts < 100);
-            scenery.push({x: sx, y: sy, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+            } while ((scenery.some(s => s.x === sx && s.y === sy) || isVolcanoZone(sx, sy)) && attempts < 100);
+            if (!isVolcanoZone(sx, sy)) {
+                scenery.push({x: sx, y: sy, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+            }
         }
         
         // === OBJETS CACHÉS (8 de chaque type répartis dans 4 zones) ===
@@ -422,14 +460,15 @@
                         let rx = Math.floor(Math.random() * (zone.x2 - zone.x1 + 1)) + zone.x1;
                         let ry = Math.floor(Math.random() * (zone.y2 - zone.y1 + 1)) + zone.y1;
                         
-                        // Vérifier que ce n'est pas un camp ni la mer
-                        if (getBaseOwner(rx, ry) === null && !isSeaCell(rx, ry)) {
-                            // Placer l'objet (invisible)
+                        // Vérifier que ce n'est pas un camp, ni la mer, ni la zone volcan
+                        if (getBaseOwner(rx, ry) === null && !isSeaCell(rx, ry) && !isVolcanoZone(rx, ry)) {
+                            // Placer l'objet (invisible) avec sa zone d'origine
                             hiddenItems.push({
                                 x: rx,
                                 y: ry,
                                 item: createItem(itemTemplate),
-                                found: false
+                                found: false,
+                                zone: zoneIndex  // Enregistrer la zone d'origine (0-3)
                             });
                             placed = true;
                         }
@@ -488,10 +527,11 @@
         // Placer 10 oiseaux aléatoirement
         for (let i = 0; i < 10; i++) {
             let validPositions = allCells.filter(pos => {
-                // Vérifier qu'il n'y a pas déjà un animal
+                // Vérifier qu'il n'y a pas déjà un animal et pas dans la zone volcan
                 if (crocos.some(c => c.x === pos.x && c.y === pos.y)) return false;
                 if (fishes.some(f => f.x === pos.x && f.y === pos.y)) return false;
                 if (birds.some(b => b.x === pos.x && b.y === pos.y)) return false;
+                if (isVolcanoZone(pos.x, pos.y)) return false;
                 return true;
             });
             
@@ -541,11 +581,38 @@
             }
         }
         
+        // === DIAMANTS (4 total) sur la zone volcan ===
+        let volcanoCells = [];
+        
+        // Générer toutes les cases de la zone volcan
+        for (let x = 7; x <= 10; x++) {
+            for (let y = 5; y <= 8; y++) {
+                volcanoCells.push({x, y});
+            }
+        }
+        
+        // Placer 4 diamants aléatoirement (1 par case max)
+        for (let i = 0; i < 4; i++) {
+            if (volcanoCells.length === 0) break;
+            
+            // Choisir une case aléatoire
+            let randomIndex = Math.floor(Math.random() * volcanoCells.length);
+            let randomCell = volcanoCells[randomIndex];
+            
+            // Placer le diamant
+            diamonds.push({x: randomCell.x, y: randomCell.y, found: false});
+            
+            // Retirer la case de la liste pour éviter les doublons
+            volcanoCells.splice(randomIndex, 1);
+        }
+        
         console.log('INIT - Crocos:', crocos);
         console.log('INIT - Poissons:', fishes);
         console.log('INIT - Oiseaux:', birds);
         console.log('INIT - Mangues (cachées):', mangues);
+        console.log('INIT - Diamants (zone volcan):', diamonds);
         console.log('INIT - Objets cachés:', hiddenItems.length, 'objets répartis');
+        console.log('INIT - Tous les objets cachés :', hiddenItems);
         console.log('INIT - Détail objets:', ITEMS.map(i => i.name + ': ' + hiddenItems.filter(h => h.item.name === i.name).length).join(', '));
         renderGrid();
     }
@@ -877,10 +944,14 @@
                             cell.appendChild(bDiv);
                         }
                     });
-                } else {
+                    } else {
                     cell.className = 'cell';
                     let baseOwner = getBaseOwner(x, y);
                     if (baseOwner !== null) cell.classList.add('base-' + baseOwner);
+                    
+                    // Coloriser la zone volcan
+                    if (isVolcanoZone(x, y)) cell.classList.add('cell-volcano');
+                    
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
                     let dist = getDistance(p.x, p.y, x, y);
@@ -909,27 +980,43 @@
                         });
                     }
 
-                    crocos.forEach(c => {
-                        if(c.x === x && c.y === y) {
-                            let cDiv = document.createElement('div');
-                            cDiv.className = "croco-unit";
-                            cDiv.innerHTML = `🐊<div class="croco-num">${c.id}</div>`;
-                            cell.appendChild(cDiv);
-                        }
-                    });
+                    // Afficher les crocos uniquement si pas en mode scan totem
+                    if (!totemScanMode) {
+                        crocos.forEach(c => {
+                            if(c.x === x && c.y === y) {
+                                let cDiv = document.createElement('div');
+                                cDiv.className = "croco-unit";
+                                cDiv.innerHTML = `🐊<div class="croco-num">${c.id}</div>`;
+                                cell.appendChild(cDiv);
+                            }
+                        });
+                    }
                     
                     players.forEach(pl => { if (pl.x === x && pl.y === y) cell.innerHTML += `<span class="pion">${pl.picto}</span>`; });
-                    scenery.forEach(s => { if (s.x === x && s.y === y) cell.innerHTML += s.icon; });
                     
-                    // Afficher les oiseaux sur l'île
-                    birds.forEach(b => {
-                        if(b.x === x && b.y === y) {
-                            let bDiv = document.createElement('div');
-                            bDiv.className = "bird-unit";
-                            bDiv.innerHTML = `🦅<div class="bird-num">${b.id}</div>`;
-                            cell.appendChild(bDiv);
-                        }
-                    });
+                    // Mode scan totem : afficher uniquement l'item sélectionné
+                    if (totemScanMode && totemSelectedItem) {
+                        // Afficher uniquement les objets cachés correspondant à l'item sélectionné
+                        let itemsOnCell = hiddenItems.filter(h => h.x === x && h.y === y && !h.found && h.item.name === totemSelectedItem);
+                        itemsOnCell.forEach(hiddenItem => {
+                            cell.innerHTML += hiddenItem.item.icon;
+                        });
+                    } else {
+                        // Mode normal : afficher arbres et animaux
+                        scenery.forEach(s => { if (s.x === x && s.y === y) cell.innerHTML += s.icon; });
+                        
+                        // Les diamants sont CACHÉS, pas affichés sur la carte
+                        
+                        // Afficher les oiseaux sur l'île
+                        birds.forEach(b => {
+                            if(b.x === x && b.y === y) {
+                                let bDiv = document.createElement('div');
+                                bDiv.className = "bird-unit";
+                                bDiv.innerHTML = `🦅<div class="bird-num">${b.id}</div>`;
+                                cell.appendChild(bDiv);
+                            }
+                        });
+                    }
                     
                     cell.innerHTML += `<span class="cell-coord">${alphabet[y-1]}${x}</span>`;
                     if(isReachable) cell.onclick = () => finalizeTurnMove(x, y, dist);
@@ -1021,7 +1108,7 @@
                     let tx = c.x + d.x, ty = c.y + d.y;
                     // Crocos peuvent aller sur la mer (x=0 ou 17, y=0 ou 13) mais pas sur les camps
                     let isValidSea = isSeaCell(tx, ty);
-                    let isValidIsland = isIslandCell(tx, ty) && getBaseOwner(tx, ty) === null;
+                    let isValidIsland = isIslandCell(tx, ty) && getBaseOwner(tx, ty) === null && !isVolcanoZone(tx, ty);
                     let noAnimal = !crocos.some(o => o.x === tx && o.y === ty) && 
                                    !fishes.some(f => f.x === tx && f.y === ty) &&
                                    !birds.some(b => b.x === tx && b.y === ty);
@@ -1054,6 +1141,8 @@
                 if (crocos.some(c => c.x === tx && c.y === ty)) return false;
                 if (fishes.some(other => other.id !== f.id && other.x === tx && other.y === ty)) return false;
                 if (birds.some(b => b.x === tx && b.y === ty)) return false;
+                // Pas dans la zone volcan (au cas où)
+                if (isVolcanoZone(tx, ty)) return false;
                 return true;
             });
             
@@ -1083,6 +1172,8 @@
                 if (crocos.some(c => c.x === tx && c.y === ty)) return false;
                 if (fishes.some(f => f.x === tx && f.y === ty)) return false;
                 if (birds.some(other => other.id !== b.id && other.x === tx && other.y === ty)) return false;
+                // Pas dans la zone volcan
+                if (isVolcanoZone(tx, ty)) return false;
                 return true;
             });
             
@@ -1143,7 +1234,7 @@
     function finalizeTurnMove(nx, ny, dist) {
         let p = players[currentPlayer];
         
-                // Si case de départ = case d'arrivée
+        // Si case de départ = case d'arrivée
         if (p.x === nx && p.y === ny) {
             if (crocos.some(c => c.x === p.x && c.y === p.y)) {
                 // Vérifier si le joueur a une torche
@@ -1151,9 +1242,16 @@
                 
                 if (!hasTorch) {
                     p.woundCards++;
-                    document.getElementById('bite-box').querySelector('p').innerText = '1 morsure : ajoutez 1 carte blessure à votre défausse.';
+                    turnSummary.woundAdded++;
+                    
+                    let biteBox = document.getElementById('bite-box');
+                    biteBox.querySelector('h3').innerText = 'MORSURE !';
+                    biteBox.querySelector('h3').style.color = 'var(--red)';
+                    biteBox.querySelector('div').innerText = '🐊';
+                    biteBox.querySelector('p').innerText = '1 morsure : ajoutez 1 carte blessure à votre défausse.';
+                    
                     document.getElementById('overlay').style.display = 'block';
-                    document.getElementById('bite-box').style.display = 'block';
+                    biteBox.style.display = 'block';
                     speak("Morsure ! Ajoutez une blessure.");
                 } else {
                     speak("Votre torche protège contre la morsure !");
@@ -1174,6 +1272,24 @@
         p.actions.push({type: 'move', from: {x: p.x, y: p.y}, to: {x: nx, y: ny}, distance: dist, bites: nbCrocos});
         
         p.x = nx; p.y = ny;
+        
+        // Les diamants sont révélés uniquement lors de la fouille, pas au déplacement
+        
+        // Vérifier si le joueur arrive sur la zone volcan (uniquement si déplacement réel)
+        if (isVolcanoZone(nx, ny) && dist > 0) {
+            p.woundCards++;
+            turnSummary.woundAdded++;
+            speak("⚠️ Danger ! Vous êtes sur la zone du volcan ! Vous prenez une blessure.");
+            
+            let biteBox = document.getElementById('bite-box');
+            biteBox.querySelector('h3').innerText = 'ZONE VOLCAN !';
+            biteBox.querySelector('h3').style.color = '#e67e22';
+            biteBox.querySelector('div').innerText = '🌋';
+            biteBox.querySelector('p').innerText = 'Vous êtes sur la zone du volcan ! Ajoutez une carte blessure à votre défausse.';
+            
+            document.getElementById('overlay').style.display = 'block';
+            biteBox.style.display = 'block';
+        }
         
                 // Votes pour déplacement de 3 cases
         if (dist === 3) {
@@ -1292,15 +1408,23 @@
             console.log(`Objet trouvé en (${p.x}, ${p.y}): ${hiddenItem.item.name}`);
         });
         
-        // Vérifier s'il y a une mangue cachée sur cette case
-        let mangueIndex = mangues.findIndex(m => m.x === p.x && m.y === p.y && !m.found);
-        if (mangueIndex !== -1) {
-            currentCellItems.push({type: 'fruit', icon: '🥭', name: 'mangue'});
-            mangues[mangueIndex].found = true; // Marquer comme trouvée
-            console.log(`Mangue trouvée en (${p.x}, ${p.y}) !`);
-        }
-        
-        p.actions.push({type: 'fouille_auto', items: currentCellItems, location: {x: p.x, y: p.y}});
+            // Vérifier s'il y a une mangue cachée sur cette case
+            let mangueIndex = mangues.findIndex(m => m.x === p.x && m.y === p.y && !m.found);
+            if (mangueIndex !== -1) {
+                currentCellItems.push({type: 'fruit', icon: '🥭', name: 'mangue'});
+                mangues[mangueIndex].found = true; // Marquer comme trouvée
+                console.log(`Mangue trouvée en (${p.x}, ${p.y}) !`);
+            }
+            
+            // Vérifier s'il y a un diamant caché sur cette case
+            let diamondIndex = diamonds.findIndex(d => d.x === p.x && d.y === p.y && !d.found);
+            if (diamondIndex !== -1) {
+                currentCellItems.push({type: 'diamond', icon: '💎', name: 'diamant'});
+                diamonds[diamondIndex].found = true; // Marquer comme trouvé
+                console.log(`Diamant trouvé en (${p.x}, ${p.y}) !`);
+            }
+            
+            p.actions.push({type: 'fouille_auto', items: currentCellItems, location: {x: p.x, y: p.y}});
         
         // Vérifier la mission secrète après la fouille automatique
         checkSecretMission(p);
@@ -1365,6 +1489,14 @@
                 currentCellItems.push({type: 'fruit', icon: '🥭', name: 'mangue'});
                 mangues[mangueIndex].found = true; // Marquer comme trouvée
                 console.log(`Mangue trouvée en (${p.x}, ${p.y}) !`);
+            }
+            
+            // Vérifier s'il y a un diamant caché sur cette case
+            let diamondIndex = diamonds.findIndex(d => d.x === p.x && d.y === p.y && !d.found);
+            if (diamondIndex !== -1) {
+                currentCellItems.push({type: 'diamond', icon: '💎', name: 'diamant'});
+                diamonds[diamondIndex].found = true; // Marquer comme trouvé
+                console.log(`Diamant trouvé en (${p.x}, ${p.y}) !`);
             }
             
             p.actions.push({type: 'fouille', items: currentCellItems, location: {x: p.x, y: p.y}});
@@ -1531,6 +1663,29 @@
         // Enregistrer l'objet ramassé dans le récapitulatif
         if (itemToPlace) {
             turnSummary.itemsCollected.push({icon: itemToPlace.icon, name: itemToPlace.name || itemToPlace.type});
+            
+            // Si c'est un diamant, afficher la popup de félicitations
+            if (itemToPlace.type === 'diamond') {
+                // Ajouter 200 votes
+                addVotes(p, 200, 'Découverte d\'un diamant !');
+                
+                // Afficher la popup de félicitations
+                setTimeout(() => {
+                    let biteBox = document.getElementById('bite-box');
+                    biteBox.querySelector('h3').innerText = 'FÉLICITATIONS !';
+                    biteBox.querySelector('h3').style.color = 'var(--gold)';
+                    biteBox.querySelector('div').innerText = '💎';
+                    biteBox.querySelector('p').innerText = 'Vous avez trouvé un diamant ! Vous gagnez 200 votes !';
+                    
+                    document.getElementById('overlay').style.display = 'block';
+                    biteBox.style.display = 'block';
+                    
+                    speak('Félicitations ! Vous avez trouvé un diamant ! 200 votes du public !');
+                    
+                    // Publier l'événement
+                    publishGlobalEvent('diamond', 'a trouvé un diamant ! 💎 (+200 votes)');
+                }, 100);
+            }
         }
         
         selectedItem = null;
@@ -1643,7 +1798,7 @@
         confirmTurn();
     }
     
-        /**
+    /**
      * Ferme la popup de fouille et termine le tour
      */
     function closeLoot() {
@@ -1655,6 +1810,123 @@
             // Réactiver le menu d'actions pour permettre une autre action
             return;
         }
+        
+        // Vérifier si un totem a été posé sur la case
+        let p = players[currentPlayer];
+        let totemOnCell = currentCellItems.find(item => item.name === 'totem');
+        
+        if (totemOnCell) {
+            // Ouvrir la popup de scanner totem
+            showTotemScanner();
+            return;
+        }
+        
+        endTurnLog();
+        showTurnSummary();
+    }
+    
+    /**
+     * Affiche la popup de scanner totem
+     */
+    function showTotemScanner() {
+        let p = players[currentPlayer];
+        
+        // Retirer le totem de la case
+        let totemIndex = currentCellItems.findIndex(item => item.name === 'totem');
+        if (totemIndex !== -1) {
+            currentCellItems.splice(totemIndex, 1);
+            
+            // Faire respawn le totem dans sa zone d'origine
+            respawnItem('totem');
+            
+            speak('Totem activé ! Sélectionnez un objet à scanner.');
+        }
+        
+        // Afficher tous les objets disponibles
+        let itemsGrid = document.getElementById('totem-items-grid');
+        itemsGrid.innerHTML = '';
+        
+        ITEMS.forEach(itemTemplate => {
+            if (itemTemplate.name !== 'totem') { // Exclure le totem lui-même
+                let itemCard = document.createElement('div');
+                itemCard.className = 'totem-item-card';
+                itemCard.innerText = itemTemplate.icon;
+                itemCard.onclick = () => selectTotemItem(itemTemplate.name, itemCard);
+                itemsGrid.appendChild(itemCard);
+            }
+        });
+        
+        totemSelectedItem = null;
+        document.getElementById('totem-scan-btn').disabled = true;
+        document.getElementById('totem-scanner-box').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+    }
+    
+    /**
+     * Sélectionne un objet pour le scan totem
+     */
+    function selectTotemItem(itemName, cardElement) {
+        // Désélectionner tous les items
+        document.querySelectorAll('.totem-item-card').forEach(el => el.classList.remove('selected'));
+        
+        // Sélectionner l'item cliqué
+        cardElement.classList.add('selected');
+        totemSelectedItem = itemName;
+        
+        // Activer le bouton de scan
+        document.getElementById('totem-scan-btn').disabled = false;
+    }
+    
+    /**
+     * Active le scan totem
+     */
+    function activateTotemScan() {
+        if (!totemSelectedItem) return;
+        
+        let p = players[currentPlayer];
+        
+        // Fermer la popup de sélection ET l'overlay
+        document.getElementById('totem-scanner-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        // Activer le mode scan
+        totemScanMode = true;
+        
+        // Masquer les boutons d'actions
+        document.getElementById('menu-actions').style.display = 'none';
+        document.getElementById('deck-menu').style.display = 'none';
+        
+        // Afficher le bouton OK
+        document.getElementById('totem-ok-btn').classList.add('visible');
+        
+        // Enregistrer l'action
+        p.actions.push({type: 'totem_scan', item: totemSelectedItem, location: {x: p.x, y: p.y}});
+        
+        // Ajouter des votes pour l'utilisation du totem
+        addVotes(p, 50, 'Utilisation du scanner totem !');
+        
+        // Publier l'événement
+        let itemTemplate = ITEMS.find(i => i.name === totemSelectedItem);
+        publishGlobalEvent('totem', `a utilisé le scanner totem pour trouver ${itemTemplate.icon} ! 🗿`);
+        
+        speak(`Scanner totem activé ! Recherche de ${totemSelectedItem} en cours.`);
+        
+        // Rafraîchir la grille pour afficher uniquement l'item sélectionné
+        renderGrid();
+    }
+    
+    /**
+     * Ferme le scan totem et termine le tour
+     */
+    function closeTotemScan() {
+        totemScanMode = false;
+        totemSelectedItem = null;
+        
+        // Masquer le bouton OK
+        document.getElementById('totem-ok-btn').classList.remove('visible');
+        
+        // Réafficher les boutons d'actions pour le prochain joueur
+        // (ils seront gérés par confirmTurn() qui réinitialise l'interface)
         
         endTurnLog();
         showTurnSummary();
@@ -2372,6 +2644,12 @@
     function closeBite() {
         document.getElementById('bite-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
+        
+        // Réinitialiser le titre et l'icône par défaut
+        document.getElementById('bite-box').querySelector('h3').innerText = 'MORSURE !';
+        document.getElementById('bite-box').querySelector('h3').style.color = 'var(--red)';
+        document.getElementById('bite-box').querySelector('div').innerText = '🐊';
+        document.getElementById('bite-box').querySelector('p').innerText = 'Morsure : ajoutez une carte blessure à votre défausse.';
     }
     
     /**
@@ -2868,7 +3146,7 @@
     }
 
     /**
-     * Régénère un objet sur l'île
+     * Régénère un objet sur l'île dans sa zone d'origine
      */
     function respawnItem(itemName) {
         // Trouver tous les objets de ce type déjà trouvés
@@ -2879,17 +3157,55 @@
         // Choisir un objet au hasard parmi ceux trouvés
         let randomItem = foundItems[Math.floor(Math.random() * foundItems.length)];
         
-        // Le remettre à disponible avec durabilité réinitialisée
-        randomItem.found = false;
-        let itemTemplate = ITEMS.find(i => i.name === itemName);
-        if (itemTemplate) {
-            randomItem.item = createItem(itemTemplate);
+        // Définir les 4 zones (même structure que dans initIsland)
+        const zones = [
+            {x1: 3, x2: 10, y1: 3, y2: 8},   // Zone 0: Nord-Ouest (camp BLEU)
+            {x1: 11, x2: 18, y1: 3, y2: 8},  // Zone 1: Nord-Est (camp ROUGE)
+            {x1: 3, x2: 10, y1: 9, y2: 14},  // Zone 2: Sud-Ouest (camp JAUNE)
+            {x1: 11, x2: 18, y1: 9, y2: 14}  // Zone 3: Sud-Est (camp VERT)
+        ];
+        
+        // Récupérer la zone d'origine de cet objet
+        let zone = zones[randomItem.zone];
+        
+        // Trouver une nouvelle position dans la même zone
+        let placed = false;
+        let attempts = 0;
+        
+        while(!placed && attempts < 100) {
+            // Générer une position aléatoire dans la zone d'origine
+            let rx = Math.floor(Math.random() * (zone.x2 - zone.x1 + 1)) + zone.x1;
+            let ry = Math.floor(Math.random() * (zone.y2 - zone.y1 + 1)) + zone.y1;
+            
+            // Vérifier que ce n'est pas un camp, ni la mer, ni la zone volcan
+            if (getBaseOwner(rx, ry) === null && !isSeaCell(rx, ry) && !isVolcanoZone(rx, ry)) {
+                // Repositionner l'objet dans sa zone d'origine
+                randomItem.x = rx;
+                randomItem.y = ry;
+                randomItem.found = false;
+                
+                // Réinitialiser la durabilité
+                let itemTemplate = ITEMS.find(i => i.name === itemName);
+                if (itemTemplate) {
+                    randomItem.item = createItem(itemTemplate);
+                }
+                
+                placed = true;
+                console.log(`${randomItem.item.icon} ${itemName} régénéré dans zone ${randomItem.zone} en (${rx}, ${ry})`);
+            }
+            attempts++;
         }
         
-        console.log(`${randomItem.item.icon} ${itemName} régénéré en (${randomItem.x}, ${randomItem.y})`);
+        if (!placed) {
+            // Si aucune position valide trouvée, remettre simplement à disponible à l'ancienne position
+            randomItem.found = false;
+            let itemTemplate = ITEMS.find(i => i.name === itemName);
+            if (itemTemplate) {
+                randomItem.item = createItem(itemTemplate);
+            }
+            console.log(`${randomItem.item.icon} ${itemName} régénéré à l'ancienne position (${randomItem.x}, ${randomItem.y})`);
+        }
     }
 </script>
 </body>
 </html>
-
-
