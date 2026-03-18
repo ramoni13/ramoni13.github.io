@@ -29,6 +29,7 @@
         .cell-hidden { visibility: hidden; }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
         .cell-reachable { background: var(--move-bg); border: 1px solid var(--green); cursor: pointer; }
+        .cell-reachable-volcano { background: var(--move-bg); border: 2px solid #e74c3c; cursor: pointer; box-shadow: 0 0 8px rgba(231, 76, 60, 0.6); }
         .cell-giftable { background: rgba(241, 196, 15, 0.4); border: 2px solid var(--gold); cursor: pointer; animation: pulse-gift 1s infinite; }
         @keyframes pulse-gift { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
         .cell-huntable { background: rgba(230, 126, 34, 0.4); border: 2px solid #e67e22; cursor: pointer; animation: pulse-hunt 1s infinite; }
@@ -259,7 +260,7 @@
     
     // Définition des 4 joueurs avec leur inventaire
     let players = [
-        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
+        { id: 0, name: "BLEU", picto: '👤', x: 7, y: 6, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
         { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
         { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
         { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 }
@@ -320,7 +321,7 @@
             // Missions secrètes (100 missions) - Classées par difficulté
     const SECRET_MISSIONS = [
         {id: 1, description: "Récupérer 3 fruits différents", votes: 120, condition: (p) => checkFruitsCollected(p, 3)},
-        {id: 2, description: "Se déplacer de 3 cases sans morsure 3X de suite", votes: 180, condition: (p) => checkMove3WithoutBite3Times(p)},
+        {id: 2, description: "Se déplacer de 3 cases sans morsure 3 fois de suite", votes: 180, condition: (p) => checkMove3WithoutBite3Times(p)},
         {id: 3, description: "Donner un objet à un autre joueur", votes: 100, condition: (p) => checkGiftGiven(p)},
         {id: 4, description: "Chasser ou pêcher 2 animaux", votes: 140, condition: (p) => checkHunt2Animals(p)},
         {id: 5, description: "Trouver un totem", votes: 160, condition: (p) => checkTotemFound(p)},
@@ -393,19 +394,23 @@
             crocos.push({id: cId++, x: pos.x, y: pos.y, oldX: pos.x, oldY: pos.y, stage: 'none', seen: false});
         });
         
-        // 8 crocodiles dans les secteurs (2 par secteur)
+        // 8 crocodiles dans les secteurs (2 par secteur) - HORS ZONE VOLCAN
         const sectors = [[4,8,4,6], [9,13,4,6], [4,8,7,9], [9,13,7,9]];
         sectors.forEach(s => {
             for(let i=0; i<2; i++) {
                 let rx, ry;
                 let attempts = 0;
-                // Trouver une position libre (sans autre croco)
+                // Trouver une position libre (sans autre croco, hors zone volcan)
                 do {
                     rx = Math.floor(Math.random()*(s[1]-s[0]+1))+s[0];
                     ry = Math.floor(Math.random()*(s[3]-s[2]+1))+s[2];
                     attempts++;
-                } while (crocos.some(c => c.x === rx && c.y === ry) && attempts < 100);
-                crocos.push({id: cId++, x: rx, y: ry, oldX: rx, oldY: ry, stage: 'none', seen: false});
+                } while ((crocos.some(c => c.x === rx && c.y === ry) || isVolcanoZone(rx, ry)) && attempts < 100);
+                
+                // Vérifier une dernière fois que ce n'est pas dans la zone volcan
+                if (!isVolcanoZone(rx, ry)) {
+                    crocos.push({id: cId++, x: rx, y: ry, oldX: rx, oldY: ry, stage: 'none', seen: false});
+                }
             }
         });
         
@@ -642,6 +647,9 @@
         // Choisir une phrase aléatoire
         let randomPhrase = LAUNCH_PHRASES[Math.floor(Math.random() * LAUNCH_PHRASES.length)];
         speak(randomPhrase);
+        
+        // Afficher le bouton QR pour le premier joueur
+        updateQRButtonVisibility();
     }
     
     /**
@@ -869,7 +877,7 @@
         currentRange = range;
         turnStep = 1; // Passer en mode sélection de case
         document.getElementById('deck-menu').style.opacity = "0.3";
-        updateQRButtonVisibility(); // Mettre à jour la visibilité du bouton QR
+        updateQRButtonVisibility(); // Le bouton reste visible en step 1
         renderGrid();
     }
 
@@ -954,10 +962,17 @@
                     
                     if (x === p.x && y === p.y) cell.classList.add('cell-player');
                     
-                    let dist = getDistance(p.x, p.y, x, y);
+                                        let dist = getDistance(p.x, p.y, x, y);
                     let isOccupied = players.some(pl => pl.id !== p.id && pl.x === x && pl.y === y);
                     let isReachable = (turnStep === 1 && dist <= currentRange && !isOccupied && !isAnimating);
-                    if (isReachable) cell.classList.add('cell-reachable');
+                    if (isReachable) {
+                        // Si c'est une case de la zone volcan, utiliser un style spécial
+                        if (isVolcanoZone(x, y)) {
+                            cell.classList.add('cell-reachable-volcano');
+                        } else {
+                            cell.classList.add('cell-reachable');
+                        }
+                    }
 
                     // Mode don : mettre en surbrillance les joueurs adjacents
                     if (giftMode && turnStep === 2) {
@@ -1053,7 +1068,7 @@
         let isCached = p.status.includes('caché');
         let hasTorch = (p.leftHand && p.leftHand.name === 'torche') || (p.rightHand && p.rightHand.name === 'torche');
         
-                // Réinitialiser le compteur de morsures du tour
+        // Réinitialiser le compteur de morsures du tour
         p.turnStartBites = 0;
         
         // Vérifier s'il y a un croco sur la case
@@ -1079,6 +1094,9 @@
         // Décrémenter la durabilité des objets dans les mains
         decreaseHandItemsDurability(p);
         
+        // Afficher le bouton QR si pas de mission active
+        updateQRButtonVisibility();
+        
         updateUI();
     }
 
@@ -1097,12 +1115,12 @@
             if (c.y < target.y) nY++;
             if (c.y > target.y) nY--;
 
-            // Vérification Camp ou Collision (crocos peuvent aller sur la mer)
+            // Vérification Camp, Zone Volcan ou Collision (crocos peuvent aller sur la mer)
             let hasAnimal = crocos.some(o => o.id !== c.id && o.x === nX && o.y === nY) || 
                            fishes.some(f => f.x === nX && f.y === nY) ||
                            birds.some(b => b.x === nX && b.y === nY);
             
-            if (getBaseOwner(nX, nY) !== null || hasAnimal) {
+            if (getBaseOwner(nX, nY) !== null || isVolcanoZone(nX, nY) || hasAnimal) {
                 let dirs = [{x:0,y:1},{x:0,y:-1},{x:1,y:0},{x:-1,y:0},{x:1,y:1},{x:-1,y:-1},{x:1,y:-1},{x:-1,y:1}];
                 let valid = dirs.filter(d => {
                     let tx = c.x + d.x, ty = c.y + d.y;
@@ -1416,11 +1434,12 @@
                 console.log(`Mangue trouvée en (${p.x}, ${p.y}) !`);
             }
             
-            // Vérifier s'il y a un diamant caché sur cette case
+        // Vérifier s'il y a un diamant caché sur cette case
             let diamondIndex = diamonds.findIndex(d => d.x === p.x && d.y === p.y && !d.found);
+            let foundDiamond = false;
             if (diamondIndex !== -1) {
-                currentCellItems.push({type: 'diamond', icon: '💎', name: 'diamant'});
                 diamonds[diamondIndex].found = true; // Marquer comme trouvé
+                foundDiamond = true;
                 console.log(`Diamant trouvé en (${p.x}, ${p.y}) !`);
             }
             
@@ -1428,6 +1447,12 @@
         
         // Vérifier la mission secrète après la fouille automatique
         checkSecretMission(p);
+        
+        // Si un diamant a été trouvé, afficher directement la popup de félicitations
+        if (foundDiamond) {
+            handleDiamondFound(p);
+            return; // Ne pas afficher la popup de fouille
+        }
         
         // Afficher la popup de fouille si des objets ont été trouvés
         if (currentCellItems.length > 0) {
@@ -1493,9 +1518,10 @@
             
             // Vérifier s'il y a un diamant caché sur cette case
             let diamondIndex = diamonds.findIndex(d => d.x === p.x && d.y === p.y && !d.found);
+            let foundDiamond = false;
             if (diamondIndex !== -1) {
-                currentCellItems.push({type: 'diamond', icon: '💎', name: 'diamant'});
                 diamonds[diamondIndex].found = true; // Marquer comme trouvé
+                foundDiamond = true;
                 console.log(`Diamant trouvé en (${p.x}, ${p.y}) !`);
             }
             
@@ -1509,7 +1535,7 @@
                 addVotes(p, 20, 'Fouille hors arbres avec découverte !');
             }
             
-                        // Vérifier si un totem a été découvert
+            // Vérifier si un totem a été découvert
             let hasTotem = currentCellItems.some(item => item.name === 'totem');
             if (hasTotem) {
                 addVotes(p, 50, 'Découverte d\'un totem !');
@@ -1518,6 +1544,12 @@
             
             // Vérifier la mission secrète après la fouille
             checkSecretMission(p);
+            
+            // Si un diamant a été trouvé, afficher directement la popup de félicitations
+            if (foundDiamond) {
+                handleDiamondFound(p);
+                return; // Ne pas afficher la popup de fouille
+            }
             
             showLootInventory();
         } else if (type === 'cache') {
@@ -1802,6 +1834,93 @@
      * Ferme la popup de fouille et termine le tour
      */
     function closeLoot() {
+        // Vérifier si le joueur a pris au moins un objet
+        let p = players[currentPlayer];
+        let initialItemsCount = currentCellItems.length;
+        
+        // Compter les objets dans l'inventaire avant la fouille (stocké dans turnSummary)
+        let itemsCollectedThisTurn = turnSummary.itemsCollected.length;
+        
+        // Si des objets ont été trouvés mais aucun n'a été ramassé
+        if (initialItemsCount > 0 && itemsCollectedThisTurn === 0) {
+            // FERMER la popup de fouille d'abord
+            document.getElementById('loot-box').style.display = 'none';
+            
+            // Afficher l'alerte "Vous n'avez rien pris !"
+            let biteBox = document.getElementById('bite-box');
+            
+            // Modifier le contenu
+            let h3 = biteBox.querySelector('h3');
+            let iconDiv = biteBox.querySelector('div');
+            let p = biteBox.querySelector('p');
+            let btn = biteBox.querySelector('button');
+            
+            if (h3) h3.innerText = 'ATTENTION !';
+            if (h3) h3.style.color = '#e67e22';
+            if (iconDiv) iconDiv.innerText = '⚠️';
+            if (p) p.innerText = 'Vous n\'avez rien pris ! Voulez-vous vraiment terminer la fouille ?';
+            
+            // Remplacer le bouton par deux boutons
+            if (btn) {
+                btn.outerHTML = `
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <button onclick="cancelCloseLoot()" style="background:#27ae60; color:white; flex:1; padding:12px; border:none; border-radius:10px; font-weight:bold;">ANNULER</button>
+                        <button onclick="confirmCloseLoot()" style="background:#e67e22; color:white; flex:1; padding:12px; border:none; border-radius:10px; font-weight:bold;">OK</button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('overlay').style.display = 'block';
+            biteBox.style.display = 'block';
+            speak('Vous n\'avez rien pris !');
+            return;
+        }
+        
+        // Sinon, continuer normalement
+        proceedCloseLoot();
+    }
+    
+    /**
+     * Annule la fermeture de la fouille et retourne à l'inventaire
+     */
+    function cancelCloseLoot() {
+        // Fermer l'alerte
+        document.getElementById('bite-box').style.display = 'none';
+        
+        // Réinitialiser le bouton de l'alerte
+        let biteBox = document.getElementById('bite-box');
+        let btnDiv = biteBox.querySelector('div[style*="display: flex"]');
+        if (btnDiv) {
+            btnDiv.outerHTML = '<button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button>';
+        }
+        
+        // Réafficher la popup de fouille
+        document.getElementById('loot-box').style.display = 'block';
+        speak('Continuez votre fouille.');
+    }
+    
+    /**
+     * Confirme la fermeture de la fouille sans rien prendre
+     */
+    function confirmCloseLoot() {
+        // Fermer l'alerte
+        document.getElementById('bite-box').style.display = 'none';
+        
+        // Réinitialiser le bouton de l'alerte
+        let biteBox = document.getElementById('bite-box');
+        let btnDiv = biteBox.querySelector('div[style*="display: flex"]');
+        if (btnDiv) {
+            btnDiv.outerHTML = '<button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button>';
+        }
+        
+        // Continuer la fermeture
+        proceedCloseLoot();
+    }
+    
+    /**
+     * Procède à la fermeture de la fouille
+     */
+    function proceedCloseLoot() {
         document.getElementById('loot-box').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         
@@ -1944,7 +2063,6 @@
         document.getElementById('deck-menu').style.opacity = "1";
         currentPlayer = (currentPlayer + 1) % 4;
         turnStep = 0;
-        updateQRButtonVisibility(); // Masquer le bouton QR au step 0
         if(currentPlayer === 0) {
             console.log('FIN DE CYCLE - Déplacement des crocos, poissons et oiseaux');
             moveCrocosGlobal();
@@ -2033,10 +2151,10 @@
         let p = players[currentPlayer];
         let qrButton = document.getElementById('qr-button');
         
-        // Afficher uniquement si :
-        // - turnStep === 1 (step déplacement)
+        // Afficher si :
+        // - turnStep === 0 (début du tour, avant sélection déplacement) OU turnStep === 1 (après sélection déplacement)
         // - Le joueur n'a pas de mission active OU a complété sa mission
-        if (turnStep === 1 && (!p.secretMission || (p.secretMission && p.secretMission.completed))) {
+        if ((turnStep === 0 || turnStep === 1) && (!p.secretMission || (p.secretMission && p.secretMission.completed))) {
             qrButton.classList.add('visible');
         } else {
             qrButton.classList.remove('visible');
@@ -3145,6 +3263,76 @@
         console.log(`🥭 Mangue régénérée en (${randomMangue.x}, ${randomMangue.y})`);
     }
 
+    /**
+     * Gère la découverte d'un diamant
+     */
+    function handleDiamondFound(player) {
+        // Ajouter au récapitulatif (sans doublon)
+        let alreadyCollected = turnSummary.itemsCollected.some(item => 
+            item.icon === '💎' && item.name === 'diamant'
+        );
+        
+        if (!alreadyCollected) {
+            turnSummary.itemsCollected.push({icon: '💎', name: 'diamant'});
+        }
+        
+        // Ajouter 200 votes
+        addVotes(player, 200, 'Découverte d\'un diamant !');
+        
+        // Afficher la popup de félicitations
+        let biteBox = document.getElementById('bite-box');
+        biteBox.querySelector('h3').innerText = 'FÉLICITATIONS !';
+        biteBox.querySelector('h3').style.color = 'var(--gold)';
+        biteBox.querySelector('div').innerText = '💎';
+        biteBox.querySelector('p').innerText = 'Vous avez trouvé un diamant ! Vous gagnez 200 votes !';
+        
+        // Modifier le bouton pour terminer le tour
+        let btn = biteBox.querySelector('button');
+        if (btn) {
+            btn.innerText = 'CONTINUER';
+            btn.style.background = 'var(--gold)';
+            btn.style.color = 'black';
+            btn.onclick = closeDiamondPopup;
+        }
+        
+        document.getElementById('overlay').style.display = 'block';
+        biteBox.style.display = 'block';
+        
+        speak('Félicitations ! Vous avez trouvé un diamant ! 200 votes du public !');
+        
+        // Publier l'événement
+        publishGlobalEvent('diamond', 'a trouvé un diamant ! 💎 (+200 votes)');
+    }
+    
+    /**
+     * Ferme la popup de diamant et termine le tour
+     */
+    function closeDiamondPopup() {
+        // Fermer la popup
+        document.getElementById('bite-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        // Réinitialiser le bouton de la popup bite-box
+        let biteBox = document.getElementById('bite-box');
+        let btn = biteBox.querySelector('button');
+        if (btn) {
+            btn.innerText = 'OK';
+            btn.style.background = 'var(--red)';
+            btn.style.color = 'white';
+            btn.onclick = closeBite;
+        }
+        
+        // Réinitialiser le titre et l'icône par défaut
+        biteBox.querySelector('h3').innerText = 'MORSURE !';
+        biteBox.querySelector('h3').style.color = 'var(--red)';
+        biteBox.querySelector('div').innerText = '🐊';
+        biteBox.querySelector('p').innerText = 'Morsure : ajoutez une carte blessure à votre défausse.';
+        
+        // Terminer le tour
+        endTurnLog();
+        showTurnSummary();
+    }
+    
     /**
      * Régénère un objet sur l'île dans sa zone d'origine
      */
