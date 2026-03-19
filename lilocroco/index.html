@@ -195,6 +195,7 @@
         <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">😴 Repos/Soin</button>
         <button id="btn-gift" class="act btn-ui" style="background:#27ae60" onclick="doAction('don')" disabled>🤝 Donner</button>
         <button id="btn-hunt" class="act btn-ui" style="background:#e67e22" onclick="doAction('chasse')" disabled>🎯 Chasse/Pêche</button>
+        <button id="btn-public-help" class="act btn-ui" style="background:#f39c12" onclick="doAction('aide_public')" disabled>📢 Aide du Public</button>
     </div>
     
     <button id="qr-button" class="qr-button" onclick="openQRScanner()">📷 Scanner Mission Secrète</button>
@@ -292,8 +293,23 @@
     </div>
 </div>
 
-<script src="lilo.js"></script>
+<div id="public-help-confirm-box" class="modal">
+    <h3 style="color:#f39c12">📢 AIDE DU PUBLIC</h3>
+    <div style="font-size:60px;">👥</div>
+    <p>Voulez-vous faire appel au public pour vous indiquer l'emplacement d'un objet le + proche de vous ?<br><br><strong>Coût = 20 votes !</strong></p>
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button onclick="cancelPublicHelp()" style="background:#e74c3c; color:white; flex:1; padding:12px; border:none; border-radius:10px; font-weight:bold;">ANNULER</button>
+        <button onclick="confirmPublicHelp()" style="background:#27ae60; color:white; flex:1; padding:12px; border:none; border-radius:10px; font-weight:bold;">OUI</button>
+    </div>
+</div>
+
+<!-- Popup résultat aide du public -->
+<div id="public-help-result-box" class="modal">
+    <h3 style="color:#f39c12">📢 AIDE DU PUBLIC</h3>
+    <div style="font-size:60px;" id="public-help-item-icon">🗿</div>
+    <p id="public-help-result-text">L'objet <strong>Totem</strong> le + proche se trouve à :<br><br><strong style="font-size:1.5rem; color:#f39c12;">L3 : B-C</strong></p>
+    <button onclick="closePublicHelpResult()" style="background:#f39c12; color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;">OK</button>
+</div>
+
 </body>
 </html>
-
-
