@@ -132,6 +132,29 @@
 
 <div id="start-overlay">
     <h1 style="color:var(--gold)">LILOCROCO TV</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <p style="font-size: 1rem; margin-bottom: 10px; color: white;">Durée de la partie :</p>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="gameDuration" value="2" style="cursor: pointer;">
+                <span>2 min</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="gameDuration" value="5" style="cursor: pointer;">
+                <span>5 min</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="gameDuration" value="15" style="cursor: pointer;">
+                <span>15 min</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
+                <input type="radio" name="gameDuration" value="30" checked style="cursor: pointer;">
+                <span>30 min</span>
+            </label>
+        </div>
+    </div>
+    
     <button id="start-btn" onclick="launchGame()">LANCER LE SHOW</button>
 </div>
 
