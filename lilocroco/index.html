@@ -16,16 +16,17 @@
         #start-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         #start-btn { padding: 20px 40px; font-size: 1.5rem; background: var(--gold); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; }
 
-        .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 98vh; display: flex; flex-direction: column; }
+        .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 98vh; max-height: 100vh; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 2px solid transparent; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 2px solid transparent; flex-shrink: 0; }
         .active-0 { background: rgba(52, 152, 219, 0.2); border-color: var(--blue); }
         .active-1 { background: rgba(231, 76, 60, 0.2); border-color: var(--red); }
         .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
         .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
 
-        .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; }
-        .cell { aspect-ratio: 1/1; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; }
+        .grid-container { width: 100%; max-width: 100%; overflow: hidden; }
+        .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; max-width: 100%; }
+        .cell { aspect-ratio: 1/1; max-height: 60px; background: #1c2833; border-radius: 4px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; font-size: 1.1rem; position: relative; border: 1px solid #2c3e50; overflow: hidden; }
         .cell-hidden { visibility: hidden; }
         .cell-player { border: 2px solid white; background: #234d20 !important; }
         .cell-reachable { background: var(--move-bg); border: 1px solid var(--green); cursor: pointer; }
@@ -47,27 +48,27 @@
         /* Zone Volcan */
         .cell-volcano { background: rgba(231, 76, 60, 0.3) !important; border-color: #c0392b; }
 
-        .pion { font-size: 1.3rem; z-index: 10; }
-        .croco-unit { position: relative; display: flex; align-items: center; justify-content: center; }
-        .croco-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: red; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
+        .pion { font-size: 1.2rem; z-index: 10; line-height: 1; }
+        .croco-unit { position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1; }
+        .croco-num { position: absolute; font-size: 0.45rem; color: white; font-weight: bold; top: -2px; background: red; border-radius: 50%; width: 9px; height: 9px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         .croco-blink { animation: blink-fast 0.2s step-end infinite alternate; }
         @keyframes blink-fast { 50% { opacity: 0; filter: brightness(3); } }
         
-        .fish-unit { position: relative; display: flex; align-items: center; justify-content: center; }
-        .fish-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: blue; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
+        .fish-unit { position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1; }
+        .fish-num { position: absolute; font-size: 0.45rem; color: white; font-weight: bold; top: -2px; background: blue; border-radius: 50%; width: 9px; height: 9px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         
-        .bird-unit { position: relative; display: flex; align-items: center; justify-content: center; }
-        .bird-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: green; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
+        .bird-unit { position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1; }
+        .bird-num { position: absolute; font-size: 0.45rem; color: white; font-weight: bold; top: -2px; background: green; border-radius: 50%; width: 9px; height: 9px; display: flex; align-items: center; justify-content: center; line-height: 1; }
 
-        .button-zone { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; }
-        .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
+        .button-zone { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; flex-shrink: 0; }
+        .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; flex-shrink: 0; }
         button.btn-ui { padding: 12px 5px; border-radius: 8px; border: none; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.65rem; cursor: pointer; }
         button.btn-ui:disabled { opacity: 0.3; cursor: not-allowed; }
         
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
-        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.4rem; color: white; pointer-events: none; font-weight: bold; }
-        .weather-banner { background: linear-gradient(90deg, #2c3e50, #34495e); color: white; padding: 8px; text-align: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; border-radius: 8px; overflow: hidden; white-space: nowrap; }
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.35rem; color: white; pointer-events: none; font-weight: bold; line-height: 1; }
+        .weather-banner { background: linear-gradient(90deg, #2c3e50, #34495e); color: white; padding: 8px; text-align: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; border-radius: 8px; overflow: hidden; white-space: nowrap; height: 40px; min-height: 40px; max-height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .weather-scroll { display: inline-block; animation: scroll-left 15s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .inventory-zone { display: flex; justify-content: space-around; margin-bottom: 15px; gap: 5px; }
@@ -90,7 +91,7 @@
         .sync-indicator { position: fixed; top: 10px; right: 10px; background: rgba(46, 204, 113, 0.9); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; z-index: 1500; display: none; }
         .sync-indicator.active { display: block; animation: pulse-sync 2s infinite; }
         @keyframes pulse-sync { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-        .global-events { background: rgba(241, 196, 15, 0.2); border: 2px solid var(--gold); border-radius: 10px; padding: 10px; margin-bottom: 8px; max-height: 100px; overflow-y: auto; }
+        .global-events { background: rgba(241, 196, 15, 0.2); border: 2px solid var(--gold); border-radius: 10px; padding: 10px; margin-bottom: 8px; height: 80px !important; min-height: 80px !important; max-height: 80px !important; overflow-y: auto; flex-shrink: 0 !important; box-sizing: border-box; }
         .event-item { font-size: 0.75rem; margin: 3px 0; padding: 3px; background: rgba(0,0,0,0.3); border-radius: 5px; }
         
         /* Popup récapitulatif de fin de tour */
@@ -116,6 +117,13 @@
         .totem-scan-button:disabled { opacity: 0.3; cursor: not-allowed; }
         .totem-ok-button { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; border: none; padding: 15px 40px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5); z-index: 1000; display: none; }
         .totem-ok-button.visible { display: block; }
+        
+        /* Popup de confirmation de déplacement */
+        .move-confirm-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 90%; max-width: 350px; }
+        .move-confirm-modal h3 { margin-top: 0; color: var(--green); font-size: 1.2rem; }
+        .move-confirm-modal p { font-size: 1rem; margin: 15px 0; font-weight: bold; }
+        .move-confirm-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .move-confirm-buttons button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -139,7 +147,13 @@
 
     <div id="p-header" class="header active-0">
         <div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div>
-        <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="display: flex; gap: 10px; font-size: 0.9rem; font-weight: bold;">
+                <span>F:<span id="p-fatigue" style="color: #2ecc71;">0</span></span>
+                <span>B:<span id="p-wound" style="color: #2ecc71;">0</span></span>
+            </div>
+            <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
+        </div>
     </div>
 
             <div id="deck-menu" class="button-zone">
@@ -148,7 +162,7 @@
         <button id="btn-wound" class="btn-ui" style="background:#c0392b" onclick="prepMove(1)" disabled>🩸 Blessure</button>
     </div>
 
-    <div class="grid-container"><div class="grid" id="grid"></div></div>
+    <div class="grid-container" style="flex-shrink: 0;"><div class="grid" id="grid"></div></div>
 
     <div id="menu-actions" class="actions-menu">
         <button id="btn-search" class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller/Poser</button>
@@ -244,6 +258,15 @@
 
 <button id="totem-ok-btn" class="totem-ok-button" onclick="closeTotemScan()">OK</button>
 
+<div id="move-confirm-box" class="move-confirm-modal">
+    <h3>🏃 CONFIRMATION DE DÉPLACEMENT</h3>
+    <p id="move-confirm-text">Vous allez vous déplacer en A-1</p>
+    <div class="move-confirm-buttons">
+        <button onclick="cancelMove()" style="background:#e74c3c; color:white;">ANNULER</button>
+        <button onclick="confirmMove()" style="background:#27ae60; color:white;">OK</button>
+    </div>
+</div>
+
 <script>
     const synth = window.speechSynthesis;
     function speak(text) {
@@ -260,7 +283,7 @@
     
     // Définition des 4 joueurs avec leur inventaire
     let players = [
-        { id: 0, name: "BLEU", picto: '👤', x: 7, y: 6, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
+        { id: 0, name: "BLEU", picto: '👤', x: 1, y: 1, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
         { id: 1, name: "ROUGE", picto: '👨‍🦰', x: 16, y: 1, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
         { id: 2, name: "JAUNE", picto: '👩', x: 1, y: 12, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 },
         { id: 3, name: "VERT", picto: '👨', x: 16, y: 12, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0 }
@@ -1081,6 +1104,8 @@
                 p.woundCards++;
                 turnSummary.woundAdded++;
                 p.turnStartBites = 1; // Enregistrer la morsure de début de tour
+                updateFatigueWoundDisplay(p);
+                checkEvacuation(p);
                 document.getElementById('bite-box').querySelector('p').innerText = 'Morsure : ajoutez une carte blessure à votre défausse.';
                 document.getElementById('overlay').style.display = 'block';
                 document.getElementById('bite-box').style.display = 'block';
@@ -1246,10 +1271,61 @@
         return allPaths[0].crocos;
     }
 
+    // Variables pour la confirmation de déplacement
+    let pendingMove = null;
+    
     /**
-     * Finalise le déplacement du joueur vers une case
+     * Demande confirmation avant de finaliser le déplacement
      */
     function finalizeTurnMove(nx, ny, dist) {
+        let p = players[currentPlayer];
+        
+        // Stocker les informations du déplacement en attente
+        pendingMove = { nx, ny, dist };
+        
+        // Afficher la popup de confirmation
+        let coordText = `${alphabet[ny-1]}${nx}`;
+        document.getElementById('move-confirm-text').innerText = `Vous allez vous déplacer en ${coordText}`;
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('move-confirm-box').style.display = 'block';
+    }
+    
+    /**
+     * Annule le déplacement et retourne à la sélection de case
+     */
+    function cancelMove() {
+        // Fermer la popup
+        document.getElementById('move-confirm-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        // Réinitialiser le déplacement en attente
+        pendingMove = null;
+        
+        // Rester en mode sélection de case (turnStep = 1)
+        renderGrid();
+    }
+    
+    /**
+     * Confirme le déplacement et exécute l'action
+     */
+    function confirmMove() {
+        // Fermer la popup
+        document.getElementById('move-confirm-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        if (!pendingMove) return;
+        
+        // Exécuter le déplacement
+        executeMove(pendingMove.nx, pendingMove.ny, pendingMove.dist);
+        
+        // Réinitialiser
+        pendingMove = null;
+    }
+    
+    /**
+     * Exécute le déplacement du joueur vers une case
+     */
+    function executeMove(nx, ny, dist) {
         let p = players[currentPlayer];
         
         // Si case de départ = case d'arrivée
@@ -1261,6 +1337,8 @@
                 if (!hasTorch) {
                     p.woundCards++;
                     turnSummary.woundAdded++;
+                    updateFatigueWoundDisplay(p);
+                    checkEvacuation(p);
                     
                     let biteBox = document.getElementById('bite-box');
                     biteBox.querySelector('h3').innerText = 'MORSURE !';
@@ -1297,6 +1375,8 @@
         if (isVolcanoZone(nx, ny) && dist > 0) {
             p.woundCards++;
             turnSummary.woundAdded++;
+            updateFatigueWoundDisplay(p);
+            checkEvacuation(p);
             speak("⚠️ Danger ! Vous êtes sur la zone du volcan ! Vous prenez une blessure.");
             
             let biteBox = document.getElementById('bite-box');
@@ -1332,6 +1412,8 @@
         if (fatigueCount > 0) {
             p.fatigueCards += fatigueCount;
             turnSummary.fatigueAdded += fatigueCount;
+            updateFatigueWoundDisplay(p);
+            checkEvacuation(p);
             if (fatigueCount === 1) speak("   Fatigue. Ajoutez 1 carte Fatigue.");
             if (fatigueCount === 2) speak("   Double Fatigue. Ajoutez 2 cartes Fatigue.");
         }
@@ -1344,9 +1426,11 @@
                 speak("Votre torche vous protège des crocodiles sur le chemin !");
                 p.actions.push({type: 'torch_protection'});
                 checkSecretMission(p);
-                        } else {
+            } else {
                 p.woundCards += nbCrocos;
                 turnSummary.woundAdded += nbCrocos;
+                updateFatigueWoundDisplay(p);
+                checkEvacuation(p);
                 let biteText = nbCrocos === 1 ? '1 morsure' : `${nbCrocos} morsures`;
                 let cardText = nbCrocos === 1 ? '1 carte blessure' : `${nbCrocos} cartes blessure`;
                 document.getElementById('bite-box').querySelector('p').innerText = `${biteText} : ajoutez ${cardText} à votre défausse.`;
@@ -1454,8 +1538,9 @@
             return; // Ne pas afficher la popup de fouille
         }
         
-        // Afficher la popup de fouille si des objets ont été trouvés
-        if (currentCellItems.length > 0) {
+        // Afficher la popup de fouille si des objets ont été trouvés OU si la fouille auto a été faite
+        // (pour permettre au joueur de gérer son inventaire même si rien n'a été trouvé)
+        if (currentCellItems.length > 0 || autoSearchDone) {
             showLootInventory();
         }
     }
@@ -2133,6 +2218,9 @@
         
         document.getElementById('p-votes').innerText = p.votes;
         
+        // Mettre à jour les fatigues et blessures avec couleurs
+        updateFatigueWoundDisplay(p);
+        
         // Activer/Désactiver les boutons selon les cartes disponibles
         document.getElementById('btn-fatigue').disabled = (p.fatigueCards === 0);
         document.getElementById('btn-wound').disabled = (p.woundCards === 0);
@@ -2142,6 +2230,168 @@
         
         // Vérifier la mission secrète
         checkSecretMission(p);
+        
+        // Vérifier si le joueur doit être évacué
+        checkEvacuation(p);
+    }
+    
+    /**
+     * Met à jour l'affichage des fatigues et blessures avec couleurs
+     */
+    function updateFatigueWoundDisplay(player) {
+        const fatigueEl = document.getElementById('p-fatigue');
+        const woundEl = document.getElementById('p-wound');
+        
+        // Mettre à jour les valeurs
+        fatigueEl.innerText = player.fatigueCards;
+        woundEl.innerText = player.woundCards;
+        
+        // Couleur pour fatigue
+        if (player.fatigueCards <= 2) {
+            fatigueEl.style.color = '#2ecc71'; // Vert
+        } else if (player.fatigueCards <= 4) {
+            fatigueEl.style.color = '#e67e22'; // Orange
+        } else {
+            fatigueEl.style.color = '#e74c3c'; // Rouge
+        }
+        
+        // Couleur pour blessure
+        if (player.woundCards <= 2) {
+            woundEl.style.color = '#2ecc71'; // Vert
+        } else if (player.woundCards <= 4) {
+            woundEl.style.color = '#e67e22'; // Orange
+        } else {
+            woundEl.style.color = '#e74c3c'; // Rouge
+        }
+    }
+    
+    /**
+     * Vérifie si le joueur doit être évacué (F >= 5 ET B >= 5)
+     */
+    function checkEvacuation(player) {
+        if (player.fatigueCards >= 5 && player.woundCards >= 5) {
+            evacuatePlayer(player);
+        }
+    }
+    
+    /**
+     * Évacue un joueur de l'île
+     */
+    function evacuatePlayer(player) {
+        // Afficher la popup d'évacuation
+        let biteBox = document.getElementById('bite-box');
+        biteBox.querySelector('h3').innerText = 'ÉVACUATION !';
+        biteBox.querySelector('h3').style.color = '#e74c3c';
+        biteBox.querySelector('div').innerText = '🚁';
+        biteBox.querySelector('p').innerText = 'Vous êtes évacué de l\'île, votre état est trop dangereux.';
+        
+        // Modifier le bouton
+        let btn = biteBox.querySelector('button');
+        if (btn) {
+            btn.innerText = 'OK';
+            btn.style.background = '#e74c3c';
+            btn.style.color = 'white';
+            btn.onclick = () => closeEvacuationPopup(player);
+        }
+        
+        document.getElementById('overlay').style.display = 'block';
+        biteBox.style.display = 'block';
+        
+        speak('Évacuation ! Vous êtes évacué de l\'île.');
+        
+        // Publier l'événement mondial
+        publishGlobalEvent('evacuation', `a été évacué de l'île ! 🚁`);
+    }
+    
+    /**
+     * Ferme la popup d'évacuation et réinitialise le joueur
+     */
+    function closeEvacuationPopup(player) {
+        // Fermer la popup
+        document.getElementById('bite-box').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        // Réinitialiser le bouton de la popup bite-box
+        let biteBox = document.getElementById('bite-box');
+        let btn = biteBox.querySelector('button');
+        if (btn) {
+            btn.innerText = 'OK';
+            btn.style.background = 'var(--red)';
+            btn.style.color = 'white';
+            btn.onclick = closeBite;
+        }
+        
+        // Réinitialiser le titre et l'icône par défaut
+        biteBox.querySelector('h3').innerText = 'MORSURE !';
+        biteBox.querySelector('h3').style.color = 'var(--red)';
+        biteBox.querySelector('div').innerText = '🐊';
+        biteBox.querySelector('p').innerText = 'Morsure : ajoutez une carte blessure à votre défausse.';
+        
+        // Replacer tous les objets de l'inventaire du joueur sur l'île
+        respawnPlayerItems(player);
+        
+        // Calculer la moitié des votes arrondie à la centaine inférieure
+        let halfVotes = Math.floor(player.votes / 2);
+        let votesLost = Math.floor(halfVotes / 100) * 100;
+        
+        // Réinitialiser le joueur
+        player.fatigueCards = 0;
+        player.woundCards = 0;
+        updateFatigueWoundDisplay(player);
+        player.votes = votesLost;
+        player.leftHand = null;
+        player.rightHand = null;
+        player.backpack = [null, null, null];
+        
+        // Annuler la mission en cours
+        if (player.secretMission) {
+            player.secretMission = null;
+        }
+        
+        // Replacer le joueur sur son camp de base
+        const basePositions = [{x:1,y:1}, {x:16,y:1}, {x:1,y:12}, {x:16,y:12}];
+        player.x = basePositions[player.id].x;
+        player.y = basePositions[player.id].y;
+        
+
+        if (votesLost > 0) {
+            speak(`Vous redémarrez l'aventure avec ${votesLost} votes.`);
+        } else {
+            speak('Vous redémarrez l\'aventure à 0.');
+        }
+        
+        // Terminer le tour
+        endTurnLog();
+        showTurnSummary();
+    }
+    
+    /**
+     * Replace tous les objets du joueur sur l'île dans leur zone d'origine
+     */
+    function respawnPlayerItems(player) {
+        // Collecter tous les objets du joueur
+        let itemsToRespawn = [];
+        
+        if (player.leftHand && player.leftHand.name) {
+            itemsToRespawn.push(player.leftHand.name);
+        }
+        
+        if (player.rightHand && player.rightHand.name) {
+            itemsToRespawn.push(player.rightHand.name);
+        }
+        
+        player.backpack.forEach(item => {
+            if (item && item.name) {
+                itemsToRespawn.push(item.name);
+            }
+        });
+        
+        // Replacer chaque objet
+        itemsToRespawn.forEach(itemName => {
+            respawnItem(itemName);
+        });
+        
+        console.log(`Objets du joueur ${player.name} replacés:`, itemsToRespawn);
     }
     
     /**
@@ -2296,6 +2546,8 @@
                 let fatigueRemoved = Math.min(2, p.fatigueCards);
                 p.fatigueCards = Math.max(0, p.fatigueCards - 2);
                 turnSummary.fatigueRemoved += fatigueRemoved;
+                updateFatigueWoundDisplay(p);
+                checkEvacuation(p);
                 
                 if (fatigueRemoved > 0) {
                     speak(`Vous avez pêché un poisson ! Vous vous nourrissez et retirez ${fatigueRemoved} fatigue${fatigueRemoved > 1 ? 's' : ''}.`);
@@ -2319,6 +2571,8 @@
                 let fatigueRemoved = Math.min(2, p.fatigueCards);
                 p.fatigueCards = Math.max(0, p.fatigueCards - 2);
                 turnSummary.fatigueRemoved += fatigueRemoved;
+                updateFatigueWoundDisplay(p);
+                checkEvacuation(p);
                 
                 if (fatigueRemoved > 0) {
                     speak(`Vous avez chassé un oiseau ! Vous vous nourrissez et retirez ${fatigueRemoved} fatigue${fatigueRemoved > 1 ? 's' : ''}.`);
@@ -2669,6 +2923,8 @@
             
             turnSummary.fatigueRemoved += totalFatigueRemoved;
             turnSummary.woundRemoved += totalWoundRemoved;
+            updateFatigueWoundDisplay(p);
+            checkEvacuation(p);
             
             let message = `Repos au camp ! Toutes les fatigues (${totalFatigueRemoved}) et blessures (${totalWoundRemoved}) sont retirées !`;
             speak(message);
@@ -2685,6 +2941,8 @@
             if (p.fatigueCards > 0) {
                 p.fatigueCards--;
                 turnSummary.fatigueRemoved++;
+                updateFatigueWoundDisplay(p);
+                checkEvacuation(p);
                 speak('Vous vous reposez. Une carte fatigue retirée.');
             } else {
                 speak('Vous vous reposez mais vous n\'avez pas de fatigue.');
@@ -2728,6 +2986,8 @@
             p.woundCards = Math.max(0, p.woundCards + effect.wound);
             turnSummary.woundRemoved += removed;
         }
+        updateFatigueWoundDisplay(p);
+        checkEvacuation(p);
         
         // Enregistrer l'objet consommé
         turnSummary.itemsUsed.push({icon: effect.name.includes('Noix') ? '🥥' : effect.name.includes('Banane') ? '🍌' : effect.name.includes('Mangue') ? '🥭' : '🩹', name: effect.name, action: 'consommé'});
@@ -3397,3 +3657,5 @@
 </script>
 </body>
 </html>
+
+
