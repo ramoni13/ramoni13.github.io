@@ -133,8 +133,8 @@
 <div id="start-overlay">
     <h1 style="color:var(--gold)">LILOCROCO TV</h1>
     
-    <div style="margin-bottom: 20px;">
-        <p style="font-size: 1rem; margin-bottom: 10px; color: white;">Durée de la partie :</p>
+        <div style="margin-bottom: 20px;">
+        <p style="font-size: 1rem; margin-bottom: 10px; color: white;">Temps par joueur :</p>
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
                 <input type="radio" name="gameDuration" value="2" style="cursor: pointer;">
@@ -145,12 +145,12 @@
                 <span>5 min</span>
             </label>
             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="gameDuration" value="15" style="cursor: pointer;">
-                <span>15 min</span>
+                <input type="radio" name="gameDuration" value="10" checked style="cursor: pointer;">
+                <span>10 min</span>
             </label>
             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="gameDuration" value="30" checked style="cursor: pointer;">
-                <span>30 min</span>
+                <input type="radio" name="gameDuration" value="15" style="cursor: pointer;">
+                <span>15 min</span>
             </label>
         </div>
     </div>
@@ -250,6 +250,17 @@
 <div id="turn-summary-box" class="turn-summary-modal">
     <h3>📊 RÉCAPITULATIF DU TOUR</h3>
     
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); border-radius: 10px;">
+        <div style="text-align: center; flex: 1;">
+            <div style="font-size: 0.7rem; color: #000; font-weight: bold;">⭐ VOTES</div>
+            <div id="summary-total-votes" style="font-size: 1.5rem; color: #000; font-weight: bold;">0</div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+            <div style="font-size: 0.7rem; color: #000; font-weight: bold;">⏱️ TEMPS RESTANT</div>
+            <div id="summary-time-remaining" style="font-size: 1.5rem; color: #000; font-weight: bold;">10:00</div>
+        </div>
+    </div>
+    
     <div class="summary-section" id="summary-cards">
         <h4>🃏 Cartes</h4>
         <div id="summary-cards-content"></div>
@@ -313,3 +324,5 @@
 
 </body>
 </html>
+
+
