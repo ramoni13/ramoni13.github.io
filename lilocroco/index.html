@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <!-- Script principal du jeu -->
-    <script src="lilojso.js"></script>
+    <script src="lilo.js"></script>
     <style>
         :root { --gold: #f1c40f; --blue: #3498db; --red: #e74c3c; --yellow: #f1c40f; --green: #2ecc71; --move-bg: rgba(46, 204, 113, 0.4); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -126,6 +126,33 @@
         .move-confirm-modal p { font-size: 1rem; margin: 15px 0; font-weight: bold; }
         .move-confirm-buttons { display: flex; gap: 10px; margin-top: 20px; }
         .move-confirm-buttons button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+        
+        /* Écran de sélection des aventuriers */
+        #player-selection-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .player-selection-container { width: 100%; max-width: 400px; }
+        .player-selection-title { color: var(--gold); font-size: 1.5rem; margin-bottom: 20px; }
+        .player-selection-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        .player-btn { padding: 20px; font-size: 1.2rem; border: 3px solid; border-radius: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .player-btn-generic { background: rgba(255,255,255,0.1); color: white; }
+        .player-btn-generic:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        .player-btn-scan { background: var(--gold); color: black; }
+        .player-btn-scan:hover { background: #f39c12; transform: scale(1.05); }
+        .player-color-0 { border-color: var(--blue); }
+        .player-color-1 { border-color: var(--red); }
+        .player-color-2 { border-color: var(--yellow); }
+        .player-color-3 { border-color: var(--green); }
+        
+        /* Popup saisie nom aventurier */
+        .name-input-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 2100; width: 90%; max-width: 350px; }
+        .name-input-modal h3 { margin-top: 0; color: var(--gold); }
+        .name-input-modal input { width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #ddd; border-radius: 10px; margin: 15px 0; }
+        .name-input-modal button { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        
+        /* Popup ajout joueur suivant */
+        .add-player-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 2100; width: 90%; max-width: 350px; }
+        .add-player-modal h3 { margin-top: 0; color: var(--gold); }
+        .add-player-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .add-player-buttons button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -133,7 +160,7 @@
 <div id="start-overlay">
     <h1 style="color:var(--gold)">LILOCROCO TV</h1>
     
-        <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 20px;">
         <p style="font-size: 1rem; margin-bottom: 10px; color: white;">Temps par joueur :</p>
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
@@ -155,7 +182,47 @@
         </div>
     </div>
     
-    <button id="start-btn" onclick="launchGame()">LANCER LE SHOW</button>
+    <button id="start-btn" onclick="showPlayerSelection()">LANCER LE SHOW</button>
+</div>
+
+<!-- Écran de sélection des aventuriers -->
+<div id="player-selection-overlay">
+    <div class="player-selection-container">
+        <h2 class="player-selection-title" id="player-selection-title">CHOIX DE L'AVENTURIER</h2>
+        <p style="color: white; font-size: 1.2rem; margin-bottom: 10px;" id="player-selection-subtitle">JOUEUR BLEU</p>
+        <div class="player-selection-buttons">
+            <button class="player-btn player-btn-generic player-color-0" id="btn-generic-player" onclick="selectGenericPlayer()">👤 JOUEUR BLEU</button>
+            <button class="player-btn player-btn-scan player-color-0" id="btn-scan-player" onclick="scanPersonalPlayer()">📷 SCAN PERSO BLEU</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scanner QR pour aventurier personnel -->
+<div id="player-qr-scanner-modal" class="qr-scanner-modal">
+    <div class="qr-scanner-container">
+        <h3 style="text-align: center; color: black; margin-top: 0;">Scanner votre Aventurier</h3>
+        <div id="player-qr-reader"></div>
+        <p id="player-qr-status" style="text-align: center; color: #666; margin: 10px 0;">Positionnez le QR Code devant la caméra</p>
+        <button class="qr-close-btn" onclick="closePlayerQRScanner()">Annuler</button>
+    </div>
+</div>
+
+<!-- Popup saisie nom aventurier -->
+<div id="name-input-box" class="name-input-modal">
+    <h3>🎭 NOUVEL AVENTURIER</h3>
+    <p style="font-size: 0.9rem; color: #666;">Entrez le nom de votre aventurier :</p>
+    <input type="text" id="player-name-input" placeholder="Nom de l'aventurier" maxlength="20">
+    <button onclick="confirmPlayerName()" style="background: var(--gold); color: black;">VALIDER</button>
+</div>
+
+<!-- Popup ajout joueur suivant -->
+<div id="add-player-box" class="add-player-modal">
+    <h3>➕ AJOUTER UN AVENTURIER ?</h3>
+    <p style="font-size: 1rem; margin: 15px 0;">Ajouter un aventurier à l'émission ?</p>
+    <div class="add-player-buttons">
+        <button onclick="addAnotherPlayer()" style="background: #27ae60; color: white;">OUI</button>
+        <button onclick="startGameWithPlayers()" style="background: #e74c3c; color: white;">NON</button>
+    </div>
 </div>
 
 <div class="app-container">
@@ -209,6 +276,8 @@
         <button class="qr-close-btn" onclick="closeQRScanner()">Fermer</button>
     </div>
 </div>
+
+<div class="overlay" id="player-selection-overlay-bg" style="z-index: 2050;"></div>
 
 <div class="overlay" id="overlay"></div>
 <div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Morsure : ajoutez une carte blessure à votre défausse.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
@@ -324,5 +393,3 @@
 
 </body>
 </html>
-
-
