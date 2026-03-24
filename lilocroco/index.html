@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <!-- Script principal du jeu -->
-    <script src="lilojso.js"></script>
+    <script src="testjso.js"></script>
     <script>
         // Masquer les erreurs WebSocket de Firebase
         const originalError = console.error;
@@ -48,11 +48,11 @@
         .cell-huntable { background: rgba(230, 126, 34, 0.4); border: 2px solid #e67e22; cursor: pointer; animation: pulse-hunt 1s infinite; }
         @keyframes pulse-hunt { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-                /* Couleurs des Camps */
-        .base-0 { background: rgba(52, 152, 219, 0.4) !important; }
-        .base-1 { background: rgba(231, 76, 60, 0.4) !important; }
-        .base-2 { background: rgba(241, 196, 15, 0.4) !important; }
-        .base-3 { background: rgba(46, 204, 113, 0.4) !important; }
+        /* Couleurs des Camps */
+        .base-0 { background: rgba(231, 76, 60, 0.4) !important; }  /* Rouge - Haut gauche */
+        .base-1 { background: rgba(46, 204, 113, 0.4) !important; }  /* Vert - Haut droite */
+        .base-2 { background: rgba(52, 152, 219, 0.4) !important; }  /* Bleu - Bas gauche */
+        .base-3 { background: rgba(241, 196, 15, 0.4) !important; }  /* Jaune - Bas droite */
         
         /* Case Mer */
         .cell-sea { background: rgba(52, 152, 219, 0.6) !important; border-color: #2980b9; }
@@ -62,15 +62,15 @@
 
         .pion { font-size: 1.2rem; z-index: 10; line-height: 1; }
         .croco-unit { position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1; }
-        .croco-num { position: absolute; font-size: 0.45rem; color: white; font-weight: bold; top: -2px; background: red; border-radius: 50%; width: 9px; height: 9px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+        .croco-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: red; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         .croco-blink { animation: blink-fast 0.2s step-end infinite alternate; }
         @keyframes blink-fast { 50% { opacity: 0; filter: brightness(3); } }
         
         .fish-unit { position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1; }
-        .fish-num { position: absolute; font-size: 0.45rem; color: white; font-weight: bold; top: -2px; background: blue; border-radius: 50%; width: 9px; height: 9px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+        .fish-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: blue; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         
         .bird-unit { position: relative; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1; }
-        .bird-num { position: absolute; font-size: 0.45rem; color: white; font-weight: bold; top: -2px; background: green; border-radius: 50%; width: 9px; height: 9px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+        .bird-num { position: absolute; font-size: 0.5rem; color: white; font-weight: bold; top: -2px; background: green; border-radius: 50%; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; line-height: 1; }
 
         .button-zone { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; flex-shrink: 0; }
         .actions-menu { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; flex-shrink: 0; }
@@ -79,7 +79,7 @@
         
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: #000; padding: 25px; border-radius: 20px; text-align: center; z-index: 100; width: 280px; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 90; }
-        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.35rem; color: white; pointer-events: none; font-weight: bold; line-height: 1; }
+        .cell-coord { position: absolute; bottom: 1px; right: 2px; font-size: 0.55rem; color: white; pointer-events: none; font-weight: bold; line-height: 1; }
         .weather-banner { background: linear-gradient(90deg, #2c3e50, #34495e); color: white; padding: 8px; text-align: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 8px; border-radius: 8px; overflow: hidden; white-space: nowrap; height: 40px; min-height: 40px; max-height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .weather-scroll { display: inline-block; animation: scroll-left 15s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
@@ -202,10 +202,10 @@
 <div id="player-selection-overlay">
     <div class="player-selection-container">
         <h2 class="player-selection-title" id="player-selection-title">CHOIX DE L'AVENTURIER</h2>
-        <p style="color: white; font-size: 1.2rem; margin-bottom: 10px;" id="player-selection-subtitle">JOUEUR BLEU</p>
+        <p style="color: white; font-size: 1.2rem; margin-bottom: 10px;" id="player-selection-subtitle">JOUEUR ROUGE</p>
         <div class="player-selection-buttons">
-            <button class="player-btn player-btn-generic player-color-0" id="btn-generic-player" onclick="selectGenericPlayer()">👤 JOUEUR BLEU</button>
-            <button class="player-btn player-btn-scan player-color-0" id="btn-scan-player" onclick="scanPersonalPlayer()">📷 SCAN PERSO BLEU</button>
+            <button class="player-btn player-btn-generic player-color-0" id="btn-generic-player" onclick="selectGenericPlayer()">👨‍🦰 JOUEUR ROUGE</button>
+            <button class="player-btn player-btn-scan player-color-0" id="btn-scan-player" onclick="scanPersonalPlayer()">📷 SCAN PERSO ROUGE</button>
         </div>
     </div>
 </div>
@@ -251,7 +251,7 @@
     </div>
 
     <div id="p-header" class="header active-0">
-        <div id="p-name" style="font-weight:bold;">JOUEUR BLEU</div>
+        <div id="p-name" style="font-weight:bold;">JOUEUR ROUGE</div>
         <div style="display: flex; align-items: center; gap: 15px;">
             <div style="display: flex; gap: 10px; font-size: 0.9rem; font-weight: bold;">
                 <span>F:<span id="p-fatigue" style="color: #2ecc71;">0</span></span>
@@ -338,6 +338,17 @@
         <div style="text-align: center; flex: 1;">
             <div style="font-size: 0.7rem; color: #000; font-weight: bold;">⏱️ TEMPS RESTANT</div>
             <div id="summary-time-remaining" style="font-size: 1.5rem; color: #000; font-weight: bold;">10:00</div>
+        </div>
+    </div>
+    
+    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 10px;">
+        <div style="text-align: center; flex: 1;">
+            <div style="font-size: 0.7rem; color: #d35400; font-weight: bold;">😫 FATIGUE</div>
+            <div id="summary-total-fatigue" style="font-size: 1.3rem; color: #d35400; font-weight: bold;">0</div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+            <div style="font-size: 0.7rem; color: #c0392b; font-weight: bold;">🩸 BLESSURE</div>
+            <div id="summary-total-wound" style="font-size: 1.3rem; color: #c0392b; font-weight: bold;">0</div>
         </div>
     </div>
     
