@@ -232,7 +232,12 @@ const LAUNCH_PHRASES = ["Direct en cours ! Bienvenue sur Lilocroco TV ! C'est pa
 function showPlayerSelection() {
   const _0x43e836 = getString;
   let _0x1e7f75 = document[_0x43e836(880)](_0x43e836(845));
-  _0x1e7f75 && (globalGameDuration = parseInt(_0x1e7f75[_0x43e836(956)])), document.getElementById(_0x43e836(750)).style[_0x43e836(699)] = "none", document[_0x43e836(743)](_0x43e836(607)).style[_0x43e836(699)] = _0x43e836(574), initFirebase(), updatePlayerSelectionUI(),prepMove(3);
+  _0x1e7f75 && (globalGameDuration = parseInt(_0x1e7f75[_0x43e836(956)])), 
+  document.getElementById(_0x43e836(750)).style[_0x43e836(699)] = "none", 
+  document[_0x43e836(743)](_0x43e836(607)).style[_0x43e836(699)] = _0x43e836(574), 
+  initFirebase(), 
+  updatePlayerSelectionUI(),
+  prepMove(3);
 }
 function updatePlayerSelectionUI() {
   const _0x41b1fa = getString, _0x30e291 = ["ROUGE", "VERT", "BLEU", "JAUNE"], _0x25522e = ['player-color-2', 'player-color-0', 'player-color-3', 'player-color-1'], _0x5421de = ["👨‍🦰","👨","👤", "👩"];
@@ -474,7 +479,10 @@ function prepMove(_0x4c4199) {
   if (isAnimating) return;
   let _0x3e3bd6 = players[currentPlayer];
   if (currentWeather === _0x4e47d7(958) && !hasBottes(_0x3e3bd6)) _0x4c4199--;
-  currentRange = _0x4c4199, turnStep = 1, document.getElementById(_0x4e47d7(550)).style.opacity = _0x4e47d7(953), updateQRButtonVisibility(), renderGrid();
+  currentRange = _0x4c4199, turnStep = 1, 
+  //document.getElementById(_0x4e47d7(550)).style.opacity = _0x4e47d7(953), 
+  updateQRButtonVisibility(), 
+  renderGrid();
 }
 function getDistance(_0x42ddf8, _0x55fb26, _0x3caa46, _0x292c9f) {
   const _0x5a73dd = getString;
@@ -1030,7 +1038,9 @@ function showPlayerTimeOutPopup() {
 }
 function closePlayerChange() {
   const _0x344515 = getString;
-  document[_0x344515(743)](_0x344515(552))[_0x344515(612)][_0x344515(699)] = "none", document.getElementById(_0x344515(642))[_0x344515(612)].display = _0x344515(854), confirmTurn();
+  document[_0x344515(743)](_0x344515(552))[_0x344515(612)][_0x344515(699)] = "none", 
+  document.getElementById(_0x344515(642))[_0x344515(612)].display = _0x344515(854), 
+  confirmTurn();
 }
 function closeLoot() {
   const _0x23eb8b = getString;
@@ -1108,9 +1118,16 @@ function activateTotemScan() {
   const _0x3b501a = getString;
   if (!totemSelectedItem) return;
   let _0x3e33f4 = players[currentPlayer];
-  document.getElementById("totem-scanner-box")[_0x3b501a(612)][_0x3b501a(699)] = _0x3b501a(854), document[_0x3b501a(743)]("overlay")[_0x3b501a(612)][_0x3b501a(699)] = _0x3b501a(854), totemScanMode = true, document[_0x3b501a(743)](_0x3b501a(446))[_0x3b501a(612)][_0x3b501a(699)] = "none", document[_0x3b501a(743)](_0x3b501a(550)).style[_0x3b501a(699)] = "none", document[_0x3b501a(743)](_0x3b501a(624)).classList.add(_0x3b501a(555)), _0x3e33f4[_0x3b501a(490)][_0x3b501a(948)]({type: _0x3b501a(697), item: totemSelectedItem, location: {x: _0x3e33f4.x, y: _0x3e33f4.y}}), addVotes(_0x3e33f4, 50, _0x3b501a(941));
+  document.getElementById("totem-scanner-box")[_0x3b501a(612)][_0x3b501a(699)] = _0x3b501a(854), 
+  document[_0x3b501a(743)]("overlay")[_0x3b501a(612)][_0x3b501a(699)] = _0x3b501a(854), 
+  totemScanMode = true, document[_0x3b501a(743)](_0x3b501a(446))[_0x3b501a(612)][_0x3b501a(699)] = "none", 
+  document[_0x3b501a(743)](_0x3b501a(550)).style[_0x3b501a(699)] = "none", 
+  document[_0x3b501a(743)](_0x3b501a(624)).classList.add(_0x3b501a(555)), 
+  _0x3e33f4[_0x3b501a(490)][_0x3b501a(948)]({type: _0x3b501a(697), item: totemSelectedItem, location: {x: _0x3e33f4.x, y: _0x3e33f4.y}}), 
+  addVotes(_0x3e33f4, 50, _0x3b501a(941));
   let _0x49525d = ITEMS[_0x3b501a(518)](_0x4a1676 => _0x4a1676[_0x3b501a(666)] === totemSelectedItem);
-  publishGlobalEvent("totem", _0x3b501a(857) + _0x49525d.icon + _0x3b501a(467)), speak(_0x3b501a(816) + totemSelectedItem + _0x3b501a(739)), renderGrid();
+  publishGlobalEvent("totem", _0x3b501a(857) + _0x49525d.icon + _0x3b501a(467)), 
+  speak(_0x3b501a(816) + totemSelectedItem + _0x3b501a(739)), renderGrid();
 }
 function closeTotemScan() {
   const _0xadff05 = getString;
@@ -1118,7 +1135,14 @@ function closeTotemScan() {
 }
 function confirmTurn() {
   const _0x4a7a69 = getString;
-  endTurnLog(), document[_0x4a7a69(743)](_0x4a7a69(888))[_0x4a7a69(612)].display = _0x4a7a69(854), document[_0x4a7a69(743)](_0x4a7a69(642))[_0x4a7a69(612)].display = _0x4a7a69(854), document[_0x4a7a69(743)](_0x4a7a69(446))[_0x4a7a69(612)][_0x4a7a69(699)] = _0x4a7a69(854), document[_0x4a7a69(743)](_0x4a7a69(550)).style[_0x4a7a69(699)] = _0x4a7a69(686), document[_0x4a7a69(743)](_0x4a7a69(550))[_0x4a7a69(612)].opacity = "1", currentPlayer = (currentPlayer + 1) % players[_0x4a7a69(450)], turnStep = 0;
+  endTurnLog(), document[_0x4a7a69(743)](_0x4a7a69(888))[_0x4a7a69(612)].display = _0x4a7a69(854), 
+  document[_0x4a7a69(743)](_0x4a7a69(642))[_0x4a7a69(612)].display = _0x4a7a69(854), 
+  document[_0x4a7a69(743)](_0x4a7a69(446))[_0x4a7a69(612)][_0x4a7a69(699)] = _0x4a7a69(854), 
+  //document[_0x4a7a69(743)](_0x4a7a69(550)).style[_0x4a7a69(699)] = _0x4a7a69(686), 
+  //document[_0x4a7a69(743)](_0x4a7a69(550))[_0x4a7a69(612)].opacity = "1", 
+  currentPlayer = (currentPlayer + 1) % players[_0x4a7a69(450)], 
+  turnStep = 0,
+  prepMove(3);
   if (gameEnded) {
     showFinalRanking();
     return;
@@ -2037,4 +2061,3 @@ function removeItemFromInventory(player, item) {
     }
   }
 }
-
