@@ -129,6 +129,39 @@ function initIsland() {
   const decoder = getString;
   let crocoId = 1;
   const baseZones = [{x1: 1, x2: 3, y1: 1, y2: 3}, {x1: 14, x2: 16, y1: 1, y2: 3}, {x1: 1, x2: 3, y1: 10, y2: 12}, {x1: 14, x2: 16, y1: 10, y2: 12}];
+  scenery.push({x: 1, y: 7, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 2, y: 7, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 4, y: 2, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 4, y: 5, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 6, y: 11, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 7, y: 4, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 7, y: 11, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 8, y: 2, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 9, y: 11, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 10, y: 1, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 10, y: 3, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 10, y: 10, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 10, y: 12, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 11, y: 2, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+  scenery.push({x: 12, y: 1, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
+
+  scenery.push({x: 2, y: 4, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 1, y: 6, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 3, y: 8, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 4, y: 11, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 5, y: 8, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 5, y: 10, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 6, y: 2, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 8, y: 1, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 12, y: 11, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 13, y: 5, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 13, y: 10, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 14, y: 5, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 14, y: 8, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 15, y: 5, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 15, y: 9, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+  scenery.push({x: 16, y: 4, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
+
   baseZones.forEach(zone => {
     const decoder2 = decoder;
     let placed = false, attempts = 0;
@@ -144,43 +177,12 @@ function initIsland() {
       let crocoX, crocoY, tryCount = 0;
       do {
         crocoX = Math.floor(Math.random() * (centerZone[1] - centerZone[0] + 1)) + centerZone[0], crocoY = Math.floor(Math.random() * (centerZone[3] - centerZone[2] + 1)) + centerZone[2], tryCount++;
-      } while ((crocos.some(croco => croco.x === crocoX && croco.y === crocoY) || crocoX >= 7 && crocoX <= 10 && crocoY >= 5 && crocoY <= 8) && tryCount < 100);
+      } while ((crocos.some(croco => croco.x === crocoX && croco.y === crocoY) 
+        || crocoX >= 7 && crocoX <= 10 && crocoY >= 5 && crocoY <= 8
+        || scenery.some(sc => sc.x === crocoX && sc.y === crocoY)) && tryCount < 100);
       !(crocoX >= 7 && crocoX <= 10 && crocoY >= 5 && crocoY <= 8) && crocos.push({id: crocoId++, x: crocoX, y: crocoY, oldX: crocoX, oldY: crocoY, stage: "egg", seen: false});
     }
   });
-  
- scenery.push({x: 1, y: 7, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 2, y: 7, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 4, y: 2, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 4, y: 5, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 6, y: 11, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 7, y: 4, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 7, y: 11, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 8, y: 2, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 9, y: 11, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 10, y: 1, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 10, y: 3, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 10, y: 10, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 10, y: 12, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 11, y: 2, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
- scenery.push({x: 12, y: 1, type: 'cocotier', icon: '🌴', stock: 1, fruit: '🥥', item: null});
-
- scenery.push({x: 2, y: 4, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 1, y: 6, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 3, y: 8, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 4, y: 11, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 5, y: 8, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 5, y: 10, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 6, y: 2, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 8, y: 1, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 12, y: 11, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 13, y: 5, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 13, y: 10, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 14, y: 5, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 14, y: 8, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 15, y: 5, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 15, y: 9, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
- scenery.push({x: 16, y: 4, type: 'bananier', icon: '🌿', stock: 1, fruit: '🍌', item: null});
  
   const _0xe61a94 = [{x1: 1, x2: 8, y1: 1, y2: 6}, {x1: 9, x2: 16, y1: 1, y2: 6}, {x1: 1, x2: 8, y1: 7, y2: 12}, {x1: 9, x2: 16, y1: 7, y2: 12}];
   _0xe61a94.forEach((_0x4c0c2c, _0xe8b186) => {
@@ -401,6 +403,7 @@ function launchGame() {
   createGlobalTimerDisplay();
   initIsland();
   startGlobalTimer();
+  updateWeather();
   let _0x45b0a9 = LAUNCH_PHRASES[Math.floor(Math.random() * LAUNCH_PHRASES.length)];
   speak(_0x45b0a9), updateQRButtonVisibility();
 }
@@ -657,11 +660,22 @@ function moveCrocosGlobal() {
     if (_0xcdc8d6.x > _0x169bc9.x) _0x1fd23c--;
     if (_0xcdc8d6.y < _0x169bc9.y) _0x1a4d10++;
     if (_0xcdc8d6.y > _0x169bc9.y) _0x1a4d10--;
-    let _0xd6dd69 = crocos.some(_0x33c96f => _0x33c96f.id !== _0xcdc8d6.id && _0x33c96f.x === _0x1fd23c && _0x33c96f.y === _0x1a4d10) || fishes.some(_0x44f519 => _0x44f519.x === _0x1fd23c && _0x44f519.y === _0x1a4d10) || birds.some(_0x53b324 => _0x53b324.x === _0x1fd23c && _0x53b324.y === _0x1a4d10);
+    let _0xd6dd69 = crocos.some(_0x33c96f => _0x33c96f.id !== _0xcdc8d6.id && _0x33c96f.x === _0x1fd23c && _0x33c96f.y === _0x1a4d10) 
+    || fishes.some(_0x44f519 => _0x44f519.x === _0x1fd23c && _0x44f519.y === _0x1a4d10) 
+    || birds.some(_0x53b324 => _0x53b324.x === _0x1fd23c && _0x53b324.y === _0x1a4d10)
+    || scenery.some(sc => sc.x === _0x1fd23c && sc.y === _0x1a4d10);
     if (getBaseOwner(_0x1fd23c, _0x1a4d10) !== null || _0x1fd23c >= 7 && _0x1fd23c <= 10 && _0x1a4d10 >= 5 && _0x1a4d10 <= 8 || _0xd6dd69) {
       let _0x54b224 = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}, {x: 1, y: 1}, {x: -1, y: -1}, {x: 1, y: -1}, {x: -1, y: 1}], _0x553439 = _0x54b224.filter(_0xfe93b3 => {
         const _0x420808 = _0xc4ff3;
-        let _0x34cfec = _0xcdc8d6.x + _0xfe93b3.x, _0x43ddf1 = _0xcdc8d6.y + _0xfe93b3.y, _0x31830c = _0x34cfec === 0 || _0x34cfec === 17 || _0x43ddf1 === 0 || _0x43ddf1 === 13, _0x20fef1 = _0x34cfec >= 1 && _0x34cfec <= 16 && _0x43ddf1 >= 1 && _0x43ddf1 <= 12 && getBaseOwner(_0x34cfec, _0x43ddf1) === null && !(_0x34cfec >= 7 && _0x34cfec <= 10 && _0x43ddf1 >= 5 && _0x43ddf1 <= 8), _0x4b8933 = !crocos.some(_0x110128 => _0x110128.x === _0x34cfec && _0x110128.y === _0x43ddf1) && !fishes.some(_0x4955ee => _0x4955ee.x === _0x34cfec && _0x4955ee.y === _0x43ddf1) && !birds.some(_0x1a1e69 => _0x1a1e69.x === _0x34cfec && _0x1a1e69.y === _0x43ddf1);
+        let _0x34cfec = _0xcdc8d6.x + _0xfe93b3.x, _0x43ddf1 = _0xcdc8d6.y + _0xfe93b3.y, _0x31830c = _0x34cfec === 0 
+        || _0x34cfec === 17 || _0x43ddf1 === 0 
+        || _0x43ddf1 === 13, _0x20fef1 = _0x34cfec >= 1 && _0x34cfec <= 16 && _0x43ddf1 >= 1 && _0x43ddf1 <= 12 
+        && getBaseOwner(_0x34cfec, _0x43ddf1) === null 
+        && !(_0x34cfec >= 7 && _0x34cfec <= 10 && _0x43ddf1 >= 5 && _0x43ddf1 <= 8),
+         _0x4b8933 = !crocos.some(_0x110128 => _0x110128.x === _0x34cfec && _0x110128.y === _0x43ddf1) 
+         && !fishes.some(_0x4955ee => _0x4955ee.x === _0x34cfec && _0x4955ee.y === _0x43ddf1) 
+         && !birds.some(_0x1a1e69 => _0x1a1e69.x === _0x34cfec && _0x1a1e69.y === _0x43ddf1)
+         && !scenery.some(sc => sc.x === _0x34cfec && sc.y === _0x43ddf1);
         return (_0x31830c || _0x20fef1) && _0x4b8933;
       });
       if (_0x553439.length > 0) {
@@ -1260,7 +1274,10 @@ function updateUI() {
   let _0x19c5c9 = players[currentPlayer];
   document.getElementById("p-header").className = "header active-" + currentPlayer;
   let _0xc1ae9c = "JOUEUR " + _0x19c5c9.name;
-  _0x19c5c9.secretMission && !_0x19c5c9.secretMission.completed && (_0xc1ae9c += "<span class=\"mission-badge\">🎯 " + _0x19c5c9.secretMission.id + "</span>"), document.getElementById("p-name").innerHTML = _0xc1ae9c, document.getElementById("p-votes").innerText = _0x19c5c9.votes, 
+  _0x19c5c9.secretMission && !_0x19c5c9.secretMission.completed 
+  //(_0xc1ae9c += "<span class=\"mission-badge\">🎯 " + _0x19c5c9.secretMission.id + "</span>"),
+  document.getElementById("p-name").innerHTML = _0xc1ae9c, 
+  document.getElementById("p-votes").innerText = _0x19c5c9.votes, 
   updateFatigueWoundDisplay(_0x19c5c9), 
   updateHeaderWeather(),
   //document.getElementById("btn-fatigue").disabled = _0x19c5c9.fatigueCards === 0, 
@@ -1647,7 +1664,9 @@ function assignSecretMission(_0x5c388b) {
     speak("Mission introuvable !");
     return;
   }
-  _0x7a8681.secretMission = {id: _0x5de6a2.id, description: _0x5de6a2.description, votes: _0x5de6a2.votes, completed: false, condition: _0x5de6a2.condition}, console.log("Mission " + _0x5c388b + " attribuée à " + _0x7a8681.name + ":", _0x5de6a2.description), speak("Mission secrète attribuée à " + _0x7a8681.name + ":"), publishGlobalEvent("mission", "a reçu la mission secrète #" + _0x5c388b + " ! 🎯"), updateUI();
+  _0x7a8681.secretMission = {id: _0x5de6a2.id, description: _0x5de6a2.description, votes: _0x5de6a2.votes, completed: false, condition: _0x5de6a2.condition}, console.log("Mission " + _0x5c388b + " attribuée à " + _0x7a8681.name + ":", _0x5de6a2.description), speak("Mission secrète attribuée à " + _0x7a8681.name + ":"), 
+  publishGlobalEvent("mission", "a reçu la mission secrète ! 🎯"), 
+  updateUI();
 }
 function checkSecretMission(_0x39625e) {
   const _0x3bb9e0 = getString;
@@ -1914,7 +1933,7 @@ let selectedConsumeItem = null;
 
 function showInventoryManage() {
   const player = players[currentPlayer];
-  
+  document.getElementById("summary-total-votes").innerText = player.votes;
   // Afficher les emplacements d'inventaire
   document.getElementById('manage-inv-left').innerText = player.leftHand ? player.leftHand.icon : '';
   document.getElementById('manage-inv-right').innerText = player.rightHand ? player.rightHand.icon : '';
@@ -2077,7 +2096,8 @@ function closeInventoryManage() {
   document.getElementById('inventory-manage-box').style.display = 'none';
   
   // Passer au rÃ©capitulatif
-  showTurnSummary();
+  //showTurnSummary();
+  showPlayerChange();
 }
 
 function consumeItem(player, item) {
@@ -2136,3 +2156,4 @@ function removeItemFromInventory(player, item) {
     }
   }
 }
+
