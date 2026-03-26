@@ -30,11 +30,113 @@
 
         .app-container { width: 100%; max-width: 450px; border: 4px solid var(--gold); border-radius: 15px; background: #1a1a1a; padding: 10px; min-height: 98vh; max-height: 100vh; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 2px solid transparent; flex-shrink: 0; }
-        .active-0 { background: rgba(52, 152, 219, 0.2); border-color: var(--blue); }
-        .active-1 { background: rgba(231, 76, 60, 0.2); border-color: var(--red); }
-        .active-2 { background: rgba(241, 196, 15, 0.2); border-color: var(--yellow); }
-        .active-3 { background: rgba(46, 204, 113, 0.2); border-color: var(--green); }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 2px solid #666; flex-shrink: 0; position: relative; overflow: hidden; }
+        
+        /* Textures météo pour le bandeau */
+        .weather-sunny { 
+            background: linear-gradient(135deg, rgba(255, 223, 0, 0.15) 0%, rgba(255, 193, 7, 0.15) 100%);
+            border-color: #ffd700;
+        }
+        .weather-sunny::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 223, 0, 0.05) 10px,
+                rgba(255, 223, 0, 0.05) 20px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .weather-canicule { 
+            background: linear-gradient(135deg, rgba(255, 87, 34, 0.2) 0%, rgba(244, 67, 54, 0.2) 100%);
+            border-color: #ff5722;
+        }
+        .weather-canicule::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 15px,
+                rgba(255, 87, 34, 0.1) 15px,
+                rgba(255, 87, 34, 0.1) 30px
+            );
+            pointer-events: none;
+            z-index: 0;
+            animation: heatwave 3s linear infinite;
+        }
+        @keyframes heatwave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(30px); }
+        }
+        
+        .weather-orage { 
+            background: linear-gradient(135deg, rgba(96, 125, 139, 0.3) 0%, rgba(69, 90, 100, 0.3) 100%);
+            border-color: #607d8b;
+        }
+        .weather-orage::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                -45deg,
+                transparent,
+                transparent 8px,
+                rgba(255, 255, 255, 0.1) 8px,
+                rgba(255, 255, 255, 0.1) 10px,
+                transparent 10px,
+                transparent 18px,
+                rgba(96, 125, 139, 0.2) 18px,
+                rgba(96, 125, 139, 0.2) 20px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .weather-pluie { 
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.2) 0%, rgba(30, 136, 229, 0.2) 100%);
+            border-color: #2196f3;
+        }
+        .weather-pluie::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                180deg,
+                transparent,
+                transparent 3px,
+                rgba(33, 150, 243, 0.15) 3px,
+                rgba(33, 150, 243, 0.15) 4px
+            );
+            pointer-events: none;
+            z-index: 0;
+            animation: rain 0.5s linear infinite;
+        }
+        @keyframes rain {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+        
+        /* Assurer que le contenu est au-dessus de la texture */
+        .header > * { position: relative; z-index: 1; }
 
         .grid-container { width: 100%; max-width: 100%; overflow: hidden; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; max-width: 100%; }
@@ -167,6 +269,22 @@
         .add-player-modal h3 { margin-top: 0; color: var(--gold); }
         .add-player-buttons { display: flex; gap: 10px; margin-top: 20px; }
         .add-player-buttons button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        
+        /* Bouton Mute */
+        .mute-button { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 6px 10px; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; min-width: 40px; }
+        .mute-button:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
+        .mute-button.muted { background: rgba(231, 76, 60, 0.3); border-color: var(--red); }
+        
+        /* Notification furtive */
+        .toast-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; padding: 12px 20px; border-radius: 10px; font-weight: bold; font-size: 1rem; text-align: center; z-index: 5000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: top 0.5s ease-in-out; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; }
+        .toast-notification.show { top: 10px; }
+        .toast-notification.hide { top: -100px; }
+        
+        /* Types de notifications */
+        .toast-info { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; }
+        .toast-success { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white; }
+        .toast-warning { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; }
+        .toast-danger { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; }
     </style>
 </head>
 <body>
@@ -243,6 +361,9 @@
 <div class="app-container">
     <div class="sync-indicator" id="sync-indicator">🌐 Synchronisé</div>
     
+    <!-- Notification furtive -->
+    <div id="toast-notification" class="toast-notification"></div>
+    
     <div class="global-events" id="global-events" style="display: none;">
         <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 5px;">📡 Événements Mondiaux</div>
         <div id="events-list"></div>
@@ -252,7 +373,7 @@
         <div class="weather-scroll" id="weather-text">☀️ BEAU TEMPS - Tout va bien !</div>
     </div>
 
-    <div id="p-header" class="header active-0">
+        <div id="p-header" class="header active-0">
         <div id="p-name" style="font-weight:bold;">JOUEUR ROUGE</div>
         <div style="display: flex; align-items: center; gap: 15px;">
             <div style="display: flex; gap: 10px; font-size: 0.9rem; font-weight: bold;">
@@ -260,6 +381,7 @@
                 <span>B:<span id="p-wound" style="color: #2ecc71;">0</span></span>
             </div>
             <div id="p-votes" style="color:var(--gold); font-weight:bold; font-size: 1.2rem;">0</div>
+            <button id="mute-btn" class="mute-button" onclick="toggleMute()" title="Activer/Désactiver la voix">🔊</button>
         </div>
     </div>
 
@@ -269,7 +391,7 @@
     <div id="menu-actions" class="actions-menu">
         <button id="btn-search" class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller/Poser</button>
         <button class="act btn-ui" style="background:#d35400" onclick="doAction('cache')">😶‍🌫️ Se Cacher</button>
-        <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">😴 Repos/Soin</button>
+        <!-- <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">😴 Repos/Soin</button> -->
         <button id="btn-gift" class="act btn-ui" style="background:#27ae60" onclick="doAction('don')" disabled>🤝 Donner</button>
         <button id="btn-hunt" class="act btn-ui" style="background:#e67e22" onclick="doAction('chasse')" disabled>🎯 Chasse/Pêche</button>
         <button id="btn-public-help" class="act btn-ui" style="background:#f39c12" onclick="doAction('aide_public')" disabled>📢 Aide du Public</button>
@@ -368,7 +490,10 @@
     <button onclick="closeTurnSummary()" style="background:var(--gold); color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold; margin-top: 10px;">CONTINUER</button>
 </div>
 
-<div id="player-change-box" class="modal"><h3 style="color:var(--gold)">CHANGEMENT DE JOUEUR</h3><div style="font-size:60px;" id="next-player-icon">👤</div><p id="next-player-text" style="font-weight:bold; font-size:1.2rem;">Au tour de JOUEUR BLEU</p><button onclick="closePlayerChange()" style="background:var(--gold); color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;">C'EST PARTI !</button></div>
+<div id="player-change-box" class="modal"><h3 style="color:var(--gold)">CHANGEMENT DE JOUEUR</h3>
+    <div style="font-size:60px;" id="next-player-icon">👤</div>
+<p id="next-player-text" style="font-weight:bold; font-size:1.2rem;">Au tour de JOUEUR BLEU</p>
+<button onclick="closePlayerChange()" style="background:var(--gold); color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;">C'EST PARTI !</button></div>
 
 <div id="totem-scanner-box" class="totem-scanner-modal">
     <h3>🗿 SCANNER TOTEM</h3>
