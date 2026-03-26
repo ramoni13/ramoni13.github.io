@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <!-- Script principal du jeu -->
-    <script src="testjso.js"></script>
+    <script src="testjso_clean.js"></script>
     <script>
         // Masquer les erreurs WebSocket de Firebase
         const originalError = console.error;
@@ -84,9 +84,10 @@
         .weather-scroll { display: inline-block; animation: scroll-left 15s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .inventory-zone { display: flex; justify-content: space-around; margin-bottom: 15px; gap: 5px; }
-        .inv-slot { width: 60px; height: 60px; border: 2px solid #333; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: #f0f0f0; cursor: pointer; }
+        .inv-slot { width: 60px; height: 60px; border: 2px solid #333; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: #f0f0f0; cursor: pointer; transition: all 0.2s; }
         .inv-slot:hover { background: #e0e0e0; }
-        .inv-slot.selected { border-color: var(--gold); background: #fff3cd; }
+        .inv-slot.selected { border-color: var(--gold); background: #fff3cd; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+        .inv-slot:empty:hover { border-color: #999; border-style: dashed; }
         .items-found { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
         .item-card { width: 50px; height: 50px; border: 2px solid #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: white; cursor: pointer; }
         .item-card:hover { border-color: var(--gold); }
@@ -174,25 +175,26 @@
     <h1 style="color:var(--gold)">LILOCROCO TV</h1>
     
     <div style="margin-bottom: 20px;">
-        <p style="font-size: 1rem; margin-bottom: 10px; color: white;">Temps par joueur :</p>
+        <p style="font-size: 1.2rem; margin-bottom: 15px; color: var(--gold); font-weight: bold;">⏱️ Durée de la partie :</p>
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="gameDuration" value="2" style="cursor: pointer;">
-                <span>2 min</span>
+            <!-- <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 1rem; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; border: 2px solid transparent; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
+                <input type="radio" name="gameDuration" value="5" style="cursor: pointer; width: 18px; height: 18px;">
+                <span style="font-weight: bold;">5 min</span>
+            </label> -->
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 1rem; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; border: 2px solid transparent; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
+                <input type="radio" name="gameDuration" value="15" style="cursor: pointer; width: 18px; height: 18px;">
+                <span style="font-weight: bold;">15 min</span>
             </label>
-            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="gameDuration" value="5" style="cursor: pointer;">
-                <span>5 min</span>
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 1rem; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; border: 2px solid var(--gold); transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'; else this.style.borderColor='var(--gold)'">
+                <input type="radio" name="gameDuration" value="30" checked style="cursor: pointer; width: 18px; height: 18px;">
+                <span style="font-weight: bold; color: var(--gold);">30 min ⭐</span>
             </label>
-            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="gameDuration" value="10" checked style="cursor: pointer;">
-                <span>10 min</span>
-            </label>
-            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 0.9rem;">
-                <input type="radio" name="gameDuration" value="15" style="cursor: pointer;">
-                <span>15 min</span>
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 1rem; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; border: 2px solid transparent; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
+                <input type="radio" name="gameDuration" value="45" style="cursor: pointer; width: 18px; height: 18px;">
+                <span style="font-weight: bold;">45 min</span>
             </label>
         </div>
+        <p style="font-size: 0.85rem; margin-top: 10px; color: #999; font-style: italic;">⚠️ Chrono global pour toute la partie</p>
     </div>
     
     <button id="start-btn" onclick="showPlayerSelection()">LANCER LE SHOW</button>
@@ -261,11 +263,6 @@
         </div>
     </div>
 
-            <div id="deck-menu" class="button-zone">
-        <button id="btn-move" class="btn-ui" style="background:#27ae60" onclick="prepMove(3)">🏃 Déplacement</button>
-        <button id="btn-fatigue" class="btn-ui" style="background:#d35400" onclick="prepMove(2)" disabled>😫 Fatigue</button>
-        <button id="btn-wound" class="btn-ui" style="background:#c0392b" onclick="prepMove(1)" disabled>🩸 Blessure</button>
-    </div>
 
     <div class="grid-container" style="flex-shrink: 0;"><div class="grid" id="grid"></div></div>
 
@@ -291,7 +288,7 @@
   </div>
   
   <div class="overlay" id="overlay"></div>
-<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Morsure : ajoutez une carte blessure à votre défausse.</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
+<div id="bite-box" class="modal"><h3 style="color:var(--red)">MORSURE !</h3><div style="font-size:60px;">🐊</div><p>Morsure : +1 Blessure</p><button onclick="closeBite()" style="background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;">OK</button></div>
 <div id="loot-box" class="modal" style="width: 350px;">
     <h3>FOUILLE</h3>
     <div class="inventory-zone">
@@ -330,14 +327,10 @@
 <div id="turn-summary-box" class="turn-summary-modal">
     <h3>📊 RÉCAPITULATIF DU TOUR</h3>
     
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); border-radius: 10px;">
-        <div style="text-align: center; flex: 1;">
-            <div style="font-size: 0.7rem; color: #000; font-weight: bold;">⭐ VOTES</div>
-            <div id="summary-total-votes" style="font-size: 1.5rem; color: #000; font-weight: bold;">0</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-            <div style="font-size: 0.7rem; color: #000; font-weight: bold;">⏱️ TEMPS RESTANT</div>
-            <div id="summary-time-remaining" style="font-size: 1.5rem; color: #000; font-weight: bold;">10:00</div>
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); border-radius: 10px;">
+        <div style="text-align: center;">
+            <div style="font-size: 0.9rem; color: #000; font-weight: bold;">⭐ VOTES</div>
+            <div id="summary-total-votes" style="font-size: 2rem; color: #000; font-weight: bold;">0</div>
         </div>
     </div>
     
@@ -353,7 +346,7 @@
     </div>
     
     <div class="summary-section" id="summary-cards">
-        <h4>🃏 Cartes</h4>
+        <h4>🃏 Fatigues/Blessures</h4>
         <div id="summary-cards-content"></div>
     </div>
     
@@ -411,6 +404,51 @@
     <div style="font-size:60px;" id="public-help-item-icon">🗿</div>
     <p id="public-help-result-text">L'objet <strong>Totem</strong> le + proche se trouve à :<br><br><strong style="font-size:1.5rem; color:#f39c12;">L3 : B-C</strong></p>
     <button onclick="closePublicHelpResult()" style="background:#f39c12; color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;">OK</button>
+</div>
+
+<!-- Popup Inventaire/Consommation -->
+<div id="inventory-manage-box" class="modal" style="width: 350px; max-height: 85vh; overflow-y: auto;">
+    <h3>🎒 INVENTAIRE</h3>
+    
+    <!-- Affichage Fatigue/Blessure -->
+    <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 10px;">
+        <div style="text-align: center; flex: 1;">
+            <div style="font-size: 0.7rem; color: #d35400; font-weight: bold;">😫 FATIGUE</div>
+            <div id="manage-total-fatigue" style="font-size: 1.3rem; color: #d35400; font-weight: bold;">0</div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+            <div style="font-size: 0.7rem; color: #c0392b; font-weight: bold;">🩹 BLESSURE</div>
+            <div id="manage-total-wound" style="font-size: 1.3rem; color: #c0392b; font-weight: bold;">0</div>
+        </div>
+    </div>
+    
+    <!-- Partie haute : Réorganisation inventaire -->
+    <div class="inventory-zone">
+        <div>
+            <div style="font-size: 0.7rem; margin-bottom: 3px;">Main G.</div>
+            <div class="inv-slot" id="manage-inv-left" onclick="selectManageSlot('left')"></div>
+        </div>
+        <div>
+            <div style="font-size: 0.7rem; margin-bottom: 3px;">Sac</div>
+            <div style="display: flex; gap: 3px;">
+                <div class="inv-slot" id="manage-inv-back0" onclick="selectManageSlot('back0')"></div>
+                <div class="inv-slot" id="manage-inv-back1" onclick="selectManageSlot('back1')"></div>
+                <div class="inv-slot" id="manage-inv-back2" onclick="selectManageSlot('back2')"></div>
+            </div>
+        </div>
+        <div>
+            <div style="font-size: 0.7rem; margin-bottom: 3px;">Main D.</div>
+            <div class="inv-slot" id="manage-inv-right" onclick="selectManageSlot('right')"></div>
+        </div>
+    </div>
+    
+    <hr style="border-color: #ddd; margin: 15px 0;">
+    
+    <!-- Partie basse : Consommation -->
+    <p style="font-weight: bold; margin: 10px 0; font-size: 0.9rem;">💊 Consommer un objet :</p>
+    <div id="manage-consumable-items" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;"></div>
+    
+    <button onclick="closeInventoryManage()" style="background:var(--gold); color:black; width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold; margin-top: 10px;">SUITE</button>
 </div>
 
 </body>
