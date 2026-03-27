@@ -215,7 +215,27 @@ function initIsland() {
       return !_0x47be05;
     });
     if (_0x20edc1.length > 0) {
-      let _0x1e6c40 = _0x20edc1[Math.floor(Math.random() * _0x20edc1.length)];
+      // Définissez les combinaisons de valeurs à exclure
+      const exclusions = [
+        { x: 0, y: 0 },
+        { x: 0, y: 13 },
+        { x: 17, y: 0 },
+        { x: 17, y: 13 }
+      ];
+
+      const nouveauTableau = _0x20edc1.filter(element => {
+        // C'est une expression qui reste vraie tant que l'élément ne correspond à AUCUNE exclusion
+        let devraitRester = true;
+
+        for (const exclusion of exclusions) {
+          if (element.x === exclusion.x && element.y === exclusion.y) {
+            devraitRester = false; // Trouvé une correspondance, donc cet élément doit être exclu
+            break; // Inutile de vérifier les autres exclusions pour cet élément
+          }
+        }
+        return devraitRester;
+      });
+      let _0x1e6c40 = _0x20edc1[Math.floor(Math.random() * nouveauTableau.length)];
       fishes.push({id: _0x2dad8b++, x: _0x1e6c40.x, y: _0x1e6c40.y});
     }
   }
@@ -2156,3 +2176,4 @@ function removeItemFromInventory(player, item) {
     }
   }
 }
+
