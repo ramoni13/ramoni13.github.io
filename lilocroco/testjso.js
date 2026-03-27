@@ -1201,7 +1201,7 @@ function activateTotemScan() {
   document.getElementById("totem-scanner-box").style.display = "none", 
   document.getElementById("overlay").style.display = "none", 
   totemScanMode = true, document.getElementById("menu-actions").style.display = "none", 
-  document.getElementById("deck-menu").style.display = "none", 
+  //document.getElementById("deck-menu").style.display = "none", 
   document.getElementById("totem-ok-btn").classList.add("visible"), 
   _0x3e33f4.actions.push({type: "totem_scan", item: totemSelectedItem, location: {x: _0x3e33f4.x, y: _0x3e33f4.y}}), 
   addVotes(_0x3e33f4, 50, "Utilisation du scanner totem !");
@@ -2156,4 +2156,3 @@ function removeItemFromInventory(player, item) {
     }
   }
 }
-
