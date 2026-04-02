@@ -12,6 +12,7 @@
     <script src="lilojs.js"></script>
     <script src="turn-system-patch.js"></script>
     <script src="blind-mode-patch.js"></script>
+    <script src="mission-scan-popup-patch.js"></script>
     <script>
         // Masquer les erreurs WebSocket de Firebase
         const originalError = console.error;
@@ -200,7 +201,7 @@
         .qr-button { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5); z-index: 1000; display: none; }
         .qr-button:hover { background: #f39c12; }
         .qr-button.visible { display: block; }
-                .qr-scanner-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; }
+        .qr-scanner-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; }
         .qr-scanner-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: white; border-radius: 20px; padding: 20px; }
         
         /* Scanner QR pour aventurier personnel (z-index plus élevé) */
@@ -386,16 +387,14 @@
 
     <div class="grid-container" style="flex-shrink: 0;"><div class="grid" id="grid"></div></div>
 
-    <div id="menu-actions" class="actions-menu">
+        <div id="menu-actions" class="actions-menu">
         <button id="btn-search" class="btn-ui" style="background:#8e44ad" onclick="doAction('fouille')">🔍 Fouiller/Poser</button>
         <button class="act btn-ui" style="background:#d35400" onclick="doAction('cache')">😶‍🌫️ Se Cacher</button>
         <!-- <button class="act btn-ui" style="background:#2c3e50" onclick="doAction('repos')">😴 Repos/Soin</button> -->
-        <button id="btn-gift" class="act btn-ui" style="background:#27ae60" onclick="doAction('don')" disabled>🤝 Donner</button>
-        <button id="btn-hunt" class="act btn-ui" style="background:#e67e22" onclick="doAction('chasse')" disabled>🎯 Chasse/Pêche</button>
         <button id="btn-public-help" class="act btn-ui" style="background:#f39c12" onclick="doAction('aide_public')" disabled>📢 Aide du Public</button>
-    </div>
-    
-    <button id="qr-button" class="qr-button" onclick="openQRScanner()">📷 Scanner Mission Secrète</button>
+        <button id="btn-hunt" class="act btn-ui" style="background:#e67e22" onclick="doAction('chasse')" disabled>🎯 Chasse/Pêche</button>
+        <button id="btn-gift" class="act btn-ui" style="background:#27ae60" onclick="doAction('don')" disabled>🤝 Donner</button>
+        </div>
 </div>
 
 <div id="qr-scanner-modal" class="qr-scanner-modal">
