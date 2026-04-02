@@ -13,7 +13,8 @@ let blindMode = {
   availableRows: [],
   availableCols: [],
   lastSpokenMessage: '',
-  lastSpeakTime: 0
+  lastSpeakTime: 0,
+  returnContext: null  // Pour sauvegarder le contexte de retour après scan
 };
 
 // Fonction pour afficher les positions initiales des animaux (popup 1: Crocodiles)
@@ -146,14 +147,34 @@ function showBirdsPositions() {
       speak('Positions notées ! Que l\'aventure commence !');
     }
     
-    // Démarrer le premier tour
-    console.log('🎮 Démarrage du premier tour...');
-    if (typeof startTurn === 'function') {
-      setTimeout(function() {
-        startTurn();
-      }, 500);
+    // Afficher la popup de scan de mission pour le premier joueur
+    console.log('📷 Affichage popup scan mission pour le premier joueur');
+    const player = players[currentPlayer];
+    if (!player.secretMission || player.secretMission.completed) {
+      if (typeof showMissionScanPopup === 'function') {
+        setTimeout(function() {
+          // numeroJoueurScanMission = 0;
+          showMissionScanPopup();
+        }, 500);
+      } else {
+        console.error('❌ Fonction showMissionScanPopup non trouvée');
+        // Fallback : démarrer le tour directement
+        if (typeof startTurn === 'function') {
+          setTimeout(function() {
+            startTurn();
+          }, 500);
+        }
+      }
     } else {
-      console.error('❌ Fonction startTurn non trouvée');
+      // Le joueur a déjà une mission, démarrer le tour directement
+      console.log('✅ Joueur a déjà une mission, démarrage du tour');
+      if (typeof startTurn === 'function') {
+        setTimeout(function() {
+          startTurn();
+        }, 500);
+      } else {
+        console.error('❌ Fonction startTurn non trouvée');
+      }
     }
   };
   container.appendChild(continueBtn);
@@ -348,7 +369,10 @@ function showRowSelection(availableRange) {
     btn.onclick = function() {
       blindMode.selectedRow = y;
       document.body.removeChild(container);
-      document.getElementById('overlay').style.display = 'none';
+      
+      // Ne pas masquer l'overlay, on va afficher la popup de colonne
+      // document.getElementById('overlay').style.display = 'none';
+      
       showColSelection(availableRange);
     };
     
@@ -405,6 +429,14 @@ function showColSelection(availableRange) {
   
   // Extraire les colonnes disponibles pour cette ligne
   blindMode.availableCols = cellsInRow.map(cell => cell.x).sort((a, b) => a - b);
+  
+  // Ajouter la colonne actuelle du joueur si on est sur la ligne sélectionnée
+  if (blindMode.selectedRow === player.y && !blindMode.availableCols.includes(player.x)) {
+    blindMode.availableCols.push(player.x);
+    blindMode.availableCols.sort((a, b) => a - b);
+    console.log('✅ Ajout de la colonne actuelle du joueur:', player.x);
+  }
+  
   console.log('Colonnes disponibles pour ligne', alphabet[blindMode.selectedRow], ':', blindMode.availableCols);
   
   // Créer le conteneur
@@ -469,23 +501,43 @@ function showColSelection(availableRange) {
   
   blindMode.availableCols.forEach(x => {
     const btn = document.createElement('button');
-    btn.textContent = x;
-    btn.style.cssText = 'padding: 20px; font-size: 1.5rem; font-weight: bold; border: 3px solid var(--gold); border-radius: 10px; background: white; color: black; cursor: pointer; transition: all 0.3s;';
+    
+    // Vérifier si c'est la position actuelle du joueur
+    const isCurrentPosition = (x === player.x && blindMode.selectedRow === player.y);
+    
+    if (isCurrentPosition) {
+      btn.innerHTML = x + '<br><span style="font-size: 0.7rem;">📍 Ici</span>';
+      btn.style.cssText = 'padding: 20px; font-size: 1.5rem; font-weight: bold; border: 3px solid #3498db; border-radius: 10px; background: #e3f2fd; color: black; cursor: pointer; transition: all 0.3s;';
+    } else {
+      btn.textContent = x;
+      btn.style.cssText = 'padding: 20px; font-size: 1.5rem; font-weight: bold; border: 3px solid var(--gold); border-radius: 10px; background: white; color: black; cursor: pointer; transition: all 0.3s;';
+    }
     
     btn.onmouseover = function() {
-      this.style.background = 'var(--gold)';
+      if (isCurrentPosition) {
+        this.style.background = '#bbdefb';
+      } else {
+        this.style.background = 'var(--gold)';
+      }
       this.style.transform = 'scale(1.1)';
     };
     
     btn.onmouseout = function() {
-      this.style.background = 'white';
+      if (isCurrentPosition) {
+        this.style.background = '#e3f2fd';
+      } else {
+        this.style.background = 'white';
+      }
       this.style.transform = 'scale(1)';
     };
     
     btn.onclick = function() {
       blindMode.selectedCol = x;
       document.body.removeChild(container);
+      
+      // Masquer l'overlay maintenant
       document.getElementById('overlay').style.display = 'none';
+      
       confirmBlindMove();
     };
     
@@ -553,6 +605,15 @@ function cleanupSelectionPopups() {
     console.log('✅ Popup de chasse supprimée');
   }
   
+  // // Réafficher le bouton QR actions si on est en phase d'action
+  // if (typeof turnStep !== 'undefined' && turnStep === 2) {
+  //   const qrButtonActions = document.getElementById('qr-button-actions');
+  //   if (qrButtonActions && typeof updateQRButtonVisibility === 'function') {
+  //     updateQRButtonVisibility();
+  //     console.log('✅ Bouton QR actions réaffiché');
+  //   }
+  // }
+  
   // Masquer l'overlay
   const overlay = document.getElementById('overlay');
   if (overlay) {
@@ -570,29 +631,18 @@ function confirmBlindMove() {
   const player = players[currentPlayer];
   const distance = getDistance(player.x, player.y, blindMode.selectedCol, blindMode.selectedRow);
   
-  // Vérifier si le déplacement est valide
-  // if (distance > currentRange) {
-  //   if (typeof speak === 'function') {
-  //     speak('Déplacement trop loin ! Choisissez une case plus proche.');
-  //   }
-  //   showRowSelection(currentRange);
-  //   return;
-  // }
-  
-  // Vérifier s'il y a un autre joueur sur la case
-  // const otherPlayer = players.find(p => p.id !== player.id && p.x === blindMode.selectedCol && p.y === blindMode.selectedRow);
-  // if (otherPlayer) {
-  //   if (typeof speak === 'function') {
-  //     speak('Case occupée par un autre joueur ! Choisissez une autre case.');
-  //   }
-  //   showRowSelection(currentRange);
-  //   return;
-  // }
+  // Vérifier si le joueur reste sur place
+  if (distance === 0) {
+    console.log('📍 Le joueur reste sur place');
+    if (typeof speak === 'function') {
+      speak('Vous restez sur place');
+    }
+  }
   
   // Nettoyer les popups
   cleanupSelectionPopups();
   
-  // Exécuter le déplacement
+  // Exécuter le déplacement (même si distance = 0)
   if (typeof executeMove === 'function') {
     executeMove(blindMode.selectedCol, blindMode.selectedRow, distance);
   }
@@ -620,6 +670,11 @@ function showActionTitle() {
     if (actionsMenu && actionsMenu.parentNode) {
       actionsMenu.parentNode.insertBefore(titleEl, actionsMenu);
     }
+  }
+  
+  // Mettre à jour la visibilité du bouton QR sous les actions
+  if (typeof updateQRButtonVisibility === 'function') {
+    updateQRButtonVisibility();
   }
 }
 
@@ -691,6 +746,11 @@ function showAdjacentPlayersForGift() {
       document.body.removeChild(container);
       document.getElementById('overlay').style.display = 'none';
       
+      // Réafficher le bouton QR actions si nécessaire
+      if (typeof updateQRButtonVisibility === 'function') {
+        setTimeout(updateQRButtonVisibility, 100);
+      }
+      
       // Appeler la fonction originale de sélection de cible
       if (typeof selectGiftTarget === 'function') {
         selectGiftTarget(p.id);
@@ -710,6 +770,11 @@ function showAdjacentPlayersForGift() {
     document.body.removeChild(container);
     document.getElementById('overlay').style.display = 'none';
     giftMode = false;
+    
+    // Réafficher le bouton QR actions si nécessaire
+    if (typeof updateQRButtonVisibility === 'function') {
+      setTimeout(updateQRButtonVisibility, 100);
+    }
   };
   container.appendChild(cancelBtn);
   
@@ -827,6 +892,11 @@ function showHuntTargets() {
       document.body.removeChild(container);
       document.getElementById('overlay').style.display = 'none';
       
+      // Réafficher le bouton QR actions si nécessaire
+      if (typeof updateQRButtonVisibility === 'function') {
+        setTimeout(updateQRButtonVisibility, 100);
+      }
+      
       // Appeler la fonction originale de chasse
       if (typeof huntTarget === 'function') {
         huntTarget(target);
@@ -846,6 +916,11 @@ function showHuntTargets() {
     document.body.removeChild(container);
     document.getElementById('overlay').style.display = 'none';
     huntMode = false;
+    
+    // Réafficher le bouton QR actions si nécessaire
+    if (typeof updateQRButtonVisibility === 'function') {
+      setTimeout(updateQRButtonVisibility, 100);
+    }
   };
   container.appendChild(cancelBtn);
   
@@ -926,7 +1001,9 @@ function initBlindModePatch() {
     
     // Afficher la sélection
     setTimeout(function() {
-      showRowSelection(adjustedRange);
+      if ((turnCounter===0) || ((turnCounter > 0) && (currentPlayer > 0))) {
+        showRowSelection(adjustedRange);
+      }
     }, 100);
   };
   
@@ -945,6 +1022,11 @@ function initBlindModePatch() {
     // Afficher le titre si on est en phase d'action
     if (turnStep === 2) {
       showActionTitle();
+      
+      // Mettre à jour la visibilité du bouton QR
+      if (typeof updateQRButtonVisibility === 'function') {
+        setTimeout(updateQRButtonVisibility, 100);
+      }
     }
     
     // Si on est en mode don, afficher les joueurs adjacents
@@ -963,6 +1045,60 @@ function initBlindModePatch() {
   console.log('✅ Patch mode aveugle initialisé');
 }
 
+// Fonction pour ouvrir le scanner depuis les actions
+window.openQRScannerFromActions = function() {
+  console.log('📷 Ouverture scanner depuis les actions');
+  
+  // Sauvegarder le contexte de retour
+  if (typeof blindMode !== 'undefined' && blindMode.active) {
+    blindMode.returnContext = {
+      type: 'actions'
+    };
+  }
+  
+  // Ouvrir le scanner
+  if (typeof openQRScanner === 'function') {
+    openQRScanner();
+  }
+};
+
+// Fonction pour revenir au contexte après scan de mission
+window.returnToBlindModeContext = function() {
+  console.log('🔙 returnToBlindModeContext appelé');
+  console.log('🔙 blindMode:', blindMode);
+  console.log('🔙 returnContext:', blindMode.returnContext);
+  
+  if (!blindMode.returnContext) {
+    console.log('⚠️ Pas de contexte de retour sauvegardé');
+    return;
+  }
+  
+  const context = blindMode.returnContext;
+  console.log('🔙 Contexte récupéré:', context);
+  
+  blindMode.returnContext = null;
+  console.log('🔙 Contexte réinitialisé');
+  
+  // Attendre un peu pour que le scanner se ferme complètement
+  setTimeout(function() {
+    console.log('🔙 Timeout exécuté, type:', context.type);
+    
+    if (context.type === 'rowSelection') {
+      console.log('🔙 Retour à la sélection de ligne, range:', context.range);
+      showRowSelection(context.range);
+    } else if (context.type === 'colSelection') {
+      console.log('🔙 Retour à la sélection de colonne, range:', context.range);
+      showColSelection(context.range);
+    } else if (context.type === 'actions') {
+      console.log('🔙 Retour aux actions');
+      // Rien à faire, on reste sur l'écran des actions
+      // Le menu est déjà affiché
+    } else {
+      console.log('⚠️ Type de contexte inconnu:', context.type);
+    }
+  }, 300);
+};
+
 // Initialisation
 console.log('🔧 Démarrage initialisation patch mode aveugle...');
 console.log('🔧 Document ready state:', document.readyState);
@@ -979,4 +1115,3 @@ if (document.readyState === 'loading') {
 }
 
 console.log('✅ Patch mode aveugle chargé');
-
