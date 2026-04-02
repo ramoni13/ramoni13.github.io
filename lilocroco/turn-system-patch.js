@@ -19,22 +19,27 @@ function updateTurnDisplay() {
     return;
   }
   
-  // Récupérer le texte actuel
-  let currentHTML = weatherText.innerHTML;
+  // Récupérer la météo actuelle
+  let weatherIcon = '☀️';
+  let weatherMessage = 'BEAU TEMPS - Tout va bien !';
   
-  // Extraire uniquement la partie météo (avant tout span ou pipe)
-  let weatherPart = currentHTML;
-  
-  // Enlever les spans existants
-  weatherPart = weatherPart.replace(/<span[^>]*>.*?<\/span>/gi, '');
-  
-  // Enlever tout après le pipe |
-  if (weatherPart.includes('|')) {
-    weatherPart = weatherPart.split('|')[0];
+  if (typeof currentWeather !== 'undefined') {
+    if (currentWeather === 'Canicule') {
+      weatherIcon = '🌡️☀️';
+      weatherMessage = 'CANICULE - Cocotiers +1 stock - Déplacements +1 fatigue (sauf pour les aventuriers qui possèdent une gourde)';
+    } else if (currentWeather === 'Orage') {
+      weatherIcon = '⛈️';
+      weatherMessage = 'ORAGE - Déplacements réduits de 1 case';
+    } else if (currentWeather === 'Pluie fine') {
+      weatherIcon = '🌧️';
+      weatherMessage = 'PLUIE FINE - Bananiers +1 stock';
+    } else {
+      weatherIcon = '☀️';
+      weatherMessage = 'BEAU TEMPS - Tout va bien !';
+    }
   }
   
-  // Nettoyer
-  weatherPart = weatherPart.trim();
+  const weatherPart = weatherIcon + ' ' + weatherMessage;
   
   // Déterminer la couleur selon la progression
   let turnColor = '#ffffff';
@@ -53,7 +58,7 @@ function updateTurnDisplay() {
   // Mettre à jour seulement si différent
   if (weatherText.innerHTML !== newHTML) {
     weatherText.innerHTML = newHTML;
-    console.log('✅ Affichage mis à jour: Tour ' + currentTurn + '/' + maxTurns);
+    console.log('✅ Affichage mis à jour: Tour ' + currentTurn + '/' + maxTurns + ', Météo: ' + currentWeather);
   }
 }
 
@@ -93,7 +98,7 @@ function initPatch() {
     turnCounter++;
     
     // Vérifier si un tour complet est terminé
-    if (typeof players !== 'undefined' && turnCounter >= players.length) {
+    if (typeof players !== 'undefined' && turnCounter > players.length) {
       currentTurn++;
       turnCounter = 0;
       console.log('🔄 Tour complet - Nouveau tour:', currentTurn + '/' + maxTurns);
