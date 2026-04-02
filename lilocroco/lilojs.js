@@ -94,6 +94,8 @@ function updateHeaderWeather() {
     header.classList.add("weather-sunny");
   }
 }
+
+let numeroJoueurScanMission = 0;
 const alphabet = "ABCDEFGHIJKLMN";
 let players = [
   {id: 2, name: "BLEU", picto: "👤", x: 1, y: 1, votes: 0, leftHand: null, rightHand: null, backpack: [null, null, null], actions: [], status: [], fatigueCards: 0, woundCards: 0, turnStartBites: 0, lastActionClicks: [], xp: 0},
@@ -427,7 +429,7 @@ function updatePlayerTimerDisplay() {
   if (currentWeather === "Canicule") _0xf7b8a0 = "🌡️☀️", _0x269220 = "CANICULE - Cocotiers +1 stock - Déplacements +1 fatigue (sauf pour les aventuriers qui possèdent une gourde)"; else {
     if (currentWeather === "Orage") _0xf7b8a0 = "⛈️", _0x269220 = "ORAGE - Déplacements réduits de 1 case"; else currentWeather === "Pluie fine" ? (_0xf7b8a0 = "🌧️", _0x269220 = "PLUIE FINE - Bananiers +1 stock") : (_0xf7b8a0 = "☀️", _0x269220 = "BEAU TEMPS - Tout va bien !");
   }
-  let _0x5747b6 = ["#3498db", "#e74c3c", "#f1c40f", "#2ecc71"], _0x268190 = _0x5747b6[currentPlayer], _0x5d2aca = "⏱️ <span style=\"color:" + _0x268190 + ";\">" + _0x2dd688.name + "</span> : " + _0x13b8d5;
+  let _0x5747b6 = [ "#e74c3c","#2ecc71", "#3498db", "#f1c40f"], _0x268190 = _0x5747b6[currentPlayer], _0x5d2aca = "⏱️ <span style=\"color:" + _0x268190 + ";\">" + _0x2dd688.name + "</span> : " + _0x13b8d5;
   document.getElementById("weather-text").innerHTML = _0xf7b8a0 + " " + _0x269220 + " | " + _0x5d2aca;
   document.getElementById("weather-banner").dataset.originalWeather = _0xf7b8a0 + " " + _0x269220;
 }
@@ -500,7 +502,8 @@ function getTimeAgo(_0x26a39a) {
 function publishGlobalEvent(_0x2d49ee, _0x138db5) {
   const _0x5bf596 = getString;
   if (!firebaseDB || !isOnline) return;
-  const _0x324cc0 = players[currentPlayer], _0x26bddd = {type: _0x2d49ee, playerName: _0x324cc0.name, message: _0x138db5, timestamp: Date.now(), sessionId: gameSessionId};
+  if (numeroJoueurScanMission !== currentPlayer) { nmP = numeroJoueurScanMission } else { nmP = currentPlayer }
+  const _0x324cc0 = players[nmP], _0x26bddd = {type: _0x2d49ee, playerName: _0x324cc0.name, message: _0x138db5, timestamp: Date.now(), sessionId: gameSessionId};
   firebaseDB.ref("global/events").push(_0x26bddd).then(() => {
     const _0x9fbeb0 = _0x5bf596;
     console.log("Événement publié:", _0x26bddd), showSyncIndicator();
@@ -627,55 +630,121 @@ function startTurn() {
     return;
   
     updateHeaderWeather();}
-  startPlayerTimer(), turnSummary = {fatigueAdded: 0, fatigueRemoved: 0, woundAdded: 0, woundRemoved: 0, itemsBroken: [], itemsUsed: [], itemsCollected: [], itemsDropped: [], missionsCompleted: [], votesGained: 0}, console.log(_0x4141ca(811)), console[_0x4141ca(670)](_0x4141ca(520), JSON.parse(JSON[_0x4141ca(681)](players))), renderGrid();
-  let _0x4cddb2 = _0x231cb0[_0x4141ca(638)][_0x4141ca(925)](_0x4141ca(474)), _0xf64b18 = _0x231cb0[_0x4141ca(731)] && _0x231cb0[_0x4141ca(731)].name === _0x4141ca(832) || _0x231cb0[_0x4141ca(470)] && _0x231cb0[_0x4141ca(470)][_0x4141ca(666)] === _0x4141ca(832);
-  _0x231cb0[_0x4141ca(710)] = 0;
-  if (crocos.some(_0xae19d => _0xae19d.x === _0x231cb0.x && _0xae19d.y === _0x231cb0.y)) {
-    if (_0x4cddb2) speak(_0x4141ca(794)); else _0xf64b18 ? speak(_0x4141ca(545)) : (_0x231cb0[_0x4141ca(826)]++, turnSummary[_0x4141ca(562)]++, _0x231cb0.turnStartBites++, updateFatigueWoundDisplay(_0x231cb0), 
-    checkEvacuation(_0x231cb0), 
-    //document[_0x4141ca(743)](_0x4141ca(696))[_0x4141ca(880)]("p")[_0x4141ca(443)] = _0x4141ca(440), 
-    //document[_0x4141ca(743)](_0x4141ca(642))[_0x4141ca(612)][_0x4141ca(699)] = _0x4141ca(887), 
-    //document.getElementById(_0x4141ca(696)).style.display = _0x4141ca(887), 
-    speak(_0x4141ca(785)));
+  
+  // Afficher la popup des déplacements de crocos si c'est le premier joueur du tour
+  if (currentPlayer === 0 && window.lastCrocoMoves && window.lastCrocoMoves.length > 0) {
+    showCrocoMovesPopup();
+    //return;
+  } else {
+    /// TOUR NORMAL
+    startPlayerTimer(), turnSummary = {fatigueAdded: 0, fatigueRemoved: 0, woundAdded: 0, woundRemoved: 0, itemsBroken: [], itemsUsed: [], itemsCollected: [], itemsDropped: [], missionsCompleted: [], votesGained: 0}, console.log(_0x4141ca(811)), console[_0x4141ca(670)](_0x4141ca(520), JSON.parse(JSON[_0x4141ca(681)](players))), renderGrid();
+    let _0x4cddb2 = _0x231cb0[_0x4141ca(638)][_0x4141ca(925)](_0x4141ca(474)), _0xf64b18 = _0x231cb0[_0x4141ca(731)] && _0x231cb0[_0x4141ca(731)].name === _0x4141ca(832) || _0x231cb0[_0x4141ca(470)] && _0x231cb0[_0x4141ca(470)][_0x4141ca(666)] === _0x4141ca(832);
+    _0x231cb0[_0x4141ca(710)] = 0;
+    if (crocos.some(_0xae19d => _0xae19d.x === _0x231cb0.x && _0xae19d.y === _0x231cb0.y)) {
+      if (_0x4cddb2) speak(_0x4141ca(794)); else _0xf64b18 ? speak(_0x4141ca(545)) : (_0x231cb0[_0x4141ca(826)]++, turnSummary[_0x4141ca(562)]++, _0x231cb0.turnStartBites++, updateFatigueWoundDisplay(_0x231cb0), 
+      checkEvacuation(_0x231cb0), 
+      //document[_0x4141ca(743)](_0x4141ca(696))[_0x4141ca(880)]("p")[_0x4141ca(443)] = _0x4141ca(440), 
+      //document[_0x4141ca(743)](_0x4141ca(642))[_0x4141ca(612)][_0x4141ca(699)] = _0x4141ca(887), 
+      //document.getElementById(_0x4141ca(696)).style.display = _0x4141ca(887), 
+      speak(_0x4141ca(785)));
+    }
+    _0x231cb0[_0x4141ca(638)] = _0x231cb0[_0x4141ca(638)][_0x4141ca(540)](_0x15484c => _0x15484c !== _0x4141ca(474)), decreaseHandItemsDurability(_0x231cb0), updateQRButtonVisibility(), updateUI();
+    // DÃ©marrer automatiquement le dÃ©placement
+    prepMove(3);
+
   }
-  _0x231cb0[_0x4141ca(638)] = _0x231cb0[_0x4141ca(638)][_0x4141ca(540)](_0x15484c => _0x15484c !== _0x4141ca(474)), decreaseHandItemsDurability(_0x231cb0), updateQRButtonVisibility(), updateUI();
-  // DÃ©marrer automatiquement le dÃ©placement
-  prepMove(3);
 }
 function moveCrocosGlobal() {
     const _0xd4f23 = getString;
-    console.log("AVANT DEPLACEMENT - Crocos:", JSON.parse(JSON.stringify(crocos))), crocos.forEach(_0xcdc8d6 => {
-    const _0xc4ff3 = _0xd4f23;
-    _0xcdc8d6.oldX = _0xcdc8d6.x, _0xcdc8d6.oldY = _0xcdc8d6.y, _0xcdc8d6.seen = false;
-    let _0x169bc9 = players.reduce((_0x45f815, _0x4e39fe) => getDistance(_0xcdc8d6.x, _0xcdc8d6.y, _0x4e39fe.x, _0x4e39fe.y) < getDistance(_0xcdc8d6.x, _0xcdc8d6.y, _0x45f815.x, _0x45f815.y) ? _0x4e39fe : _0x45f815), _0x1fd23c = _0xcdc8d6.x, _0x1a4d10 = _0xcdc8d6.y;
-    if (_0xcdc8d6.x < _0x169bc9.x) _0x1fd23c++;
-    if (_0xcdc8d6.x > _0x169bc9.x) _0x1fd23c--;
-    if (_0xcdc8d6.y < _0x169bc9.y) _0x1a4d10++;
-    if (_0xcdc8d6.y > _0x169bc9.y) _0x1a4d10--;
-    let _0xd6dd69 = crocos.some(_0x33c96f => _0x33c96f.id !== _0xcdc8d6.id && _0x33c96f.x === _0x1fd23c && _0x33c96f.y === _0x1a4d10) 
-    || fishes.some(_0x44f519 => _0x44f519.x === _0x1fd23c && _0x44f519.y === _0x1a4d10) 
-    || birds.some(_0x53b324 => _0x53b324.x === _0x1fd23c && _0x53b324.y === _0x1a4d10)
-    || scenery.some(sc => sc.x === _0x1fd23c && sc.y === _0x1a4d10);
-    if (getBaseOwner(_0x1fd23c, _0x1a4d10) !== null || _0x1fd23c >= 7 && _0x1fd23c <= 10 && _0x1a4d10 >= 5 && _0x1a4d10 <= 8 || _0xd6dd69) {
-      let _0x54b224 = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}, {x: 1, y: 1}, {x: -1, y: -1}, {x: 1, y: -1}, {x: -1, y: 1}], _0x553439 = _0x54b224.filter(_0xfe93b3 => {
-        const _0x420808 = _0xc4ff3;
-        let _0x34cfec = _0xcdc8d6.x + _0xfe93b3.x, _0x43ddf1 = _0xcdc8d6.y + _0xfe93b3.y, _0x31830c = _0x34cfec === 0 
-        || _0x34cfec === 17 || _0x43ddf1 === 0 
-        || _0x43ddf1 === 13, _0x20fef1 = _0x34cfec >= 1 && _0x34cfec <= 16 && _0x43ddf1 >= 1 && _0x43ddf1 <= 12 
-        && getBaseOwner(_0x34cfec, _0x43ddf1) === null 
-        && !(_0x34cfec >= 7 && _0x34cfec <= 10 && _0x43ddf1 >= 5 && _0x43ddf1 <= 8),
-         _0x4b8933 = !crocos.some(_0x110128 => _0x110128.x === _0x34cfec && _0x110128.y === _0x43ddf1) 
-         && !fishes.some(_0x4955ee => _0x4955ee.x === _0x34cfec && _0x4955ee.y === _0x43ddf1) 
-         && !birds.some(_0x1a1e69 => _0x1a1e69.x === _0x34cfec && _0x1a1e69.y === _0x43ddf1)
-         && !scenery.some(sc => sc.x === _0x34cfec && sc.y === _0x43ddf1);
-        return (_0x31830c || _0x20fef1) && _0x4b8933;
-      });
-      if (_0x553439.length > 0) {
-        let _0x2319f4 = _0x553439[Math.floor(Math.random() * _0x553439.length)];
-        _0xcdc8d6.x += _0x2319f4.x, _0xcdc8d6.y += _0x2319f4.y;
-      }
-    } else _0xcdc8d6.x = _0x1fd23c, _0xcdc8d6.y = _0x1a4d10;
-  }), console.log("APRES DEPLACEMENT - Crocos:", JSON.parse(JSON.stringify(crocos)));
+    console.log("🐊 DEBUT DEPLACEMENT CROCOS");
+    console.log("AVANT DEPLACEMENT - Crocos:", JSON.parse(JSON.stringify(crocos)));
+    
+    // Réinitialiser les infos de déplacement
+    crocos.forEach(_0xcdc8d6 => {
+        _0xcdc8d6.oldX = _0xcdc8d6.x;
+        _0xcdc8d6.oldY = _0xcdc8d6.y;
+        _0xcdc8d6.movedThisTurn = false;
+        _0xcdc8d6.targetPlayer = null;
+    });
+    
+    const movedCrocos = [];
+    
+    // Pour chaque joueur, trouver le croco le plus proche qui peut bouger
+    players.forEach(player => {
+        console.log("🎯 Recherche croco pour joueur", player.name, "en (", player.x, ",", player.y, ")");
+        
+        // Trier les crocos par distance au joueur
+        const sortedCrocos = crocos
+            .filter(c => !c.movedThisTurn)
+            .map(c => ({
+                croco: c,
+                distance: getDistance(c.x, c.y, player.x, player.y)
+            }))
+            .sort((a, b) => a.distance - b.distance);
+        
+        console.log("📏 Crocos triés par distance:", sortedCrocos.map(sc => "Croco " + sc.croco.id + " dist=" + sc.distance));
+        
+        // Essayer de déplacer le croco le plus proche qui peut bouger
+        for (let i = 0; i < sortedCrocos.length; i++) {
+            const croco = sortedCrocos[i].croco;
+            console.log("⚙️ Test croco", croco.id, "en (", croco.x, ",", croco.y, ")");
+            
+            // Calculer la nouvelle position vers le joueur
+            let newX = croco.x;
+            let newY = croco.y;
+            
+            if (croco.x < player.x) newX++;
+            else if (croco.x > player.x) newX--;
+            
+            if (croco.y < player.y) newY++;
+            else if (croco.y > player.y) newY--;
+            
+            console.log("📍 Position cible: (", newX, ",", newY, ")");
+            
+            // Vérifier si la case cible est bloquée
+            const isBlocked = 
+                getBaseOwner(newX, newY) !== null ||
+                (newX >= 7 && newX <= 10 && newY >= 5 && newY <= 8) ||
+                crocos.some(c => c.id !== croco.id && c.x === newX && c.y === newY) ||
+                fishes.some(f => f.x === newX && f.y === newY) ||
+                birds.some(b => b.x === newX && b.y === newY) ||
+                scenery.some(sc => sc.x === newX && sc.y === newY);
+            
+            if (isBlocked) {
+                console.log("❌ Case bloquée, essai croco suivant");
+                continue;
+            }
+            
+            // Déplacer le croco
+            console.log("✅ Déplacement croco", croco.id, "de (", croco.x, ",", croco.y, ") vers (", newX, ",", newY, ")");
+            croco.x = newX;
+            croco.y = newY;
+            croco.movedThisTurn = true;
+            croco.targetPlayer = player.id;
+            
+            // Vérifier si morsure
+            const bite = (newX === player.x && newY === player.y);
+            
+            movedCrocos.push({
+                id: croco.id,
+                fromX: croco.oldX,
+                fromY: croco.oldY,
+                toX: newX,
+                toY: newY,
+                playerTarget: player.name,
+                bite: bite
+            });
+            
+            console.log("✅ Croco", croco.id, "déplacé avec succès", bite ? "(MORSURE !)" : "");
+            break;
+        }
+    });
+    
+    console.log("APRES DEPLACEMENT - Crocos:", JSON.parse(JSON.stringify(crocos)));
+    console.log("📊 Récapitulatif déplacements:", movedCrocos);
+    
+    // Sauvegarder pour affichage au début du prochain tour
+    window.lastCrocoMoves = movedCrocos;
 }
 function moveFishesGlobal() {
   const _0x38f3b3 = getString;
@@ -768,15 +837,19 @@ function executeMove(_0x115bd7, _0x181620, _0x38ea01) {
       let _0x34da5b = _0x4ad5f8.leftHand && _0x4ad5f8.leftHand.name === "torche" || _0x4ad5f8.rightHand && _0x4ad5f8.rightHand.name === "torche";
       if (!_0x34da5b) {
         _0x4ad5f8.woundCards++, _0x4ad5f8.turnStartBites++, turnSummary.woundAdded++, updateFatigueWoundDisplay(_0x4ad5f8), checkEvacuation(_0x4ad5f8);
-        let _0x12315d = document.getElementById("bite-box");
-        _0x12315d.querySelector("h3").innerText = "MORSURE !", _0x12315d.querySelector("h3").style.color = "var(--red)", _0x12315d.querySelector("div").innerText = "🐊", _0x12315d.querySelector("p").innerText = "1 morsure : ajoutez 1 carte blessure à votre défausse.", document.getElementById("overlay").style.display = "block", _0x12315d.style.display = "block", speak("Morsure ! Ajoutez une blessure.");
+        speak("Morsure ! Ajoutez une blessure.");
+        // let _0x12315d = document.getElementById("bite-box");
+        // _0x12315d.querySelector("h3").innerText = "MORSURE !", _0x12315d.querySelector("h3").style.color = "var(--red)", _0x12315d.querySelector("div").innerText = "🐊", _0x12315d.querySelector("p").innerText = "1 morsure : ajoutez 1 carte blessure à votre défausse.", document.getElementById("overlay").style.display = "block", _0x12315d.style.display = "block", speak("Morsure ! Ajoutez une blessure.");
       } else speak("Votre torche protège contre la morsure !");
     }
-    _0x4ad5f8.actions.push({type: "move", from: {x: _0x4ad5f8.x, y: _0x4ad5f8.y}, to: {x: _0x115bd7, y: _0x181620}, distance: 0, bites: 0}), turnStep = 2, 
-    //document.getElementById("deck-menu").style.display = "none", 
-    document.getElementById("menu-actions").style.display = "grid", 
-    updateQRButtonVisibility(), 
-    renderGrid();
+    _0x4ad5f8.actions.push({type: "move", from: {x: _0x4ad5f8.x, y: _0x4ad5f8.y}, to: {x: _0x115bd7, y: _0x181620}, distance: 0, bites: 0}),   turnStep = 2, 
+  //document.getElementById("deck-menu").style.display = "none", 
+  document.getElementById("menu-actions").style.display = "grid", 
+  updateQRButtonVisibility(), 
+  updateGiftButton(),
+  updateHuntButton(),
+  updatePublicHelpButton(),
+  renderGrid();
     return;
   }
   let _0x18142f = countCrocosOnPath(_0x4ad5f8.x, _0x4ad5f8.y, _0x115bd7, _0x181620, _0x38ea01);
@@ -999,6 +1072,11 @@ function showLootInventory() {
     let _0x124ec5 = document.createElement("div");
     _0x124ec5.className = "item-card", _0x124ec5.innerText = _0x47d6d4.icon, _0x124ec5.onclick = () => selectFoundItem(_0x3498da), _0x2bb338.appendChild(_0x124ec5);
   }), document.getElementById("loot-box").style.display = "block", document.getElementById("overlay").style.display = "block";
+  
+  // Masquer le bouton QR actions
+  // Cache le bouton scan mission
+  // document.getElementById("qr-button-actions").style.display = "none";
+  // document.getElementById("qr-button").style.display = "none";
 }
 function selectFoundItem(_0x293407) {
   const _0x28e00b = getString;
@@ -1056,6 +1134,12 @@ function showTurnSummary() {
     endGame();
     return;
   }
+  
+  // Masquer le bouton QR actions
+  // Cache le bouton scan mission
+  // document.getElementById("qr-button-actions").style.display = "none";
+  // document.getElementById("qr-button").style.display = "none";
+  
   let _0x1a8853 = players[currentPlayer];
   stopPlayerTimer(), document.getElementById("summary-total-votes").innerText = _0x1a8853.votes;
   // Temps restant supprimé - affiché dans le bandeau météo
@@ -1101,18 +1185,55 @@ function closeTurnSummary() {
 }
 function showPlayerChange() {
   const _0x2114ae = getString;
-  let _0x201994 = (currentPlayer + 1) % players.length, _0x250bf0 = players[_0x201994], _0x13098b = ["#3498db", "#e74c3c", "#f1c40f", "#2ecc71"], _0x415817 = _0x13098b[_0x250bf0.id];
+  
+  // Masquer les boutons QR
+  const qrButtonActions = document.getElementById("qr-button-actions");
+  if (qrButtonActions) qrButtonActions.classList.remove('visible');
+  const qrButton = document.getElementById("qr-button");
+  if (qrButton) qrButton.classList.remove('visible');
+  
+  let _0x201994 = (currentPlayer + 1) % players.length, _0x250bf0 = players[_0x201994], _0x13098b = ["#e74c3c","#2ecc71", "#3498db", "#f1c40f"], _0x415817 = _0x13098b[_0x250bf0.id];
   document.getElementById("next-player-icon").innerText = _0x250bf0.picto, document.getElementById("next-player-text").innerHTML = "Au tour de <span style=\"color:" + _0x415817 + ";\">JOUEUR " + _0x250bf0.name + "</span>", document.getElementById("overlay").style.display = "block", document.getElementById("player-change-box").style.display = "block", speak("Joueur " + _0x250bf0.name + ", à vous.");
+  
+  // Ajouter le bouton scan mission si le joueur n'a pas de mission
+  // const playerChangeBox = document.getElementById('player-change-box');
+  // if (playerChangeBox && (!_0x250bf0.secretMission || _0x250bf0.secretMission.completed)) {
+  //   // Vérifier si le bouton existe déjà
+  //   let scanBtn = document.getElementById('player-change-scan-btn');
+  //   if (!scanBtn) {
+  //     scanBtn = document.createElement('button');
+  //     scanBtn.id = 'player-change-scan-btn';
+  //     scanBtn.textContent = '📷 Scanner Mission Secrète';
+  //     scanBtn.style.cssText = 'background: var(--gold); color: black; padding: 12px 30px; border: none; border-radius: 50px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5);';
+  //     scanBtn.onclick = function() {
+  //       document.getElementById('player-change-box').style.display = 'none';
+  //       document.getElementById('overlay').style.display = 'none';
+  //       if (typeof openQRScanner === 'function') {
+  //         openQRScanner();
+  //       }
+  //     };
+  //     playerChangeBox.appendChild(scanBtn);
+  //   } else {
+  //     scanBtn.style.display = 'block';
+  //   }
+  // } else if (playerChangeBox) {
+  //   // Masquer le bouton s'il existe et que le joueur a une mission
+  //   const scanBtn = document.getElementById('player-change-scan-btn');
+  //   if (scanBtn) {
+  //     scanBtn.style.display = 'none';
+  //   }
+  // }
 }
 function showPlayerTimeOutPopup() {
   const _0x45581a = getString;
-  let _0x137056 = players[currentPlayer], _0x399ee4 = ["#3498db", "#e74c3c", "#f1c40f", "#2ecc71"], _0x2c17b5 = _0x399ee4[currentPlayer];
+  let _0x137056 = players[currentPlayer], _0x399ee4 = ["#e74c3c","#2ecc71", "#3498db", "#f1c40f"], _0x2c17b5 = _0x399ee4[currentPlayer];
   document.getElementById("next-player-icon").innerText = "⏱️", document.getElementById("next-player-text").innerHTML = "<span style=\"color:" + _0x2c17b5 + ';">JOUEUR ' + _0x137056.name + "</span><br><br>Vous avez consommé tout votre temps !<br>Vous ne jouez plus.", document.getElementById("overlay").style.display = "block", document.getElementById("player-change-box").style.display = "block", speak("Joueur " + _0x137056.name + ", vous avez consommé tout votre temps.");
 }
 function closePlayerChange() {
   const _0x344515 = getString;
   document.getElementById("player-change-box").style.display = "none", 
   document.getElementById("overlay").style.display = "none", 
+  console.log(" closePlayerChange() - lilojs - ligne 1235");
   confirmTurn();
 }
 function closeLoot() {
@@ -1136,6 +1257,8 @@ function cancelCloseLoot() {
   document.getElementById("bite-box").style.display = "none";
   let _0xcdcb7a = document.getElementById("bite-box"), _0x121d86 = _0xcdcb7a.querySelector("div[style*=\"display: flex\"]");
   _0x121d86 && (_0x121d86.outerHTML = "<button onclick=\"closeBite()\" style=\"background:var(--red); color:white; width:100%; padding:12px; border:none; border-radius:10px;\">OK</button>"), document.getElementById("loot-box").style.display = "block", speak("Continuez votre fouille.");
+  
+  // Le bouton QR actions reste masqué car on retourne à l'inventaire
 }
 function confirmCloseLoot() {
   const _0x324768 = getString;
@@ -1146,6 +1269,11 @@ function confirmCloseLoot() {
 function proceedCloseLoot() {
   const _0x369050 = getString;
   document.getElementById("loot-box").style.display = "none", document.getElementById("overlay").style.display = "none";
+  
+  // Réafficher le bouton QR actions si nécessaire
+  // if (typeof updateQRButtonVisibility === 'function') {
+  //   setTimeout(updateQRButtonVisibility, 100);
+  // }
   if (autoSearchDone) {
     let _0x2bde4f = players[currentPlayer], _0x343ab8 = currentCellItems.find(_0x27611f => _0x27611f.name === "totem");
     if (_0x343ab8 && hadTotemBeforeSearch) {
@@ -1253,7 +1381,7 @@ function showFinalRanking() {
     if (_0x4606cb === 0) _0x27a535 = "🥇", _0x4e2307 = "var(--gold)"; else {
       if (_0x4606cb === 1) _0x27a535 = "🥈", _0x4e2307 = "#C0C0C0"; else _0x4606cb === 2 ? (_0x27a535 = "🥉", _0x4e2307 = "#CD7F32") : (_0x27a535 = _0x4606cb + 1 + ".", _0x4e2307 = "#666");
     }
-    let _0x578626 = ["#3498db", "#e74c3c", "#f1c40f", "#2ecc71"], _0x3981bd = _0x578626[_0x2efa9e.id];
+    let _0x578626 = ["#e74c3c","#2ecc71", "#3498db", "#f1c40f"], _0x3981bd = _0x578626[_0x2efa9e.id];
     _0x339668 += _0x411179(669) + _0x27a535 + _0x411179(563) + _0x2efa9e.picto + '</span>\n                        <span style="font-size:1rem; font-weight:bold; color:' + _0x3981bd + _0x411179(577) + _0x2efa9e.name + _0x411179(960) + _0x4e2307 + _0x411179(577) + _0x2efa9e[_0x411179(644)] + "</div>\n                </div>\n            ";
   });
   let _0x348224 = document.getElementById("bite-box");
@@ -1275,7 +1403,7 @@ function updateUI() {
   updateHeaderWeather(),
   //document.getElementById("btn-fatigue").disabled = _0x19c5c9.fatigueCards === 0, 
   //document.getElementById("btn-wound").disabled = _0x19c5c9.woundCards === 0, 
-  updateQRButtonVisibility(), checkSecretMission(_0x19c5c9), checkEvacuation(_0x19c5c9);
+  checkSecretMission(_0x19c5c9), checkEvacuation(_0x19c5c9);
 }
 function updateFatigueWoundDisplay(_0x526fa5) {
   const _0x2c7165 = getString, _0x5935eb = document.getElementById(_0x2c7165(725)), _0x202964 = document[_0x2c7165(743)](_0x2c7165(783));
@@ -1317,9 +1445,24 @@ function respawnPlayerItems(_0x4008) {
   }), console.log("Objets du joueur " + _0x4008.name + " replacés:", _0x1c1396);
 }
 function updateQRButtonVisibility() {
-  const _0x29fb45 = getString;
-  let _0x290884 = players[currentPlayer], _0x293e55 = document.getElementById("qr-button");
-  (turnStep === 0 || turnStep === 1) && (!_0x290884.secretMission || _0x290884.secretMission && _0x290884.secretMission.completed) ? _0x293e55.classList.add("visible") : _0x293e55.classList.remove("visible");
+  // const _0x29fb45 = getString;
+  // let _0x290884 = players[currentPlayer], _0x293e55 = document.getElementById("qr-button"), _0x293e56 = document.getElementById("qr-button-actions");
+  
+  // // Bouton principal (en bas de page)
+  // if ((turnStep === 0 || turnStep === 1) && (!_0x290884.secretMission || _0x290884.secretMission && _0x290884.secretMission.completed)) {
+  //   _0x293e55.style.display = 'block';
+  // } else {
+  //   _0x293e55.style.display = 'none';
+  // }
+  
+  // // Bouton sous les actions
+  // if (_0x293e56) {
+  //   if (turnStep === 2 && (!_0x290884.secretMission || _0x290884.secretMission && _0x290884.secretMission.completed)) {
+  //     _0x293e56.style.display = 'block';
+  //   } else {
+  //     _0x293e56.style.display = 'none';
+  //   }
+  // }
 }
 function addVotes(_0x18b24d, _0x57d835, _0x1b42eb) {
   const _0x2829ad = getString;
@@ -1626,13 +1769,35 @@ function openQRScanner() {
 }
 function closeQRScanner() {
   const _0xfd02fe = getString;
+  console.log('🔒 closeQRScanner appelé');
+  console.log('🔒 html5QrCode:', html5QrCode);
+  console.log('🔒 isScanning:', isScanning);
+  console.log('🔒 blindMode:', typeof blindMode !== 'undefined' ? blindMode : 'undefined');
+  console.log('🔒 returnToBlindModeContext:', typeof returnToBlindModeContext);
+  
   html5QrCode && isScanning ? html5QrCode.stop().then(() => {
     const _0x591b2a = _0xfd02fe;
-    isScanning = false, html5QrCode.clear(), document.getElementById("qr-scanner-modal").style.display = "none";
+    console.log('✅ Scanner arrêté');
+    isScanning = false;
+    html5QrCode.clear();
+    document.getElementById("qr-scanner-modal").style.display = "none";
+    
+    console.log('🔍 Vérification retour contexte...');
+    console.log('🔍 returnToBlindModeContext existe:', typeof returnToBlindModeContext === 'function');
+    console.log('🔍 blindMode existe:', typeof blindMode !== 'undefined');
+    console.log('🔍 blindMode.returnContext:', typeof blindMode !== 'undefined' ? blindMode.returnContext : 'N/A');
+    
+    // Retour au contexte mode aveugle si nécessaire
+    if (typeof returnToBlindModeContext === 'function' && typeof blindMode !== 'undefined' && blindMode.returnContext) {
+      console.log('✅ Appel de returnToBlindModeContext');
+      returnToBlindModeContext();
+    } else {
+      console.log('❌ Pas de retour au contexte');
+    }
   }).catch(_0x5491cd => {
     const _0x186889 = _0xfd02fe;
     console.error("Erreur arrêt caméra:", _0x5491cd);
-  }) : document.getElementById("qr-scanner-modal").style.display = "none";
+  }) : (console.log('🔒 Pas de scanner actif, fermeture directe'), document.getElementById("qr-scanner-modal").style.display = "none", typeof returnToBlindModeContext === 'function' && typeof blindMode !== 'undefined' && blindMode.returnContext && (console.log('✅ Appel de returnToBlindModeContext (direct)'), returnToBlindModeContext()));
 }
 function onQRCodeScanned(_0x146f5e, _0x1685f9) {
   const _0x16e5d2 = getString;
@@ -1642,24 +1807,44 @@ function onQRCodeScanned(_0x146f5e, _0x1685f9) {
     document.getElementById("qr-status").innerText = "QR Code invalide ! (doit être entre 1 et 100)", speak("QR Code invalide !");
     return;
   }
-  assignSecretMission(_0x986b7c), closeQRScanner();
+  assignSecretMission(_0x986b7c);
 }
 function onQRCodeError(_0x33fa37) {}
 function assignSecretMission(_0x5c388b) {
   const _0x296605 = getString;
-  let _0x7a8681 = players[currentPlayer];
+  let _0x7a8681 = players[numeroJoueurScanMission];
+  
+  console.log('🎯 assignSecretMission - Mission ID:', _0x5c388b);
+  console.log('🎯 Joueur actuel:', _0x7a8681.name);
+  console.log('🎯 Mission actuelle:', _0x7a8681.secretMission);
+  
   if (_0x7a8681.secretMission && !_0x7a8681.secretMission.completed) {
     speak("Vous avez déjà une mission secrète en cours !");
+    console.log('❌ Mission déjà en cours, fermeture scanner');
+    closeQRScanner();
     return;
   }
   const _0x5de6a2 = SECRET_MISSIONS.find(_0x23a5bc => _0x23a5bc.id === _0x5c388b);
   if (!_0x5de6a2) {
     speak("Mission introuvable !");
+    console.log('❌ Mission introuvable, fermeture scanner');
+    closeQRScanner();
     return;
   }
-  _0x7a8681.secretMission = {id: _0x5de6a2.id, description: _0x5de6a2.description, votes: _0x5de6a2.votes, completed: false, condition: _0x5de6a2.condition}, console.log("Mission " + _0x5c388b + " attribuée à " + _0x7a8681.name + ":", _0x5de6a2.description), speak("Mission secrète attribuée à " + _0x7a8681.name + ":"), 
-  publishGlobalEvent("mission", "a reçu la mission secrète ! 🎯"), 
+  
+  console.log('✅ Mission trouvée:', _0x5de6a2);
+  
+  _0x7a8681.secretMission = {id: _0x5de6a2.id, description: _0x5de6a2.description, votes: _0x5de6a2.votes, completed: false, condition: _0x5de6a2.condition};
+  
+  console.log('✅ Mission assignée:', _0x7a8681.secretMission);
+  console.log("Mission " + _0x5c388b + " attribuée à " + _0x7a8681.name + ":", _0x5de6a2.description);
+  
+  speak("Mission secrète attribuée à " + _0x7a8681.name + ":");
+  publishGlobalEvent("mission", "a reçu la mission secrète ! 🎯");
   updateUI();
+  
+  console.log('🔙 Fermeture scanner et retour au contexte');
+  closeQRScanner();
 }
 function checkSecretMission(_0x39625e) {
   const _0x3bb9e0 = getString;
@@ -1784,6 +1969,131 @@ function closeDiamondPopup() {
   let _0x3fcb42 = document.getElementById("bite-box"), _0x41549d = _0x3fcb42.querySelector("button");
   _0x41549d && (_0x41549d.innerText = "OK", _0x41549d.style.background = "var(--red)", _0x41549d.style.color = "white", _0x41549d.onclick = closeBite), _0x3fcb42.querySelector("h3").innerText = "MORSURE !", _0x3fcb42.querySelector("h3").style.color = "var(--red)", _0x3fcb42.querySelector("div").innerText = "🐊", _0x3fcb42.querySelector("p").innerText = "Morsure : +1 Blessure", endTurnLog(), prepareEndTurn();
 }
+function showCrocoMovesPopup() {
+  const alphabet = 'ABCDEFGHIJKLMN';
+  const moves = window.lastCrocoMoves;
+  
+  console.log('🐊 Affichage popup déplacements crocos:', moves);
+  
+  // Créer le conteneur de la popup
+  const container = document.createElement('div');
+  container.id = 'croco-moves-popup';
+  container.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: black; padding: 30px; border-radius: 20px; z-index: 500; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto;';
+  
+  // Titre
+  const title = document.createElement('h3');
+  title.style.cssText = 'color: #e74c3c; margin: 0 0 20px 0; font-size: 1.5rem;';
+  title.textContent = '🐊 DÉPLACEMENTS DES CROCODILES';
+  container.appendChild(title);
+  
+  // Liste des déplacements
+  const list = document.createElement('div');
+  list.style.cssText = 'display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;';
+  
+  moves.forEach(move => {
+    const item = document.createElement('div');
+    item.style.cssText = 'background: ' + (move.bite ? 'rgba(231, 76, 60, 0.2)' : 'rgba(52, 152, 219, 0.1)') + '; padding: 15px; border-radius: 10px; border-left: 4px solid ' + (move.bite ? '#e74c3c' : '#3498db') + ';';
+    
+    const fromCoord = alphabet[move.fromY] + move.fromX;
+    const toCoord = alphabet[move.toY] + move.toX;
+    
+    let html = '<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">';
+    html += '<div style="font-size: 1.5rem;">🐊 ' + move.id + '</div>';
+    html += '<div style="flex: 1; text-align: left;">';
+    html += '<div style="font-weight: bold; font-size: 0.9rem;">' + fromCoord + ' → ' + toCoord + '</div>';
+    html += '<div style="font-size: 0.75rem; color: #666;">Cible: ' + move.playerTarget + '</div>';
+    html += '</div>';
+    
+    if (move.bite) {
+      html += '<div style="font-size: 1.5rem; color: #e74c3c;">🩸</div>';
+    }
+    
+    html += '</div>';
+    
+    item.innerHTML = html;
+    list.appendChild(item);
+  });
+  
+  container.appendChild(list);
+  
+  // Message si morsures
+  const bites = moves.filter(m => m.bite);
+  if (bites.length > 0) {
+    const warning = document.createElement('div');
+    warning.style.cssText = 'background: rgba(231, 76, 60, 0.1); border: 2px solid #e74c3c; border-radius: 10px; padding: 12px; margin-bottom: 20px; font-weight: bold; color: #e74c3c;';
+    warning.innerHTML = '⚠️ ' + bites.length + ' morsure' + (bites.length > 1 ? 's' : '') + ' ! Les joueurs concernés doivent ajouter une blessure.';
+    container.appendChild(warning);
+  }
+  
+  // Bouton continuer
+  const btn = document.createElement('button');
+  btn.textContent = 'CONTINUER';
+  btn.style.cssText = 'background: var(--gold); color: black; padding: 15px 40px; border: none; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5);';
+    btn.onclick = function() {
+    console.log('👍 Bouton CONTINUER cliqué - Fermeture popup crocos');
+    document.body.removeChild(container);
+    document.getElementById('overlay').style.display = 'none';
+    window.lastCrocoMoves = null;
+    showRowSelection(3);
+    console.log('⏸️ Pause avant de continuer le tour...');
+    
+    // Attendre un peu avant de continuer (pour laisser le temps de lire)
+    setTimeout(function() {
+      console.log('▶️ Reprise - Démarrage du tour');
+      
+      // Continuer le tour normalement
+      startPlayerTimer();
+      turnSummary = {fatigueAdded: 0, fatigueRemoved: 0, woundAdded: 0, woundRemoved: 0, itemsBroken: [], itemsUsed: [], itemsCollected: [], itemsDropped: [], missionsCompleted: [], votesGained: 0};
+      console.log('========== DÉBUT TOUR ==========');
+      console.log('TOUS LES JOUEURS:', JSON.parse(JSON.stringify(players)));
+      renderGrid();
+      
+      const player = players[currentPlayer];
+      let isHidden = player.status.includes('caché');
+      let hasTorche = player.leftHand && player.leftHand.name === 'torche' || player.rightHand && player.rightHand.name === 'torche';
+      
+      player.turnStartBites = 0;
+      
+      if (crocos.some(c => c.x === player.x && c.y === player.y)) {
+        if (isHidden) {
+          speak('Vous étiez caché, le crocodile ne vous a pas vu !');
+        } else if (hasTorche) {
+          speak('Votre torche effraie le crocodile ! Vous êtes protégé.');
+        } else {
+          player.woundCards++;
+          turnSummary.woundAdded++;
+          player.turnStartBites++;
+          updateFatigueWoundDisplay(player);
+          checkEvacuation(player);
+          speak('Morsure ! Ajoutez une blessure.');
+        }
+      }
+      
+      player.status = player.status.filter(s => s !== 'caché');
+      decreaseHandItemsDurability(player);
+      //updateQRButtonVisibility();
+      updateUI();
+      
+      // // Attendre encore un peu avant d'afficher la sélection de ligne
+      // setTimeout(function() {
+      //   console.log('🎯 Affichage sélection de ligne');
+      //   prepMove(3);
+      // }, 500);
+    }, 300);
+  };
+  container.appendChild(btn);
+  
+  // Afficher
+  document.getElementById('overlay').style.display = 'block';
+  document.body.appendChild(container);
+  
+  // Message vocal
+  if (typeof speak === 'function') {
+    const message = moves.length + ' crocodile' + (moves.length > 1 ? 's ont' : ' a') + ' bougé' + (bites.length > 0 ? ', dont ' + bites.length + ' morsure' + (bites.length > 1 ? 's' : '') : '') + ' !';
+    speak(message);
+  }
+}
+
 function respawnItem(_0x1f6990) {
   const _0x4c110e = getString;
   let _0x4fb9f1 = hiddenItems.filter(_0x5295df => _0x5295df.item.name === _0x1f6990 && _0x5295df.found);
@@ -1935,7 +2245,7 @@ function showInventoryManage() {
   document.getElementById('manage-inv-back1').innerText = player.backpack[1] ? player.backpack[1].icon : '';
   document.getElementById('manage-inv-back2').innerText = player.backpack[2] ? player.backpack[2].icon : '';
   
-  
+ 
   // Afficher Fatigue et Blessure
   document.getElementById('manage-total-fatigue').innerText = player.fatigueCards;
   document.getElementById('manage-total-wound').innerText = player.woundCards;
@@ -1950,6 +2260,11 @@ function showInventoryManage() {
   // Afficher la popup
   document.getElementById('overlay').style.display = 'block';
   document.getElementById('inventory-manage-box').style.display = 'block';
+
+   // Cache le bouton scan mission
+  // document.getElementById("qr-button-actions").style.display = "none";
+  // document.getElementById("qr-button").style.display = "none";
+
 }
 
 function selectManageSlot(slotName) {
