@@ -100,20 +100,22 @@ function initZones() {
     }
     
     // Volcan : F7 à I10 (colonnes 5-8, lignes 6-9)
-    for (let x = 5; x <= 8; x++) {
-        for (let y = 6; y <= 9; y++) {
+    for (let x = 7; x <= 10; x++) {
+        for (let y = 5; y <= 8; y++) {
             ZONES.VOLCAN.push({x, y});
         }
     }
     
     // Zone de danger autour du volcan
-    for (let x = 4; x <= 9; x++) {
-        for (let y = 5; y <= 10; y++) {
+    for (let x = 6; x <= 11; x++) {
+        for (let y = 4; y <= 9; y++) {
             if (!isInZone({x, y}, ZONES.VOLCAN)) {
                 ZONES.VOLCAN_DANGER.push({x, y});
             }
         }
     }
+    console.log('🌋 ZONES.VOLCAN =', ZONES.VOLCAN);
+    console.log('⚠️ ZONES.VOLCAN_DANGER =', ZONES.VOLCAN_DANGER);
 }
 
 /**
@@ -771,18 +773,13 @@ function triggerVolcanoEruption() {
         const pos = player.position;
         if (isInZone(pos, ZONES.VOLCAN) || isInZone(pos, ZONES.VOLCAN_DANGER)) {
             // Évacuation
-            player.evacuated = true;
-            player.evacuationReason = 'Éruption volcanique';
-            showToast(`${player.picto} ${player.name} a été évacué par l'éruption !`, 'danger', 5000);
+            evacuatePlayer(player, 'Éruption volcanique');
         }
     });
     
     // Réinitialiser la jauge
     globalData.jaugeVolcan = 0;
     updateGlobalDataDisplay();
-    
-    // Vérifier fin de partie
-    checkGameEnd();
 }
 
 /**
@@ -1239,10 +1236,10 @@ function updatePlayerDisplay() {
     
     // Couleur des stats selon le niveau
     if (fatigueEl) {
-        fatigueEl.style.color = player.fatigue >= 3 ? '#e74c3c' : player.fatigue >= 2 ? '#f39c12' : '#2ecc71';
+        fatigueEl.style.color = player.fatigue >= 5 ? '#e74c3c' : player.fatigue >= 3 ? '#f39c12' : '#2ecc71';
     }
     if (woundEl) {
-        woundEl.style.color = player.blessure >= 3 ? '#e74c3c' : player.blessure >= 2 ? '#f39c12' : '#2ecc71';
+        woundEl.style.color = player.blessure >= 5 ? '#e74c3c' : player.blessure >= 3 ? '#f39c12' : '#2ecc71';
     }
     
     // Rafraîchir le bandeau des autres joueurs
