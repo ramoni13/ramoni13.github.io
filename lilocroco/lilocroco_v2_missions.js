@@ -147,14 +147,6 @@ function endTurn() {
     
     console.log(`✅ Fin du tour de ${player.name}`);
     
-    // Vérifier si le joueur est évacué
-    if (player.evacuated) {
-        showToast(`${player.picto} ${player.name} a été évacué !`, 'danger', 5000);
-        speak(`${player.name} a été évacué de l'île !`);
-        checkGameEnd();
-        return;
-    }
-    
     // Passer au joueur suivant
     currentPlayerIndex++;
     
@@ -205,19 +197,49 @@ function endRound() {
 }
 
 /**
+ * Gère l'évacuation d'un joueur
+ */
+function evacuatePlayer(player, reason) {
+    console.log(`🚑 Évacuation de ${player.name} : ${reason}`);
+    
+    // Calculer la perte de votes (moitié)
+    const lostVotes = Math.floor(player.votes / 2);
+    player.votes = player.votes - lostVotes;
+    
+    // Réinitialiser fatigue et blessure
+    player.fatigue = 0;
+    player.blessure = 0;
+    
+    // Retour au camp
+    player.position = {...CAMPS[player.color].start};
+    
+    // Enregistrer l'évacuation
+    player.recordAction('evacuation', { 
+        reason, 
+        lostVotes,
+        location: player.position 
+    });
+    
+    // Message
+    showToast(`${player.picto} ${player.name} évacué ! -${lostVotes} votes`, 'danger', 5000);
+    speak(`${player.name} est évacué ! Moins ${lostVotes} votes. Retour au camp.`);
+    
+    // Mettre à jour l'affichage
+    updatePlayerDisplay();
+    if (typeof updateOtherPlayersDisplay === 'function') {
+        updateOtherPlayersDisplay();
+    }
+    
+    // Fin du tour du joueur
+    setTimeout(() => {
+        endTurn();
+    }, 2000);
+}
+
+/**
  * Vérifie si la partie doit se terminer
  */
 function checkGameEnd() {
-    // Vérifier si tous les joueurs sont évacués
-    const activePlayers = players.filter(p => !p.evacuated);
-    
-    if (activePlayers.length === 0) {
-        showToast('Tous les joueurs ont été évacués !', 'danger', 5000);
-        speak('Tous les aventuriers ont été évacués ! Fin de la partie.');
-        endGame();
-        return true;
-    }
-    
     // Vérifier si le nombre de tours max est atteint
     if (currentTurn > maxTurns) {
         endGame();
