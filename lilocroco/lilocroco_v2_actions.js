@@ -173,14 +173,16 @@ function addBlessure(source) {
     }
     
     // Vérifier évacuation
-    if (player.blessure >= 3) {
+    if (player.blessure >= 8) {
         closeBlessurePopup();
-        player.evacuated = true;
-        player.evacuationReason = '3 blessures';
-        showToast(`${player.picto} ${player.name} est évacué !`, 'danger', 5000);
-        speak(`${player.name} est évacué pour raisons médicales !`);
-        checkGameEnd();
+        evacuatePlayer(player, '8 blessures');
     }
+
+    // Vérifier évacuation
+      if ((player.blessure >= 5) && (player.fatigue >= 5)) {
+      closeBlessurePopup();
+      evacuatePlayer(player, '5 blessures & 5 fatigues');
+  }
 }
 
 function closeBlessurePopup() {
@@ -205,14 +207,16 @@ function doActionFatigue() {
     updatePlayerDisplay();
     updateOtherPlayersDisplay();
     
-    // Vérifier évacuation
-    if (player.fatigue >= 3) {
-        player.evacuated = true;
-        player.evacuationReason = '3 fatigues';
-        showToast(`${player.picto} ${player.name} est évacué !`, 'danger', 5000);
-        speak(`${player.name} est évacué pour épuisement !`);
-        checkGameEnd();
-    }
+      // Vérifier évacuation
+  if (player.fatigue >= 8) {
+      evacuatePlayer(player, '8 fatigues');
+  }
+
+          // Vérifier évacuation
+      if ((player.blessure >= 5) && (player.fatigue >= 5)) {
+          evacuatePlayer(player, '5 blessures & 5 fatigues');
+      }
+    
 }
 
 /**
@@ -267,8 +271,8 @@ function updateOtherPlayersDisplay() {
     players.forEach((p, index) => {
         if (index !== currentPlayerIndex) {
             // Couleurs selon les niveaux
-            const fatigueColor = p.fatigue >= 3 ? '#e74c3c' : p.fatigue >= 2 ? '#f39c12' : '#2ecc71';
-            const blessureColor = p.blessure >= 3 ? '#e74c3c' : p.blessure >= 2 ? '#f39c12' : '#2ecc71';
+            const fatigueColor = p.fatigue >= 5 ? '#e74c3c' : p.fatigue >= 3 ? '#f39c12' : '#2ecc71';
+            const blessureColor = p.blessure >= 5 ? '#e74c3c' : p.blessure >= 3 ? '#f39c12' : '#2ecc71';
             
             html += `<div style="background: rgba(255,255,255,0.1); padding: 10px 12px; border-radius: 8px; border-left: 4px solid ${p.colorHex}; min-width: 180px;">`;
             
