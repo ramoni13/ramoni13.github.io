@@ -290,13 +290,14 @@ function activateTombe(player, lieu) {
         updatePlayerDisplay();
         
         // Vérifier évacuation
-        if (player.blessure >= 3) {
-            player.evacuated = true;
-            player.evacuationReason = '3 blessures (Tombe)';
-            showToast(`${player.picto} ${player.name} est évacué !`, 'danger', 5000);
-            speak(`${player.name} est évacué pour raisons médicales !`);
-            checkGameEnd();
+        if (player.blessure >= 8) {
+            evacuatePlayer(player, '8 blessures (Tombe)');
         }
+
+          // Vérifier évacuation
+  if ((player.blessure >= 5) && (player.fatigue >= 5)) {
+      evacuatePlayer(player, '5 blessures & 5 fatigues');
+  }
     }
     
     closeLieuxInteractionPopup();
