@@ -393,6 +393,7 @@
         .toast-error { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; }
         .toast-info { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; }
         .toast-warning { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; }
+        .toast-danger { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; }
         
         /* Inventaire */
         .inventory-grid {
@@ -667,6 +668,9 @@
                 <div class="info-banner-title">🎯 MISSION FLASH</div>
                 <div id="mission-text" style="margin-top: 5px; font-size: 0.8rem;">Aucune mission en cours</div>
             </div>
+            <button class="mute-button" id="mute-btn" onclick="toggleMute()" title="Activer/Désactiver la voix">
+                    🔊
+                </button>
         </div>
         
         <!-- Bandeau jauges mondiales -->
@@ -721,17 +725,14 @@
         <div id="player-header" class="player-header">
             <div class="player-info">
                 <div class="player-name" id="player-name">JOUEUR ROUGE</div>
-                <div class="player-stats">
+                <!-- <div class="player-stats">
                     <span>😫 F: <span id="player-fatigue">0</span></span>
                     <span>🩹 B: <span id="player-wound">0</span></span>
                     <span>⭐ XP: <span id="player-xp">0</span></span>
-                </div>
+                </div> -->
             </div>
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="player-votes" id="player-votes">0</div>
-                <button class="mute-button" id="mute-btn" onclick="toggleMute()" title="Activer/Désactiver la voix">
-                    🔊
-                </button>
+                <span>⭐ XP: <span id="player-xp">0</span></span><div class="player-votes">Votes </div><div class="player-votes" id="player-votes">0</div>
             </div>
         </div>
         
@@ -740,10 +741,13 @@
             <!-- Cadre 1 : Blessure / Fatigue / Soin / Repos -->
             <div style="background: rgba(231, 76, 60, 0.1); border: 2px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 10px; margin-bottom: 10px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button class="btn btn-danger" onclick="doAction('blessure')">🩹 Blessure</button>
-                    <button class="btn btn-warning" onclick="doAction('fatigue')">😫 Fatigue</button>
-                    <button class="btn btn-success" onclick="doAction('soin')">💊 Soin</button>
-                    <button class="btn btn-info" onclick="doAction('repos')">😴 Repos</button>
+                    <button class="btn btn-danger" onclick="addBlessure('morsure')">🐊 Morsure</button>
+                    <button class="btn btn-warning" onclick="addBlessure('volcan')">🌋 Volcan</button>
+                    <!-- <button class="btn btn-danger" onclick="doAction('blessure')">🩹 Blessure</button>
+                    <button class="btn btn-warning" onclick="doAction('fatigue')">😫 Fatigue</button> -->
+                    <!-- <button class="btn btn-success" onclick="doAction('soin')">💊 Soin</button>
+                    <button class="btn btn-info" onclick="doAction('repos')">😴 Repos</button> -->
+                    
                 </div>
             </div>
             
@@ -758,10 +762,11 @@
                 </div>
             </div>
             
-            <!-- Cadre 3 : Mission / Fin de Tour -->
+            <!-- Cadre 3 : Mission / Évacuation / Fin de Tour -->
             <div style="background: rgba(241, 196, 15, 0.1); border: 2px solid rgba(241, 196, 15, 0.3); border-radius: 10px; padding: 10px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button class="btn" style="background: #9b59b6; color: white; grid-column: 1 / -1;" onclick="doActionMission()">🎯 MISSION</button>
+                    <button class="btn" style="background: #9b59b6; color: white;" onclick="doActionMission()">🎯 MISSION</button>
+                    <button class="btn" style="background: #e74c3c; color: white;" onclick="showEvacuationPopup()">🚁 ÉVACUATION</button>
                     <button class="btn btn-primary" onclick="endTurn()" style="grid-column: 1 / -1;">✅ FIN DE TOUR</button>
                 </div>
             </div>
@@ -775,6 +780,16 @@
     <div class="toast" id="toast"></div>
     
     <!-- Modales (seront créées dynamiquement) -->
+    
+    <!-- Popup Évacuation -->
+    <div id="evacuation-modal" class="modal" style="display: none;">
+        <h3 style="color: #e74c3c;">🚁 ÉVACUATION</h3>
+        <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Sélectionnez le joueur à évacuer :</p>
+        <div id="evacuation-players-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <!-- Les boutons joueurs seront ajoutés ici dynamiquement -->
+        </div>
+        <button class="btn btn-info" onclick="closeEvacuationPopup()" style="width: 100%;">OK</button>
+    </div>
     
 </body>
 </html>
