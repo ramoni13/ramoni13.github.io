@@ -485,8 +485,40 @@ async function initGlobalData() {
     try {
         const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
         const globalRef = database.ref(`global/${today}`);
+        const worldRef = database.ref('world'); // Référence mondiale pour les jauges
         
-        // Vérifier si les données existent déjà
+        // Charger les jauges mondiales (partagées entre toutes les parties)
+        const worldSnapshot = await worldRef.once('value');
+        if (worldSnapshot.exists()) {
+            const worldData = worldSnapshot.val();
+            globalData.jaugeVolcan = worldData.jaugeVolcan || 0;
+            globalData.jaugeCroco = worldData.jaugeCroco || 0;
+            console.log('✅ Jauges mondiales chargées:', {
+                volcan: globalData.jaugeVolcan,
+                croco: globalData.jaugeCroco
+            });
+        } else {
+            // Créer les jauges mondiales si elles n'existent pas
+            globalData.jaugeVolcan = 0;
+            globalData.jaugeCroco = 0;
+            await worldRef.set({
+                jaugeVolcan: 0,
+                jaugeCroco: 0
+            });
+            console.log('🆕 Jauges mondiales créées');
+        }
+        
+        // Écouter les changements des jauges mondiales en temps réel
+        worldRef.on('value', (snapshot) => {
+            if (snapshot.exists()) {
+                const worldData = snapshot.val();
+                globalData.jaugeVolcan = worldData.jaugeVolcan || 0;
+                globalData.jaugeCroco = worldData.jaugeCroco || 0;
+                updateGlobalDataDisplay();
+            }
+        });
+        
+        // Vérifier si les données du jour existent déjà
         const snapshot = await globalRef.once('value');
         console.log('snapshot = ', snapshot);
         
@@ -501,8 +533,6 @@ async function initGlobalData() {
                 blanc: 400,
                 scans: { orange: 0, noir: 0, marron: 0, blanc: 0 }
             };
-            globalData.jaugeVolcan = data.jaugeVolcan || 0;
-            globalData.jaugeCroco = data.jaugeCroco || 0;
             globalData.nbJoueurs = data.nbJoueurs || 0;
             // Ne PAS charger lieuxMystiques depuis ici
             console.log('✅ Données mondiales chargées depuis Firebase (hors lieux mystiques)');
@@ -525,13 +555,14 @@ async function initGlobalData() {
                 scans: { orange: 0, noir: 0, marron: 0, blanc: 0 }
             };
             
-            // Initialiser les jauges
-            globalData.jaugeVolcan = 0;
-            globalData.jaugeCroco = 0;
             globalData.nbJoueurs = 0;
             
-            // Sauvegarder dans Firebase
-            await globalRef.set(globalData);
+            // Sauvegarder dans Firebase (SANS les jauges qui sont dans world/)
+            await globalRef.set({
+                itemsRares: globalData.itemsRares,
+                marcheVotes: globalData.marcheVotes,
+                nbJoueurs: globalData.nbJoueurs
+            });
             console.log('✅ Données mondiales créées et sauvegardées');
         }
         
@@ -539,7 +570,7 @@ async function initGlobalData() {
         globalData.nbJoueurs = (globalData.nbJoueurs || 0) + players.length;
         await globalRef.child('nbJoueurs').set(globalData.nbJoueurs);
         
-        // Écouter les changements en temps réel
+        // Écouter les changements en temps réel (données du jour)
         globalRef.on('value', (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
@@ -547,8 +578,6 @@ async function initGlobalData() {
                 const savedLieux = globalData.lieuxMystiques;
                 globalData.itemsRares = data.itemsRares || globalData.itemsRares;
                 globalData.marcheVotes = data.marcheVotes || globalData.marcheVotes;
-                globalData.jaugeVolcan = data.jaugeVolcan || globalData.jaugeVolcan;
-                globalData.jaugeCroco = data.jaugeCroco || globalData.jaugeCroco;
                 globalData.nbJoueurs = data.nbJoueurs || globalData.nbJoueurs;
                 // Restaurer lieuxMystiques
                 globalData.lieuxMystiques = savedLieux;
@@ -685,20 +714,21 @@ function generateRareItemsPositions() {
  * Met à jour l'affichage des données mondiales
  */
 function updateGlobalDataDisplay() {
-    // Jauge volcan
+    // Jauge volcan (seuil fixe mondial : 100)
     const volcanoGauge = document.getElementById('volcano-gauge');
-    if (volcanoGauge && globalData.nbJoueurs > 0) {
-        const maxVolcano = globalData.nbJoueurs * 10;
+    if (volcanoGauge) {
+        const maxVolcano = 100;
         const percentage = Math.min(100, Math.round((globalData.jaugeVolcan / maxVolcano) * 100));
-        volcanoGauge.textContent = `${percentage}%`;
+        volcanoGauge.textContent = `${globalData.jaugeVolcan}/${maxVolcano}`;
         volcanoGauge.style.color = percentage >= 80 ? '#e74c3c' : percentage >= 50 ? '#f39c12' : '#2ecc71';
     }
     
-    // Jauge crocodiles
+    // Jauge crocodiles (seuil fixe mondial : 200)
     const crocoGauge = document.getElementById('croco-gauge');
-    if (crocoGauge && globalData.nbJoueurs > 0) {
-        const maxCroco = globalData.nbJoueurs * 20;
+    if (crocoGauge) {
+        const maxCroco = 200;
         const level = globalData.jaugeCroco;
+        const percentage = Math.round((level / maxCroco) * 100);
         
         let text = 'Normal';
         let color = '#2ecc71';
@@ -711,7 +741,7 @@ function updateGlobalDataDisplay() {
             color = '#f39c12';
         }
         
-        crocoGauge.textContent = text;
+        crocoGauge.textContent = `${text} (${level}/${maxCroco})`;
         crocoGauge.style.color = color;
     }
     
@@ -742,8 +772,8 @@ function updateGlobalDataDisplay() {
             
             if (item) {
                 hasItems = true;
-                const displayName = item.name.replace('_', ' ').toUpperCase();
-                
+                const displayNameTmp = item.name.replace('_', ' ').toUpperCase().split(' ');
+                const displayName = displayNameTmp[0];
                 if (itemName === 'totem_dore') {
                     // Totem doré : afficher seulement la valeur
                     const votes = itemData.baseVotes || 250;
@@ -786,8 +816,9 @@ async function updateVolcanoGauge(increment) {
     
     if (isFirebaseConnected) {
         try {
-            const today = new Date().toISOString().split('T')[0];
-            await database.ref(`global/${today}/jaugeVolcan`).set(globalData.jaugeVolcan);
+            // Sauvegarder dans world/ (mondial) au lieu de global/{date}/
+            await database.ref('world/jaugeVolcan').set(globalData.jaugeVolcan);
+            console.log(`🌋 Jauge volcan mise à jour : ${globalData.jaugeVolcan} (+${increment})`);
         } catch (error) {
             console.error('❌ Erreur mise à jour jauge volcan:', error);
         }
@@ -795,8 +826,8 @@ async function updateVolcanoGauge(increment) {
     
     updateGlobalDataDisplay();
     
-    // Vérifier éruption
-    const maxVolcano = globalData.nbJoueurs * 10;
+    // Vérifier éruption (seuil fixe mondial : 100)
+    const maxVolcano = 100;
     if (globalData.jaugeVolcan >= maxVolcano) {
         triggerVolcanoEruption();
     }
@@ -810,8 +841,9 @@ async function updateCrocoGauge(increment) {
     
     if (isFirebaseConnected) {
         try {
-            const today = new Date().toISOString().split('T')[0];
-            await database.ref(`global/${today}/jaugeCroco`).set(globalData.jaugeCroco);
+            // Sauvegarder dans world/ (mondial) au lieu de global/{date}/
+            await database.ref('world/jaugeCroco').set(globalData.jaugeCroco);
+            console.log(`🐊 Jauge croco mise à jour : ${globalData.jaugeCroco} (+${increment})`);
         } catch (error) {
             console.error('❌ Erreur mise à jour jauge croco:', error);
         }
@@ -824,18 +856,26 @@ async function updateCrocoGauge(increment) {
  * Vérifie si les crocodiles sont en mode Furie
  */
 function isCrocoFurie() {
-    if (globalData.nbJoueurs === 0) return false;
-    
-    const maxCroco = globalData.nbJoueurs * 20;
+    const maxCroco = 200; // Seuil fixe mondial
     const level = globalData.jaugeCroco;
     
-    return level >= maxCroco * 0.75;
+    return level >= maxCroco * 0.75; // >= 1500
+}
+
+/**
+ * Vérifie si les crocodiles sont en mode Énervé
+ */
+function isEnerve() {
+    const maxCroco = 200; // Seuil fixe mondial
+    const level = globalData.jaugeCroco;
+    
+    return level >= maxCroco * 0.5; // >= 1000
 }
 
 /**
  * Déclenche une éruption volcanique
  */
-function triggerVolcanoEruption() {
+async function triggerVolcanoEruption() {
     console.log('🌋 ÉRUPTION VOLCANIQUE !');
     speak('Attention ! Éruption volcanique ! Tous les aventuriers sur le volcan et autour sont évacués !');
     
@@ -848,8 +888,18 @@ function triggerVolcanoEruption() {
         }
     });
     
-    // Réinitialiser la jauge
+    // Réinitialiser la jauge mondiale
     globalData.jaugeVolcan = 0;
+    
+    if (isFirebaseConnected) {
+        try {
+            await database.ref('world/jaugeVolcan').set(0);
+            console.log('🌋 Jauge volcan réinitialisée après éruption');
+        } catch (error) {
+            console.error('❌ Erreur réinitialisation jauge volcan:', error);
+        }
+    }
+    
     updateGlobalDataDisplay();
 }
 
@@ -2150,4 +2200,120 @@ function checkTemporaryMission(player, missionId) {
     return true;
 }
 
+// ========================================
+// PARTIE 9 : ÉVACUATION
+// ========================================
+
+/**
+ * Affiche la popup d'évacuation
+ */
+function showEvacuationPopup() {
+    const modal = document.getElementById('evacuation-modal');
+    const playersList = document.getElementById('evacuation-players-list');
+    
+    if (!modal || !playersList) return;
+    
+    // Vider complètement la liste pour recréer les boutons à chaque ouverture
+    playersList.innerHTML = '';
+    
+    // Ajouter un bouton pour chaque joueur
+    players.forEach((player, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.style.width = '100%';
+        btn.style.padding = '15px';
+        btn.style.fontSize = '1rem';
+        btn.id = `evac-btn-${index}`;
+        
+        // Vérifier l'état actuel du joueur (pas l'état du bouton)
+        if (player.evacuated) {
+            btn.style.background = '#95a5a6';
+            btn.style.color = 'white';
+            btn.style.opacity = '0.5';
+            btn.disabled = true;
+            btn.innerHTML = `${player.picto} ${player.name} <span style="color: #e74c3c;">✖ ÉVACUÉ</span>`;
+        } else {
+            btn.style.background = player.colorHex;
+            btn.style.color = player.color === 'JAUNE' ? 'black' : 'white';
+            btn.innerHTML = `${player.picto} ${player.name}`;
+            btn.onclick = () => evacuatePlayerFromPopup(index);
+        }
+        
+        playersList.appendChild(btn);
+    });
+    
+    // Afficher la modale
+    modal.style.display = 'block';
+    showOverlay();
+}
+
+/**
+ * Ferme la popup d'évacuation
+ */
+function closeEvacuationPopup() {
+    const modal = document.getElementById('evacuation-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        hideOverlay();
+    }
+}
+
+/**
+ * Évacue un joueur depuis la popup
+ */
+function evacuatePlayerFromPopup(playerIndex) {
+    const player = players[playerIndex];
+    if (!player) return;
+    
+    // Évacuer le joueur directement sans demander confirmation ni raison
+    evacuatePlayer(player, 'Évacuation');
+    
+    // Mettre à jour l'affichage
+    updatePlayerDisplay();
+    if (typeof updateOtherPlayersDisplay === 'function') {
+        updateOtherPlayersDisplay();
+    }
+}
+
+/**
+ * Évacue un joueur
+ */
+function evacuatePlayer(player, reason = 'Évacuation') {
+    console.log(`🚁 ÉVACUATION : ${player.name} - Raison : ${reason}`);
+    
+    // Calculer la perte de votes (moitié)
+    const lostVotes = Math.floor(player.votes / 2);
+    player.votes = player.votes - lostVotes;
+    
+    // Réinitialiser fatigue et blessure
+    player.fatigue = 0;
+    player.blessure = 0;
+    
+    // Vider l'inventaire
+    player.leftHand = null;
+    player.rightHand = null;
+    player.backpack = [null, null, null];
+    
+    // Retour au camp
+    player.position = {...CAMPS[player.color].start};
+    
+    // Enregistrer l'action
+    player.recordAction('evacuation', {
+        reason: reason,
+        turn: currentTurn,
+        position: {...player.position},
+        lostVotes: lostVotes
+    });
+    
+    // Mettre à jour les stats persistantes si joueur personnel
+    if (player.isPersonal) {
+        player.totalEvacuations = (player.totalEvacuations || 0) + 1;
+    }
+    
+    // Notification
+    showToast(`🚁 ${player.picto} ${player.name} évacué ! -${lostVotes} votes`, 'danger', 5000);
+    speak(`${player.name} est évacué ! Moins ${lostVotes} votes. Retour au camp. Tout l'équipement est perdu.`);
+}
+
 console.log('✅ Partie 4 chargée : Initialisation et météo');
+console.log('✅ Partie 9 chargée : Évacuation');
