@@ -157,29 +157,42 @@ function addBlessure(source) {
     if (source === 'morsure') {
         // Vérifier si les crocos sont en mode Furie
         const enFurie = typeof isCrocoFurie === 'function' ? isCrocoFurie() : false;
+        const enerve = typeof isEnerve === 'function' ? isEnerve() : false;
         
         if (enFurie) {
             blessuresAjoutees = 2;
             console.log('🐊 MODE FURIE : +2 blessures au lieu de +1');
+        } else  if (enerve) {
+            console.log('🐊 MODE ENERVE : 2 déplacments au lieu de 1');
         }
         
         player.blessure += blessuresAjoutees;
         updateCrocoGauge(10);
         player.recordAction('blessure', { source: 'morsure', blessure: player.blessure, furie: enFurie });
         
+        // if (enFurie) {
+        //     showToast(`${player.picto} 🐊 FURIE ! Morsure ! +${blessuresAjoutees} Blessures (Total: ${player.blessure})`, 'danger', 4000);
+        //     speak(`Attention ! Les crocodiles sont en furie ! Morsure ! Plus ${blessuresAjoutees} blessures. Total : ${player.blessure}.`);
+        // } else {
+        //     showToast(`${player.picto} Morsure ! +${blessuresAjoutees} Blessure (Total: ${player.blessure})`, 'danger');
+        //     speak(`Morsure de crocodile ! Plus ${blessuresAjoutees} blessure. Total : ${player.blessure}.`);
+        // }
         if (enFurie) {
-            showToast(`${player.picto} 🐊 FURIE ! Morsure ! +${blessuresAjoutees} Blessures (Total: ${player.blessure})`, 'danger', 4000);
-            speak(`Attention ! Les crocodiles sont en furie ! Morsure ! Plus ${blessuresAjoutees} blessures. Total : ${player.blessure}.`);
+            showToast(`🐊 MODE FURIE ! 2 blessures ! `, 'danger', 4000);
+            speak(`Les crocos sont en furie ! Attention ! Ils infligent 2 blessures !`);
+        } else if (enerve) {
+            showToast(`🐊 MODE ENERVE ! 2 déplacements ! `, 'danger', 4000);
+            speak(`Les crocos sont énervés ! Ils se déplacent de 2 cases !`);
         } else {
-            showToast(`${player.picto} Morsure ! +${blessuresAjoutees} Blessure (Total: ${player.blessure})`, 'danger');
-            speak(`Morsure de crocodile ! Plus ${blessuresAjoutees} blessure. Total : ${player.blessure}.`);
+            showToast(`La jauge des crocos augmentent !`, 'danger');
+            speak(`La jauge des crocos augmentent !`);
         }
     } else if (source === 'volcan') {
         player.blessure += blessuresAjoutees;
         updateVolcanoGauge(1);
         player.recordAction('blessure', { source: 'volcan', blessure: player.blessure });
-        showToast(`${player.picto} Volcan ! +${blessuresAjoutees} Blessure (Total: ${player.blessure})`, 'warning');
-        speak(`Blessure du volcan ! Plus ${blessuresAjoutees} blessure. Total : ${player.blessure}.`);
+        showToast(`La jauge du Volcan augmente`, 'warning');
+        speak(`La jauge du Volcan augmente`);
     }
     
     updatePlayerDisplay();
