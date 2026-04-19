@@ -266,6 +266,29 @@ function showWeatherPopup() {
     html += `<div style="font-size: 1rem; color: #333;">${currentWeather.effect}</div>`;
     html += `</div>`;
     
+    // Niveau des crocodiles
+    const maxCroco = 200;
+    const level = globalData.jaugeCroco;
+    let crocoLevel = 'Normal';
+    let crocoColor = '#2ecc71';
+    let crocoEffect = '1 case et 1 blessure';
+    
+    if (level >= maxCroco * 0.75) {
+        crocoLevel = 'Furie';
+        crocoColor = '#e74c3c';
+        crocoEffect = '2 cases et 2 blessures';
+    } else if (level >= maxCroco * 0.5) {
+        crocoLevel = 'Énervé';
+        crocoColor = '#f39c12';
+        crocoEffect = '2 cases et 1 blessure';
+    }
+    
+    html += `<div style="background: rgba(231, 76, 60, 0.1); border: 2px solid ${crocoColor}; border-radius: 10px; padding: 12px; margin: 15px 0;">`;
+    html += `<div style="font-size: 0.9rem; font-weight: bold; color: ${crocoColor}; margin-bottom: 5px;">🐊 CROCODILES</div>`;
+    html += `<div style="font-size: 0.95rem; color: #000; font-weight: bold;">${crocoLevel} (${level}/${maxCroco})</div>`;
+    html += `<div style="font-size: 0.85rem; color: #666; margin-top: 5px;">${crocoEffect}</div>`;
+    html += `</div>`;
+    
     // Mission Flash
     if (currentTemporaryMission) {
         html += `<div style="background: rgba(155, 89, 182, 0.1); border: 2px solid #9b59b6; border-radius: 10px; padding: 12px; margin: 15px 0;">`;
@@ -418,45 +441,7 @@ function endRound() {
     console.log('========== FIN endRound() ==========\n');
 }
 
-/**
- * Gère l'évacuation d'un joueur
- */
-function evacuatePlayer(player, reason) {
-    console.log(`🚑 Évacuation de ${player.name} : ${reason}`);
-    
-    // Calculer la perte de votes (moitié)
-    const lostVotes = Math.floor(player.votes / 2);
-    player.votes = player.votes - lostVotes;
-    
-    // Réinitialiser fatigue et blessure
-    player.fatigue = 0;
-    player.blessure = 0;
-    
-    // Retour au camp
-    player.position = {...CAMPS[player.color].start};
-    
-    // Enregistrer l'évacuation
-    player.recordAction('evacuation', { 
-        reason, 
-        lostVotes,
-        location: player.position 
-    });
-    
-    // Message
-    showToast(`${player.picto} ${player.name} évacué ! -${lostVotes} votes`, 'danger', 5000);
-    speak(`${player.name} est évacué ! Moins ${lostVotes} votes. Retour au camp.`);
-    
-    // Mettre à jour l'affichage
-    updatePlayerDisplay();
-    if (typeof updateOtherPlayersDisplay === 'function') {
-        updateOtherPlayersDisplay();
-    }
-    
-    // Fin du tour du joueur
-    setTimeout(() => {
-        endTurn();
-    }, 2000);
-}
+// FONCTION evacuatePlayer SUPPRIMÉE - Utiliser celle de lilocroco_v2.js
 
 /**
  * Vérifie si la partie doit se terminer
