@@ -656,11 +656,11 @@
     <!-- Container principal -->
     <div class="app-container" id="app-container" style="display: none;">
         <!-- Bandeau météo -->
-        <div id="weather-banner" class="weather-banner">
+        <!-- <div id="weather-banner" class="weather-banner">
             <div class="weather-scroll" id="weather-text">
                 ☀️ BEAU TEMPS - Tout va bien !
             </div>
-        </div>
+        </div> -->
         
         <!-- Bandeau mission Flash -->
         <div id="mission-banner" class="info-banner">
@@ -678,6 +678,9 @@
             <div class="info-item">
                 <span>🌋</span>
                 <span id="volcano-gauge">0%</span>
+            </div>
+            <div class="info-item" id="weather-text">
+                ☀️ BEAU TEMPS - Tout va bien !
             </div>
             <div class="info-item">
                 <span>🐊</span>
@@ -756,7 +759,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn" style="background: #3498db; color: white; grid-column: 1 / -1;" onclick="doAction('fouille')">🔍 FOUILLE</button>
                     <button class="btn" style="background: #2980b9; color: white;" onclick="doAction('aide_public')" id="btn-aide-public">📢 Aide Public</button>
-                    <button class="btn" style="background: #16a085; color: white;" onclick="doAction('chasse_peche')">🎣 Chasse/Pêche</button>
+                    <button class="btn" style="background: #16a085; color: white;" onclick="doAction('chasse_peche')">🎣 Chas./Pêche</button>
                     <button class="btn" style="background: #27ae60; color: white;" onclick="doAction('totem')">🗿 Totem</button>
                     <button class="btn" style="background: #2ecc71; color: white;" onclick="showLieuxMystiquesInteraction()">🗺️ Lieux</button>
                 </div>
