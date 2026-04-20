@@ -2181,7 +2181,8 @@ function updateTemporaryMissionDisplay() {
     }
     
     if (currentTemporaryMission) {
-        const html = `<strong>#${currentTemporaryMission.id}</strong> - ${currentTemporaryMission.libelle} <span style="color: var(--gold); font-weight: bold;">(+25 votes)</span>`;
+        // const html = `<strong>#${currentTemporaryMission.id}</strong> - ${currentTemporaryMission.libelle} <span style="color: var(--gold); font-weight: bold;">(+25 votes)</span>`;
+        const html = `<strong>#${currentTemporaryMission.id}</strong> - ${currentTemporaryMission.libelle}`;
         missionText.innerHTML = html;
         console.log(`✅ Affichage mission mis à jour : #${currentTemporaryMission.id}`);
     } else {
