@@ -166,7 +166,7 @@ function addBlessure(source) {
             console.log('🐊 MODE ENERVE : 2 déplacments au lieu de 1');
         }
         
-        player.blessure += blessuresAjoutees;
+        //player.blessure += blessuresAjoutees;
         updateCrocoGauge(10);
         player.recordAction('blessure', { source: 'morsure', blessure: player.blessure, furie: enFurie });
         
@@ -199,25 +199,25 @@ function addBlessure(source) {
     updateOtherPlayersDisplay();
     
     // Mettre à jour l'affichage dans la popup
-    const popup = document.getElementById('blessure-popup');
-    if (popup) {
-        const levelDisplay = popup.querySelector('strong');
-        if (levelDisplay) {
-            levelDisplay.textContent = player.blessure;
-        }
-    }
+    // const popup = document.getElementById('blessure-popup');
+    // if (popup) {
+    //     const levelDisplay = popup.querySelector('strong');
+    //     if (levelDisplay) {
+    //         levelDisplay.textContent = player.blessure;
+    //     }
+    // }
     
-    // Vérifier évacuation
-    if (player.blessure >= 8) {
-        closeBlessurePopup();
-        evacuatePlayer(player, '8 blessures');
-    }
+    // // Vérifier évacuation
+    // if (player.blessure >= 8) {
+    //     closeBlessurePopup();
+    //     evacuatePlayer(player, '8 blessures');
+    // }
 
-    // Vérifier évacuation
-      if ((player.blessure >= 5) && (player.fatigue >= 5)) {
-      closeBlessurePopup();
-      evacuatePlayer(player, '5 blessures & 5 fatigues');
-  }
+    // // Vérifier évacuation
+    //   if ((player.blessure >= 5) && (player.fatigue >= 5)) {
+    //   closeBlessurePopup();
+    //   evacuatePlayer(player, '5 blessures & 5 fatigues');
+    // }
 }
 
 function closeBlessurePopup() {
