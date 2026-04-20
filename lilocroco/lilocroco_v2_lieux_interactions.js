@@ -59,7 +59,7 @@ function showLieuxMystiquesInteraction() {
     }
     
     html += '</div>';
-    html += '<button onclick="closeLieuxInteractionPopup()" class="btn btn-danger" style="width: 100%; margin-top: 10px;">Fermer</button>';
+    html += '<button onclick="closeLieuxInteractionPopup();" class="btn btn-danger" style="width: 100%; margin-top: 10px;">Fermer</button>';
     
     const modal = document.createElement('div');
     modal.id = 'lieux-interaction-popup';
