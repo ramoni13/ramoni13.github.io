@@ -266,7 +266,8 @@ let globalData = {
     },
     jaugeVolcan: 0,
     jaugeCroco: 0,
-    nbJoueurs: 0
+    nbJoueurs: 0,
+    totemDoreVotes: 250 // Valeur mondiale du totem doré
 };
 
 // Items sur l'île (position cachée)
@@ -487,33 +488,52 @@ async function initGlobalData() {
         const globalRef = database.ref(`global/${today}`);
         const worldRef = database.ref('world'); // Référence mondiale pour les jauges
         
-        // Charger les jauges mondiales (partagées entre toutes les parties)
+        // Charger les données mondiales (partagées entre toutes les parties)
         const worldSnapshot = await worldRef.once('value');
         if (worldSnapshot.exists()) {
             const worldData = worldSnapshot.val();
             globalData.jaugeVolcan = worldData.jaugeVolcan || 0;
             globalData.jaugeCroco = worldData.jaugeCroco || 0;
-            console.log('✅ Jauges mondiales chargées:', {
+            
+            // Charger le totem doré mondial
+            if (worldData.totemDore) {
+                globalData.totemDoreVotes = worldData.totemDore.baseVotes || 250;
+            } else {
+                globalData.totemDoreVotes = 250;
+            }
+            
+            console.log('✅ Données mondiales chargées:', {
                 volcan: globalData.jaugeVolcan,
-                croco: globalData.jaugeCroco
+                croco: globalData.jaugeCroco,
+                totemDore: globalData.totemDoreVotes
             });
         } else {
-            // Créer les jauges mondiales si elles n'existent pas
+            // Créer les données mondiales si elles n'existent pas
             globalData.jaugeVolcan = 0;
             globalData.jaugeCroco = 0;
+            globalData.totemDoreVotes = 250;
             await worldRef.set({
                 jaugeVolcan: 0,
-                jaugeCroco: 0
+                jaugeCroco: 0,
+                totemDore: {
+                    baseVotes: 250
+                }
             });
-            console.log('🆕 Jauges mondiales créées');
+            console.log('🆕 Données mondiales créées');
         }
         
-        // Écouter les changements des jauges mondiales en temps réel
+        // Écouter les changements des données mondiales en temps réel
         worldRef.on('value', (snapshot) => {
             if (snapshot.exists()) {
                 const worldData = snapshot.val();
                 globalData.jaugeVolcan = worldData.jaugeVolcan || 0;
                 globalData.jaugeCroco = worldData.jaugeCroco || 0;
+                
+                // Mettre à jour le totem doré
+                if (worldData.totemDore) {
+                    globalData.totemDoreVotes = worldData.totemDore.baseVotes || 250;
+                }
+                
                 updateGlobalDataDisplay();
             }
         });
@@ -681,10 +701,10 @@ function generateRareItemsPositions() {
     RARE_ITEMS.forEach((item, index) => {
         if (shuffled[index]) {
             if (item.name === 'totem_dore') {
-                // Totem doré : item à trouver avec valeur variable
+                // Totem doré : item à trouver avec valeur mondiale
                 positions[item.name] = {
                     position: shuffled[index],
-                    baseVotes: item.baseVotes || 250,
+                    baseVotes: globalData.totemDoreVotes || 250, // Utiliser la valeur mondiale
                     isPossessable: false // Pas possédable mais trouvable
                 };
             } else {
@@ -775,8 +795,8 @@ function updateGlobalDataDisplay() {
                 const displayNameTmp = item.name.replace('_', ' ').toUpperCase().split(' ');
                 const displayName = displayNameTmp[0];
                 if (itemName === 'totem_dore') {
-                    // Totem doré : afficher seulement la valeur
-                    const votes = itemData.baseVotes || 250;
+                    // Totem doré : afficher la valeur mondiale
+                    const votes = globalData.totemDoreVotes || 250;
                     html += `<div class="info-item">`;
                     html += `<span>${item.icon}</span>`;
                     html += `<span style="font-size: 0.7rem;">${displayName}<br><span style="color: var(--gold); font-weight: bold;">${votes} votes</span></span>`;
@@ -1914,7 +1934,7 @@ function showLieuxMystiquesPopup() {
     }
     
     html += '</div>';
-    html += '<button onclick="closeLieuxMystiquesPopup()" class="btn btn-primary" style="width: 100%; margin-top: 10px;">OK</button>';
+    html += '<button onclick="closeLieuxMystiquesPopup();  showWeatherPopup();" class="btn btn-primary" style="width: 100%; margin-top: 10px;">OK</button>';
     
     // Créer et afficher la popup
     const modal = document.createElement('div');
@@ -1980,20 +2000,21 @@ function updateWeatherDisplay() {
     
     console.log('   updateWeatherDisplay() - Météo:', currentWeather ? currentWeather.name : 'aucune');
     console.log('   updateWeatherDisplay() - Tour:', currentTurn);
-    
-    if (!banner || !text || !currentWeather) {
+    // if (!banner || !text || !currentWeather) {
+    if (!text || !currentWeather) {
         console.error('   ❌ Éléments manquants:', {banner: !!banner, text: !!text, weather: !!currentWeather});
         return;
     }
     
     // Texte
-    let weatherText = `${currentWeather.icon} ${currentWeather.name.toUpperCase()} - ${currentWeather.effect}`;
-    weatherText += ` <span style="color: var(--gold); font-weight: bold; margin-left: 20px;">🎯 Tour ${currentTurn}/${maxTurns}</span>`;
+    // let weatherText = `${currentWeather.icon} ${currentWeather.name.toUpperCase()} - ${currentWeather.effect}`;
+    let weatherText = `${currentWeather.icon} ${currentWeather.name.toUpperCase()}`;
+    weatherText += ` <span style="color: var(--gold); font-weight: bold; margin-left: 20px;">Tour ${currentTurn}/${maxTurns}</span>`;
     
     text.innerHTML = weatherText;
     
     // Classe CSS
-    banner.className = `weather-banner ${currentWeather.class}`;
+    //banner.className = `weather-banner ${currentWeather.class}`;
     
     // Appliquer les effets de la météo
     applyWeatherEffects();
