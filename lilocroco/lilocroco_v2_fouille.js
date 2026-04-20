@@ -506,8 +506,8 @@ function pickupRareItem(itemName, x, y) {
     
     // Appliquer l'effet
     if (itemName === 'totem_dore') {
-        // Totem doré : donner les votes et réinitialiser
-        const votes = globalData.itemsRares[itemName].baseVotes || 250;
+        // Totem doré : donner les votes mondiaux et réinitialiser
+        const votes = globalData.totemDoreVotes || 250;
         player.addVotes(votes, 'Totem Doré');
         player.addXP(50, 'Totem Doré');
         
@@ -936,16 +936,24 @@ async function resetTotemDore() {
     const shuffled = shuffle(availablePositions);
     const newPosition = shuffled[0];
     
-    // Réinitialiser les données
+    // Réinitialiser les données locales
     globalData.itemsRares.totem_dore.position = newPosition;
-    globalData.itemsRares.totem_dore.baseVotes = 250;
+    globalData.totemDoreVotes = 250;
     
     if (isFirebaseConnected) {
         const today = new Date().toISOString().split('T')[0];
+        
+        // Mettre à jour la position dans global/{date}/
         await database.ref(`global/${today}/itemsRares/totem_dore`).update({
-            position: newPosition,
+            position: newPosition
+        });
+        
+        // Réinitialiser la valeur mondiale dans world/
+        await database.ref('world/totemDore').set({
             baseVotes: 250
         });
+        
+        console.log('🏆 Valeur mondiale du totem réinitialisée à 250 dans world/');
     }
     
     console.log(`🏆 Totem Doré réinitialisé en ${posToCoord(newPosition.x, newPosition.y)} avec 250 votes`);
@@ -955,19 +963,20 @@ async function resetTotemDore() {
 }
 
 /**
- * Incrémente la valeur du totem doré (+1 par fouille mondiale)
+ * Incrémente la valeur mondiale du totem doré (+1 par fouille mondiale)
  */
 async function incrementTotemDoreValue() {
     if (!isFirebaseConnected) {
         console.log('⚠️ Firebase non connecté, valeur totem non incrémentée');
+        // Incrémenter localement quand même
+        globalData.totemDoreVotes = (globalData.totemDoreVotes || 250) + 1;
         return;
     }
     
     try {
-        const today = new Date().toISOString().split('T')[0];
-        const totemRef = database.ref(`global/${today}/itemsRares/totem_dore/baseVotes`);
+        const totemRef = database.ref('world/totemDore/baseVotes');
         
-        // Incrémenter de 1
+        // Incrémenter de 1 dans la base mondiale
         const snapshot = await totemRef.once('value');
         const currentValue = snapshot.val() || 250;
         const newValue = currentValue + 1;
@@ -975,11 +984,17 @@ async function incrementTotemDoreValue() {
         await totemRef.set(newValue);
         
         // Mettre à jour localement
+        globalData.totemDoreVotes = newValue;
+        
+        // Mettre à jour aussi dans itemsRares pour compatibilité
         if (globalData.itemsRares && globalData.itemsRares.totem_dore) {
             globalData.itemsRares.totem_dore.baseVotes = newValue;
         }
         
-        console.log(`🏆 Totem Doré : ${currentValue} → ${newValue} votes`);
+        console.log(`🏆 Totem Doré mondial : ${currentValue} → ${newValue} votes`);
+        
+        // Mettre à jour l'affichage
+        updateGlobalDataDisplay();
     } catch (error) {
         console.error('❌ Erreur incrémentation totem:', error);
     }
