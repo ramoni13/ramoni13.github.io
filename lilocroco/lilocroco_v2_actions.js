@@ -152,7 +152,7 @@ function addBlessure(source) {
     const player = players[currentPlayerIndex];
     if (!player) return;
     
-    let blessuresAjoutees = 1;
+    let blessuresAjoutees = 10;
     
     if (source === 'morsure') {
         // Vérifier si les crocos sont en mode Furie
