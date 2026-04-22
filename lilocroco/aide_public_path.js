@@ -2,7 +2,6 @@
  * PATCH AIDE DU PUBLIC - Ajout de la saisie de position
  * À intégrer dans lilocroco_v2_part2.js
  */
-
 // Variable temporaire pour stocker l'item sélectionné
 let selectedItemForPublicHelp = null;
 
