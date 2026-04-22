@@ -370,16 +370,15 @@ function showTotemScanResults(itemName, centerX, centerY, foundPositions) {
         
         html += '<div style="text-align: left;">';
         foundPositions.forEach((pos, index) => {
-            // Encoder les coordonnées avec la carte du joueur
-            const encoded = encodeCoordinates(player, pos.x, pos.y);
+            // Afficher les coordonnées réelles directement
+            const coords = posToCoord(pos.x, pos.y);
             html += `<div style="background: white; padding: 12px; margin: 8px 0; border-radius: 8px; border-left: 4px solid #28a745;">`;
             html += `<div style="font-weight: bold; color: #000; font-size: 1.1rem;">${item.icon} Position ${index + 1}</div>`;
-            html += `<div style="font-size: 1.3rem; color: #28a745; margin-top: 5px; font-weight: bold;">${encoded}</div>`;
+            html += `<div style="font-size: 1.3rem; color: #28a745; margin-top: 5px; font-weight: bold;">${coords}</div>`;
             html += `</div>`;
         });
         html += '</div>';
         
-        html += `<p style="font-size: 0.85rem; color: #666; margin-top: 15px; font-style: italic;">Utilisez votre livret de décodage personnel</p>`;
         html += `</div>`;
         
         speak(`Scan terminé ! ${foundPositions.length} objet${foundPositions.length > 1 ? 's' : ''} ${item.name} trouvé${foundPositions.length > 1 ? 's' : ''} dans la zone !`);
