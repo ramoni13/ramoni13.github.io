@@ -858,6 +858,9 @@ async function updateVolcanoGauge(increment) {
  */
 async function updateCrocoGauge(increment) {
     globalData.jaugeCroco += increment;
+    if (globalData.jaugeCroco>200) {
+        globalData.jaugeCroco = 0;
+    }
     
     if (isFirebaseConnected) {
         try {
@@ -1730,7 +1733,7 @@ function generateIslandItems() {
     itemsToPlace.forEach(itemTemplate => {
         // Placer 2 items de ce type par quart (8 au total)
         quarters.forEach(quarter => {
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 3; i++) {
                 let pos = null;
                 let attempts = 0;
                 
