@@ -12,42 +12,42 @@
 /**
  * Aide du public
  */
-function doAidePublic() {
-    const player = players[currentPlayerIndex];
-    if (!player) return;
+// function doAidePublic() {
+//     const player = players[currentPlayerIndex];
+//     if (!player) return;
     
-    if (player.votes < 20) {
-        showToast('Pas assez de votes ! (20 requis)', 'error');
-        speak("Vous n\\'avez pas assez de votes pour l\\'aide du public.");
-        return;
-    }
+//     if (player.votes < 20) {
+//         showToast('Pas assez de votes ! (20 requis)', 'error');
+//         speak("Vous n\\'avez pas assez de votes pour l\\'aide du public.");
+//         return;
+//     }
     
-    // Demander quel item chercher
-    let html = '<h3 style="color: #f39c12; margin-top: 0;">📢 AIDE DU PUBLIC</h3>';
-    html += '<p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Quel objet cherchez-vous ?<br><strong>Coût : 20 votes</strong></p>';
+//     // Demander quel item chercher
+//     let html = '<h3 style="color: #f39c12; margin-top: 0;">📢 AIDE DU PUBLIC</h3>';
+//     html += '<p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Quel objet cherchez-vous ?<br><strong>Coût : 20 votes</strong></p>';
     
-    html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;">';
+//     html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;">';
     
-    const searchableItems = ITEMS.filter(item => 
-        !['banane', 'coco', 'mangue', 'diamant', 'camera'].includes(item.name)
-    );
+//     const searchableItems = ITEMS.filter(item => 
+//         !['banane', 'coco', 'mangue', 'diamant', 'camera'].includes(item.name)
+//     );
     
-    searchableItems.forEach(item => {
-        html += `<div class="item-card" onclick="searchItemWithPublicHelp('${item.name}')" title="${item.description}">${item.icon}</div>`;
-    });
+//     searchableItems.forEach(item => {
+//         html += `<div class="item-card" onclick="searchItemWithPublicHelp('${item.name}')" title="${item.description}">${item.icon}</div>`;
+//     });
     
-    html += '</div>';
-    html += '<button onclick="closeAidePublicPopup()" class="btn btn-danger" style="width: 100%; margin-top: 10px;">Annuler</button>';
+//     html += '</div>';
+//     html += '<button onclick="closeAidePublicPopup()" class="btn btn-danger" style="width: 100%; margin-top: 10px;">Annuler</button>';
     
-    const modal = document.createElement('div');
-    modal.id = 'aide-public-popup';
-    modal.className = 'modal';
-    modal.innerHTML = html;
-    modal.style.display = 'block';
+//     const modal = document.createElement('div');
+//     modal.id = 'aide-public-popup';
+//     modal.className = 'modal';
+//     modal.innerHTML = html;
+//     modal.style.display = 'block';
     
-    document.body.appendChild(modal);
-    showOverlay();
-}
+//     document.body.appendChild(modal);
+//     showOverlay();
+// }
 
 function searchItemWithPublicHelp(itemName) {
     const player = players[currentPlayerIndex];
@@ -75,8 +75,8 @@ function searchItemWithPublicHelp(itemName) {
     closeAidePublicPopup();
     
     if (closestItem) {
-        // Encoder les coordonnées
-        const encoded = encodeCoordinates(player, closestItem.x, closestItem.y);
+        // Afficher les coordonnées réelles directement
+        const coords = posToCoord(closestItem.x, closestItem.y);
         
         const item = ITEMS.find(i => i.name === itemName);
         
@@ -84,9 +84,8 @@ function searchItemWithPublicHelp(itemName) {
         html += `<div style="font-size: 3rem; margin: 20px 0;">${item.icon}</div>`;
         html += `<p style="font-size: 1.1rem; margin: 15px 0;">L'objet <strong>${item.name}</strong> le plus proche se trouve à :</p>`;
         html += `<div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">`;
-        html += `<div style="font-size: 1.5rem; font-weight: bold; color: #f39c12;">${encoded}</div>`;
+        html += `<div style="font-size: 1.5rem; font-weight: bold; color: #f39c12;">${coords}</div>`;
         html += `</div>`;
-        html += `<p style="font-size: 0.85rem; color: #999; margin-top: 15px;">Utilisez votre livret de décodage personnel</p>`;
         html += '<button onclick="closeAidePublicResultPopup()" class="btn btn-primary" style="width: 100%; margin-top: 20px;">OK</button>';
         
         const modal = document.createElement('div');
@@ -98,7 +97,7 @@ function searchItemWithPublicHelp(itemName) {
         document.body.appendChild(modal);
         showOverlay();
         
-        speak(`L'objet ${item.name} le plus proche se trouve en ${encoded}`);
+        speak(`L'objet ${item.name} le plus proche se trouve en ${coords}`);
     } else {
         showToast('Aucun objet de ce type trouvé !', 'error');
         speak("Aucun objet de ce type n\\'a été trouvé sur l\\'île.");
@@ -387,6 +386,71 @@ async function saveFinalStats(sortedPlayers) {
     } catch (error) {
         console.error('❌ Erreur sauvegarde stats:', error);
     }
+}
+
+// ========================================
+// AFFICHAGE DES AUTRES JOUEURS
+// ========================================
+
+/**
+ * Met à jour l'affichage du bandeau des autres joueurs
+ */
+function updateOtherPlayersDisplay() {
+    const banner = document.getElementById('other-players-banner');
+    const content = document.getElementById('other-players-content');
+    
+    if (!banner || !content) {
+        console.warn('⚠️ Bandeau autres joueurs introuvable');
+        return;
+    }
+    
+    // Si moins de 2 joueurs, masquer le bandeau
+    if (players.length < 2) {
+        banner.style.display = 'none';
+        return;
+    }
+    
+    // Afficher le bandeau
+    banner.style.display = 'flex';
+    
+    // Construire le contenu HTML
+    let html = '';
+    
+    players.forEach((player, index) => {
+        // Ne pas afficher le joueur actif
+        if (index === currentPlayerIndex) {
+            return;
+        }
+        
+        // Créer une carte pour chaque autre joueur
+        html += `<div style="
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid ${player.colorHex};
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 120px;
+        ">`;
+        
+        // Picto du joueur
+        // html += `<span style="font-size: 1.2rem;">${player.picto}</span>`;
+        
+        // Nom et votes
+        html += `<div style="flex: 1;">`;
+        html += `<div style="font-size: 0.7rem; font-weight: bold; color: ${player.colorHex};">${player.name}</div>`;
+        html += `<div style="font-size: 0.65rem; color: var(--gold); font-weight: bold; margin-top: 2px;">`;
+        html += `${player.votes} votes`;
+        html += `</div>`;
+        html += `</div>`;
+        
+        html += `</div>`;
+    });
+    
+    content.innerHTML = html;
+    
+    console.log('✅ Bandeau autres joueurs mis à jour');
 }
 
 console.log('✅ Partie 2 chargée : Actions, Missions, Fin de tour');
