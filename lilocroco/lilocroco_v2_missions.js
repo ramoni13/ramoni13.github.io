@@ -301,7 +301,7 @@ function showWeatherPopup() {
     // Joueur qui commence
     const firstPlayer = players[0];
     html += `<div style="margin: 15px 0; font-size: 1rem; color: #666;">`;
-    html += `Au tour de <strong style="color: ${firstPlayer.colorHex};">${firstPlayer.picto} ${firstPlayer.name}</strong>`;
+    html += `<strong style="color: ${firstPlayer.colorHex};">BOUGEZ LES CROCOS !</strong>`;
     html += `</div>`;
     
     // Bouton
@@ -336,7 +336,7 @@ function showWeatherPopup() {
     showOverlay();
     
     // Message vocal
-    speak(`Début du tour ${currentTurn}. Météo : ${currentWeather.name}. ${currentWeather.effect}. C'est au tour de ${firstPlayer.name}.`);
+    speak(`Début du tour ${currentTurn}. Météo : ${currentWeather.name}. ${currentWeather.effect}. Bougez les crocos. C'est au tour de ${firstPlayer.name}.`);
 }
 
 /**
