@@ -18,6 +18,7 @@
     <!-- Script de migration (à supprimer après migration) -->
     <!-- <script src="migration_lieux_mystiques.js"></script> -->
     <script src="lilocroco_v2_part2.js"></script>
+    <script src="aide_public_patch.js"></script>
     <style>
         :root {
             --gold: #f1c40f;
@@ -711,12 +712,7 @@
             </div>
         </div>
         
-        <!-- Bandeau autres joueurs -->
-        <!-- <div id="other-players-banner" class="info-banner" style="display: none;">
-            <div style="flex: 1;">
-                <div id="other-players-content" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.75rem;"></div>
-            </div>
-        </div> -->
+        
         
         <!-- Bandeau items rares -->
         <div id="rare-items-banner" class="info-banner" style="display: none;">
@@ -773,7 +769,15 @@
                     <button class="btn btn-primary" onclick="endTurn()" style="grid-column: 1 / -1;">✅ FIN DE TOUR</button>
                 </div>
             </div>
+            <!-- Bandeau autres joueurs -->
+        <div id="other-players-banner" class="info-banner" style="display: none;">
+            <div style="flex: 1;">
+                <div id="other-players-content" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.75rem;"></div>
+            </div>
         </div>
+        </div>
+
+        
     </div>
     
     <!-- Overlay -->
