@@ -330,51 +330,51 @@ function doActionChassePeche() {
 /**
  * Affiche les infos des autres joueurs
  */
-function updateOtherPlayersDisplay() {
-    const content = document.getElementById('other-players-content');
-    if (!content) return;
+// function updateOtherPlayersDisplay() {
+//     const content = document.getElementById('other-players-content');
+//     if (!content) return;
     
-    let html = '';
+//     let html = '';
     
-    players.forEach((p, index) => {
-        if (index !== currentPlayerIndex) {
-            // Couleurs selon les niveaux
-            const fatigueColor = p.fatigue >= 5 ? '#e74c3c' : p.fatigue >= 3 ? '#f39c12' : '#2ecc71';
-            const blessureColor = p.blessure >= 5 ? '#e74c3c' : p.blessure >= 3 ? '#f39c12' : '#2ecc71';
+//     players.forEach((p, index) => {
+//         if (index !== currentPlayerIndex) {
+//             // Couleurs selon les niveaux
+//             const fatigueColor = p.fatigue >= 5 ? '#e74c3c' : p.fatigue >= 3 ? '#f39c12' : '#2ecc71';
+//             const blessureColor = p.blessure >= 5 ? '#e74c3c' : p.blessure >= 3 ? '#f39c12' : '#2ecc71';
             
-            html += `<div style="background: rgba(255,255,255,0.1); padding: 10px 12px; border-radius: 8px; border-left: 4px solid ${p.colorHex}; min-width: 180px;">`;
+//             html += `<div style="background: rgba(255,255,255,0.1); padding: 10px 12px; border-radius: 8px; border-left: 4px solid ${p.colorHex}; min-width: 180px;">`;
             
-            // Nom du joueur
-            html += `<div style="font-weight: bold; margin-bottom: 5px; font-size: 0.85rem;">${p.picto} ${p.name}</div>`;
+//             // Nom du joueur
+//             html += `<div style="font-weight: bold; margin-bottom: 5px; font-size: 0.85rem;">${p.picto} ${p.name}</div>`;
             
-            // Stats ligne 1 : Votes + XP
-            html += `<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 0.7rem; margin-bottom: 3px;">`;
-            html += `<span style="color: var(--gold); font-weight: bold;">⭐ ${p.votes}</span>`;
-            html += `<span style="color: #999;">XP: ${p.xp}</span>`;
-            html += `</div>`;
+//             // Stats ligne 1 : Votes + XP
+//             html += `<div style="display: flex; justify-content: space-between; gap: 10px; font-size: 0.7rem; margin-bottom: 3px;">`;
+//             html += `<span style="color: var(--gold); font-weight: bold;">⭐ ${p.votes}</span>`;
+//             html += `<span style="color: #999;">XP: ${p.xp}</span>`;
+//             html += `</div>`;
             
-            // Stats ligne 2 : Fatigue + Blessure
-            html += `<div style="display: flex; gap: 12px; font-size: 0.7rem;">`;
-            html += `<span style="color: ${fatigueColor}; font-weight: bold;">😫 F: ${p.fatigue}</span>`;
-            html += `<span style="color: ${blessureColor}; font-weight: bold;">🩹 B: ${p.blessure}</span>`;
-            html += `</div>`;
+//             // Stats ligne 2 : Fatigue + Blessure
+//             html += `<div style="display: flex; gap: 12px; font-size: 0.7rem;">`;
+//             html += `<span style="color: ${fatigueColor}; font-weight: bold;">😫 F: ${p.fatigue}</span>`;
+//             html += `<span style="color: ${blessureColor}; font-weight: bold;">🩹 B: ${p.blessure}</span>`;
+//             html += `</div>`;
             
-            // Si évacué
-            if (p.evacuated) {
-                html += `<div style="margin-top: 5px; padding: 3px 6px; background: rgba(231, 76, 60, 0.3); border-radius: 4px; font-size: 0.65rem; color: #e74c3c; font-weight: bold;">`;
-                html += `⚠️ ÉVACUÉ`;
-                html += `</div>`;
-            }
+//             // Si évacué
+//             if (p.evacuated) {
+//                 html += `<div style="margin-top: 5px; padding: 3px 6px; background: rgba(231, 76, 60, 0.3); border-radius: 4px; font-size: 0.65rem; color: #e74c3c; font-weight: bold;">`;
+//                 html += `⚠️ ÉVACUÉ`;
+//                 html += `</div>`;
+//             }
             
-            html += `</div>`;
-        }
-    });
+//             html += `</div>`;
+//         }
+//     });
     
-    if (html === '') {
-        html = '<div style="color: #999; font-style: italic; font-size: 0.75rem; text-align: center; padding: 10px;">Aucun autre joueur</div>';
-    }
+//     if (html === '') {
+//         html = '<div style="color: #999; font-style: italic; font-size: 0.75rem; text-align: center; padding: 10px;">Aucun autre joueur</div>';
+//     }
     
-    content.innerHTML = html;
-}
+//     content.innerHTML = html;
+// }
 
 console.log('✅ Actions chargées');
