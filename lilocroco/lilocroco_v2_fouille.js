@@ -742,9 +742,8 @@ function searchItemWithPublicHelp(itemName) {
         html += `<div style="font-size: 3rem; margin: 20px 0;">${item.icon}</div>`;
         html += `<p style="font-size: 1.1rem; margin: 15px 0;">L'objet <strong>${item.name}</strong> le plus proche se trouve à :</p>`;
         html += `<div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">`;
-        html += `<div style="font-size: 1.5rem; font-weight: bold; color: #f39c12;">${encoded}</div>`;
+        html += `<div style="font-size: 1.5rem; font-weight: bold; color: #f39c12;">${coords}</div>`;
         html += `</div>`;
-        html += `<p style="font-size: 0.85rem; color: #999; margin-top: 15px;">Utilisez votre livret de décodage personnel</p>`;
         html += '<button onclick="closeAidePublicResultPopup()" class="btn btn-primary" style="width: 100%; margin-top: 20px;">OK</button>';
         
         const modal = document.createElement('div');
@@ -756,7 +755,7 @@ function searchItemWithPublicHelp(itemName) {
         document.body.appendChild(modal);
         showOverlay();
         
-        speak(`L'objet ${item.name} le plus proche se trouve en ${encoded}`);
+        speak(`L'objet ${item.name} le plus proche se trouve en ${coords}`);
     } else {
         showToast('Aucun objet de ce type trouvé !', 'error');
         speak('Aucun objet de ce type n\'a été trouvé sur l\'île.');
